@@ -7,7 +7,7 @@ const Sidebar = () => {
         <aside className="sidebar">
             {/* Brand */}
             <div className="sidebar-brand">
-                <div style={{ width: '28px', height: '28px', border: '4px solid var(--accent-yellow)', borderTopColor: 'transparent', borderRadius: '50%', transform: 'rotate(-45deg)' }}></div>
+                <div style={{ width: '28px', height: '28px', border: '4px solid var(--accent-green)', borderTopColor: 'transparent', borderRadius: '50%', transform: 'rotate(-45deg)' }}></div>
                 Gudwork
             </div>
 

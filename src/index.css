@@ -10,11 +10,11 @@
   --text-secondary: #a1a1aa;
   --text-muted: #52525b;
 
-  --accent-yellow: #fde047;
+  --accent-green: #4ade80;
   --accent-white: #f8fafc;
 
   --border-light: rgba(255, 255, 255, 0.06);
-  --border-active: var(--accent-yellow);
+  --border-active: var(--accent-green);
 
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.8);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.9);
@@ -107,11 +107,11 @@ body {
 }
 
 .nav-item.active {
-  color: var(--accent-yellow);
+  color: var(--accent-green);
 }
 
 .nav-item.active .nav-icon {
-  color: var(--accent-yellow);
+  color: var(--accent-green);
 }
 
 .nav-icon {
@@ -144,7 +144,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-yellow);
+  color: var(--accent-green);
 }
 
 /* Main Content Area */
@@ -265,7 +265,7 @@ h6 {
 }
 
 .text-accent {
-  color: var(--accent-yellow);
+  color: var(--accent-green);
 }
 
 /* Recharts Overrides for Dark Theme */

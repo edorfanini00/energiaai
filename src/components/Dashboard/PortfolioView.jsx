@@ -15,7 +15,7 @@ const mockMgmtData = [
     { month: 'Jan', val: 50, type: 'white' },
     { month: 'Feb', val: 70, type: 'striped' },
     { month: 'Mar', val: 40, type: 'white' },
-    { month: 'Apr', val: 60, type: 'yellow' },
+    { month: 'Apr', val: 60, type: 'green' },
     { month: 'May', val: 65, type: 'striped' },
 ];
 
@@ -24,7 +24,7 @@ const CustomDot = (props) => {
     return (
         <g>
             <line x1={cx} y1={cy} x2={cx} y2={230} stroke="var(--border-light)" strokeDasharray="3 3" />
-            <circle cx={cx} cy={cy} r={4} stroke="#000" strokeWidth={2} fill="var(--accent-yellow)" />
+            <circle cx={cx} cy={cy} r={4} stroke="#000" strokeWidth={2} fill="var(--accent-green)" />
         </g>
     );
 };
@@ -64,7 +64,7 @@ const PortfolioView = () => {
                         {/* Mini Gauge SVG */}
                         <svg width="40" height="40" viewBox="0 0 36 36">
                             <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-yellow)" strokeWidth="4" strokeDasharray="75, 100" />
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-green)" strokeWidth="4" strokeDasharray="75, 100" />
                         </svg>
                     </div>
 
@@ -81,7 +81,7 @@ const PortfolioView = () => {
                             {/* Foreground Path (Yellow/White) */}
                             <path d="M 15,80 A 40,40 0 0,1 85,80" fill="none" stroke="var(--text-primary)" strokeWidth="16" strokeLinecap="round" strokeDasharray="140 200" />
                             {/* Optional yellow highlight on right edge */}
-                            <path d="M 72.8,45 A 40,40 0 0,1 85,80" fill="none" stroke="var(--accent-yellow)" strokeWidth="16" strokeLinecap="round" />
+                            <path d="M 72.8,45 A 40,40 0 0,1 85,80" fill="none" stroke="var(--accent-green)" strokeWidth="16" strokeLinecap="round" />
                         </svg>
                         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', marginTop: '3rem' }}>
                             <div style={{ fontSize: '1rem', fontWeight: 600 }}>$2,981</div>
@@ -102,9 +102,9 @@ const PortfolioView = () => {
                     <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart data={mockSalesData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
                             <defs>
-                                <linearGradient id="colorYellow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--accent-yellow)" stopOpacity={0.4} />
-                                    <stop offset="95%" stopColor="var(--accent-yellow)" stopOpacity={0} />
+                                <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4} />
+                                    <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="colorBar" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="0%" stopColor="rgba(255,255,255,0.15)" />
@@ -117,7 +117,7 @@ const PortfolioView = () => {
                             <Tooltip cursor={false} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
 
                             <Bar dataKey="bg" fill="url(#colorBar)" barSize={24} radius={[2, 2, 0, 0]} />
-                            <Area type="monotone" dataKey="value" stroke="var(--accent-yellow)" strokeWidth={2} fillOpacity={1} fill="url(#colorYellow)" />
+                            <Area type="monotone" dataKey="value" stroke="var(--accent-green)" strokeWidth={2} fillOpacity={1} fill="url(#colorGreen)" />
                             <Line type="monotone" dataKey="value" stroke="none" dot={<CustomDot />} activeDot={{ r: 6, fill: '#fff' }} />
                         </ComposedChart>
                     </ResponsiveContainer>
@@ -138,7 +138,7 @@ const PortfolioView = () => {
                             { t: '11:30', title: 'Interview', sub: 'New candidate' }
                         ].map((item, idx) => (
                             <div key={idx} style={{ display: 'flex', gap: '1.5rem', padding: '0.85rem 0', borderBottom: idx === 3 ? 'none' : '1px solid rgba(255,255,255,0.05)' }}>
-                                <div style={{ color: 'var(--accent-yellow)', fontSize: '1rem', fontWeight: 500 }}>{item.t}</div>
+                                <div style={{ color: 'var(--accent-green)', fontSize: '1rem', fontWeight: 500 }}>{item.t}</div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                                     <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>{item.title}</span>
                                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.sub}</span>
@@ -209,7 +209,7 @@ const PortfolioView = () => {
                             <Bar dataKey="val" radius={[10, 10, 10, 10]} barSize={20}>
                                 {mockMgmtData.map((entry, index) => {
                                     let fill = "var(--text-primary)";
-                                    if (entry.type === 'yellow') fill = "var(--accent-yellow)";
+                                    if (entry.type === 'yellow') fill = "var(--accent-green)";
                                     if (entry.type === 'striped') fill = "url(#diagStripe)";
                                     return <Cell key={`cell-${index}`} fill={fill} />;
                                 })}

@@ -45,9 +45,9 @@ const BuildingDashboard = () => {
             {/* Main Detail Box */}
             <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
                 <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', gap: '0.5rem' }}>
-                    <button style={{ background: activeTab === 'overview' ? 'var(--bg-input)' : 'transparent', color: activeTab === 'overview' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveTab('overview')}>Overview</button>
-                    <button style={{ background: activeTab === 'environment' ? 'var(--bg-input)' : 'transparent', color: activeTab === 'environment' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveTab('environment')}>Environment</button>
-                    <button style={{ background: activeTab === 'systems' ? 'var(--bg-input)' : 'transparent', color: activeTab === 'systems' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveTab('systems')}>Systems</button>
+                    <button style={{ background: activeTab === 'overview' ? 'var(--bg-input)' : 'transparent', color: activeTab === 'overview' ? 'var(--accent-green)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveTab('overview')}>Overview</button>
+                    <button style={{ background: activeTab === 'environment' ? 'var(--bg-input)' : 'transparent', color: activeTab === 'environment' ? 'var(--accent-green)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveTab('environment')}>Environment</button>
+                    <button style={{ background: activeTab === 'systems' ? 'var(--bg-input)' : 'transparent', color: activeTab === 'systems' ? 'var(--accent-green)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveTab('systems')}>Systems</button>
                 </div>
 
                 <div style={{ padding: '2rem' }}>
@@ -63,7 +63,7 @@ const BuildingDashboard = () => {
                     {activeTab === 'environment' && (
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                             <div style={{ background: 'var(--bg-input)', padding: '1.5rem', borderRadius: '12px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}><Thermometer size={16} color="var(--accent-yellow)" /><span className="card-title" style={{ margin: 0 }}>Temperature</span></div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}><Thermometer size={16} color="var(--accent-green)" /><span className="card-title" style={{ margin: 0 }}>Temperature</span></div>
                                 <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>72°F <span style={{ fontSize: '0.85rem', color: '#34C759', background: 'rgba(52, 199, 89, 0.1)', padding: '2px 8px', borderRadius: '12px', verticalAlign: 'middle' }}>Optimal</span></div>
                                 <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Range: 68°F - 74°F | Trend: Stable</div>
                             </div>
@@ -80,7 +80,7 @@ const BuildingDashboard = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {[
                                 { name: 'HVAC', i: <Settings2 size={16} />, status: 'Operational', eff: '92%', color: 'var(--accent-blue)' },
-                                { name: 'Lighting', i: <Lightbulb size={16} />, status: 'Operational', eff: '98%', color: 'var(--accent-yellow)' },
+                                { name: 'Lighting', i: <Lightbulb size={16} />, status: 'Operational', eff: '98%', color: 'var(--accent-green)' },
                                 { name: 'Water', i: <Droplet size={16} />, status: 'Warning', eff: '75%', color: '#ef4444' },
                             ].map(sys => (
                                 <div key={sys.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', background: 'var(--bg-input)', borderRadius: 'var(--radius-sm)' }}>
@@ -120,13 +120,13 @@ const BuildingDashboard = () => {
                         <AreaChart data={mockEnergyData}>
                             <defs>
                                 <linearGradient id="colorUsage" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--accent-yellow)" stopOpacity={0.4} />
-                                    <stop offset="95%" stopColor="var(--accent-yellow)" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4} />
+                                    <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <XAxis dataKey="name" axisLine={false} tickLine={false} dy={10} />
                             <Tooltip cursor={false} contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--bg-input)', color: 'white', fontSize: '0.85rem' }} />
-                            <Area type="monotone" dataKey="usage" stroke="var(--accent-yellow)" strokeWidth={3} fillOpacity={1} fill="url(#colorUsage)" />
+                            <Area type="monotone" dataKey="usage" stroke="var(--accent-green)" strokeWidth={3} fillOpacity={1} fill="url(#colorUsage)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>

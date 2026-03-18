@@ -32,7 +32,7 @@ const EnergyDashboard = () => {
             {/* Live Demand Graph */}
             <div className="glass-card">
                 <h3 style={{ margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.25rem' }}>
-                    <Activity size={18} color="var(--accent-yellow)" /> Live Energy Demand (kW)
+                    <Activity size={18} color="var(--accent-green)" /> Live Energy Demand (kW)
                 </h3>
                 <div style={{ height: '350px', width: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -42,7 +42,7 @@ const EnergyDashboard = () => {
                             <YAxis axisLine={false} tickLine={false} />
                             <Tooltip cursor={false} contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--bg-input)', color: 'white' }} />
                             <Legend wrapperStyle={{ paddingTop: '1rem' }} />
-                            <Line type="monotone" dataKey="b1" name="North Tower" stroke="var(--accent-yellow)" strokeWidth={3} dot={{ r: 4, fill: '#000' }} activeDot={{ r: 6 }} />
+                            <Line type="monotone" dataKey="b1" name="North Tower" stroke="var(--accent-green)" strokeWidth={3} dot={{ r: 4, fill: '#000' }} activeDot={{ r: 6 }} />
                             <Line type="monotone" dataKey="b2" name="South Center" stroke="var(--accent-blue)" strokeWidth={3} dot={{ r: 4, fill: '#000' }} activeDot={{ r: 6 }} />
                         </LineChart>
                     </ResponsiveContainer>
@@ -52,9 +52,9 @@ const EnergyDashboard = () => {
             {/* Historical Data */}
             <div className="glass-card" style={{ paddingBottom: '2rem' }}>
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
-                    <button style={{ background: activeHistoryTab === 'historical' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'historical' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('historical')}>Historical</button>
-                    <button style={{ background: activeHistoryTab === 'projected' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'projected' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('projected')}>Projected</button>
-                    <button style={{ background: activeHistoryTab === 'benchmarks' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'benchmarks' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('benchmarks')}>Benchmarks</button>
+                    <button style={{ background: activeHistoryTab === 'historical' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'historical' ? 'var(--accent-green)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('historical')}>Historical</button>
+                    <button style={{ background: activeHistoryTab === 'projected' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'projected' ? 'var(--accent-green)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('projected')}>Projected</button>
+                    <button style={{ background: activeHistoryTab === 'benchmarks' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'benchmarks' ? 'var(--accent-green)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('benchmarks')}>Benchmarks</button>
                 </div>
 
                 <div style={{ height: '350px', width: '100%' }}>
