@@ -7,10 +7,10 @@ const mockLineData = [
 ];
 
 const mockBarData = [
-    { month: 'Jan', value: 45, ref: -15 }, { month: 'Feb', value: 38, ref: -15 },
-    { month: 'Mar', value: 25, ref: -15 }, { month: 'Apr', value: 35, ref: -15 },
-    { month: 'May', value: 55, striped: true, ref: -15 }, { month: 'Jun', value: 35, ref: -15 },
-    { month: 'Jul', value: 20, ref: -15 }
+    { month: 'Jan', value: 45, reflectionValue: -15 }, { month: 'Feb', value: 38, reflectionValue: -15 },
+    { month: 'Mar', value: 25, reflectionValue: -15 }, { month: 'Apr', value: 35, reflectionValue: -15 },
+    { month: 'May', value: 55, striped: true, reflectionValue: -15 }, { month: 'Jun', value: 35, reflectionValue: -15 },
+    { month: 'Jul', value: 20, reflectionValue: -15 }
 ];
 
 const PortfolioView = () => {
@@ -153,7 +153,7 @@ const PortfolioView = () => {
                                     />
                                 ))}
                             </Bar>
-                            <Bar dataKey="ref" radius={[8, 8, 8, 8]} barSize={12} fill="rgba(255,255,255,0.08)" />
+                            <Bar dataKey="reflectionValue" radius={[8, 8, 8, 8]} barSize={12} fill="rgba(255,255,255,0.08)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
