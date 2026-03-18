@@ -7,10 +7,10 @@ const mockLineData = [
 ];
 
 const mockBarData = [
-    { month: 'Jan', value: 45 }, { month: 'Feb', value: 38 },
-    { month: 'Mar', value: 25 }, { month: 'Apr', value: 35 },
-    { month: 'May', value: 55, striped: true }, { month: 'Jun', value: 35 },
-    { month: 'Jul', value: 20 }
+    { month: 'Jan', value: 45, ref: -15 }, { month: 'Feb', value: 38, ref: -15 },
+    { month: 'Mar', value: 25, ref: -15 }, { month: 'Apr', value: 35, ref: -15 },
+    { month: 'May', value: 55, striped: true, ref: -15 }, { month: 'Jun', value: 35, ref: -15 },
+    { month: 'Jul', value: 20, ref: -15 }
 ];
 
 const PortfolioView = () => {
@@ -144,7 +144,7 @@ const PortfolioView = () => {
                             <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `${val}%`} />
                             <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: 'white' }} />
 
-                            <Bar dataKey="value" radius={[12, 12, 12, 12]} barSize={16}>
+                            <Bar dataKey="value" radius={[8, 8, 8, 8]} barSize={12}>
                                 {mockBarData.map((entry, index) => (
                                     <Cell
                                         key={`cell-${index}`}
@@ -153,6 +153,7 @@ const PortfolioView = () => {
                                     />
                                 ))}
                             </Bar>
+                            <Bar dataKey="ref" radius={[8, 8, 8, 8]} barSize={12} fill="rgba(255,255,255,0.08)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -162,11 +163,11 @@ const PortfolioView = () => {
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '1.5rem' }}>Home Energy Consumption</h3>
 
                     {/* Stacked Progress Bar */}
-                    <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '16px', overflow: 'hidden', gap: '4px', marginBottom: '2rem' }}>
-                        <div style={{ width: '40%', height: '100%', background: 'var(--accent-yellow)', borderRadius: '16px' }}></div>
-                        <div style={{ width: '30%', height: '100%', background: 'var(--accent-purple)', borderRadius: '16px' }}></div>
-                        <div style={{ width: '23%', height: '100%', background: 'var(--accent-orange)', borderRadius: '16px' }}></div>
-                        <div style={{ width: '7%', height: '100%', background: 'var(--accent-blue)', borderRadius: '16px' }}></div>
+                    <div style={{ display: 'flex', width: '100%', height: '16px', gap: '8px', marginBottom: '2rem' }}>
+                        <div style={{ flex: '40%', height: '100%', background: 'var(--accent-yellow)', borderRadius: '16px' }}></div>
+                        <div style={{ flex: '30%', height: '100%', background: 'var(--accent-purple)', borderRadius: '16px' }}></div>
+                        <div style={{ flex: '23%', height: '100%', background: 'var(--accent-orange)', borderRadius: '16px' }}></div>
+                        <div style={{ flex: '7%', height: '100%', background: 'var(--accent-blue)', borderRadius: '16px' }}></div>
                     </div>
 
                     {/* List items */}
