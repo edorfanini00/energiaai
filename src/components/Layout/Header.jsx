@@ -9,8 +9,7 @@ const Header = () => {
         <header className="header-grid">
             {/* Brand */}
             <div className="brand">
-                <Sun size={24} color="var(--accent-yellow)" />
-                Solnest
+                <img src="/energia-logo.png" alt="Energia AI Logo" style={{ height: '32px', width: 'auto' }} />
             </div>
 
             {/* Main Navigation Pill */}
