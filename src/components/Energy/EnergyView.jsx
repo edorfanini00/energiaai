@@ -16,88 +16,54 @@ const EnergyDashboard = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingBottom: '3rem' }}>
 
             {/* Compare Selector */}
-            <div className="card" style={{ flexDirection: 'row', gap: '1.5rem', alignItems: 'center', padding: '1.5rem 2rem' }}>
+            <div className="glass-card" style={{ flexDirection: 'row', gap: '1.5rem', alignItems: 'center', padding: '1.5rem 2rem' }}>
                 <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Compare Buildings:</h3>
-                <select style={{ padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-light)', background: 'var(--bg-page)', fontSize: '1rem', outline: 'none', cursor: 'pointer' }}>
+                <select style={{ padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-light)', background: 'var(--bg-input)', color: 'var(--text-primary)', fontSize: '1rem', outline: 'none', cursor: 'pointer' }}>
                     <option>North Tower</option>
                     <option>West Complex</option>
                 </select>
                 <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>vs</span>
-                <select style={{ padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-light)', background: 'var(--bg-page)', fontSize: '1rem', outline: 'none', cursor: 'pointer' }}>
+                <select style={{ padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-light)', background: 'var(--bg-input)', color: 'var(--text-primary)', fontSize: '1rem', outline: 'none', cursor: 'pointer' }}>
                     <option>South Center</option>
                     <option>East Wing</option>
                 </select>
             </div>
 
             {/* Live Demand Graph */}
-            <div className="card">
+            <div className="glass-card">
                 <h3 style={{ margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.25rem' }}>
-                    <div className="card-icon" style={{ background: '#FCF9EE' }}><Activity size={16} color="var(--accent-yellow)" /></div> Live Energy Demand (kW)
+                    <Activity size={18} color="var(--accent-yellow)" /> Live Energy Demand (kW)
                 </h3>
                 <div style={{ height: '350px', width: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={mockDemandData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis dataKey="time" axisLine={false} tickLine={false} dy={10} />
                             <YAxis axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--text-primary)', color: 'white' }} />
+                            <Tooltip cursor={false} contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--bg-input)', color: 'white' }} />
                             <Legend wrapperStyle={{ paddingTop: '1rem' }} />
-                            <Line type="monotone" dataKey="b1" name="North Tower" stroke="var(--accent-yellow)" strokeWidth={3} dot={{ r: 4, fill: '#fff' }} activeDot={{ r: 6 }} />
-                            <Line type="monotone" dataKey="b2" name="South Center" stroke="var(--accent-blue)" strokeWidth={3} dot={{ r: 4, fill: '#fff' }} activeDot={{ r: 6 }} />
+                            <Line type="monotone" dataKey="b1" name="North Tower" stroke="var(--accent-yellow)" strokeWidth={3} dot={{ r: 4, fill: '#000' }} activeDot={{ r: 6 }} />
+                            <Line type="monotone" dataKey="b2" name="South Center" stroke="var(--accent-blue)" strokeWidth={3} dot={{ r: 4, fill: '#000' }} activeDot={{ r: 6 }} />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
             </div>
 
-            {/* Cost Breakdown */}
-            <div className="card">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.25rem' }}>
-                        <div className="card-icon" style={{ background: '#FCF9EE' }}><Zap size={16} color="var(--accent-yellow)" /></div> Utilities Breakdown
-                    </h3>
-                    <div className="group-pill">
-                        {['Day', 'Week', 'Month', 'Year'].map(t => (
-                            <button key={t}
-                                onClick={() => setActiveTimeframe(t.toLowerCase())}
-                                className={`btn-pill ${activeTimeframe === t.toLowerCase() ? 'active' : ''}`}
-                            >
-                                {t}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
-                    {[
-                        { title: 'Electricity Cost', val: '$12,450' },
-                        { title: 'Gas Cost', val: '$3,200' },
-                        { title: 'Elec. Savings', val: '$1,200' },
-                        { title: 'Gas Savings', val: '$450' }
-                    ].map(c => (
-                        <div key={c.title} style={{ padding: '1.5rem', background: 'var(--bg-page)', borderRadius: 'var(--radius-sm)' }}>
-                            <div className="card-title">{c.title}</div>
-                            <div className="card-value">{c.val}</div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
             {/* Historical Data */}
-            <div className="card" style={{ paddingBottom: '2rem' }}>
-                <div className="group-pill" style={{ margin: '0 0 2rem 0', alignSelf: 'flex-start' }}>
-                    <button className={`btn-pill ${activeHistoryTab === 'historical' ? 'active' : ''}`} onClick={() => setActiveHistoryTab('historical')}>Historical</button>
-                    <button className={`btn-pill ${activeHistoryTab === 'projected' ? 'active' : ''}`} onClick={() => setActiveHistoryTab('projected')}>Projected</button>
-                    <button className={`btn-pill ${activeHistoryTab === 'benchmarks' ? 'active' : ''}`} onClick={() => setActiveHistoryTab('benchmarks')}>Benchmarks</button>
-                    <button className={`btn-pill ${activeHistoryTab === 'anomalies' ? 'active' : ''}`} onClick={() => setActiveHistoryTab('anomalies')}>Anomalies</button>
+            <div className="glass-card" style={{ paddingBottom: '2rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+                    <button style={{ background: activeHistoryTab === 'historical' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'historical' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('historical')}>Historical</button>
+                    <button style={{ background: activeHistoryTab === 'projected' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'projected' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('projected')}>Projected</button>
+                    <button style={{ background: activeHistoryTab === 'benchmarks' ? 'var(--bg-input)' : 'transparent', color: activeHistoryTab === 'benchmarks' ? 'var(--accent-yellow)' : 'var(--text-secondary)', border: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer' }} onClick={() => setActiveHistoryTab('benchmarks')}>Benchmarks</button>
                 </div>
 
                 <div style={{ height: '350px', width: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={mockDemandData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis dataKey="time" axisLine={false} tickLine={false} dy={10} />
                             <YAxis axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--text-primary)', color: 'white' }} cursor={{ fill: 'rgba(0,0,0,0.02)' }} />
+                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ borderRadius: '12px', border: 'none', background: 'var(--bg-input)', color: 'white' }} />
                             <Legend wrapperStyle={{ paddingTop: '1rem' }} />
                             <Bar dataKey="b1" name="Usage (kWh)" fill="var(--accent-blue)" radius={[4, 4, 0, 0]} barSize={40} />
                         </BarChart>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import PortfolioView from './components/Dashboard/PortfolioView';
 import BuildingView from './components/Building/BuildingView';
@@ -8,9 +9,10 @@ import './index.css';
 
 function App() {
   return (
-    <div className="app-layout">
-      <Header />
-      <main style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="app-container">
+      <Sidebar />
+      <main className="main-content">
+        <Header />
         <Routes>
           <Route path="/" element={<PortfolioView />} />
           <Route path="/building" element={<BuildingView />} />

@@ -1,210 +1,238 @@
 import React, { useState } from 'react';
-import { ComposedChart, Line, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { User, FileText, Lightbulb, Battery, Settings2, Sun } from 'lucide-react';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
+import { ArrowUpRight, Bell, Filter, Plus } from 'lucide-react';
 
-const mockChartData = [
-    { time: '14:00', pv: 4000, grid: 2400, load: 3000 },
-    { time: '16:00', pv: 3000, grid: 1398, load: 2000 },
-    { time: '18:00', pv: 2000, grid: 4800, load: 2780 },
-    { time: '20:00', pv: 2780, grid: 3908, load: 1890 },
-    { time: '22:00', pv: 1890, grid: 4800, load: 2390 },
-    { time: '00:00', pv: 2390, grid: 3800, load: 3490 },
-    { time: '02:00', pv: 3490, grid: 4300, load: 3200 },
+const mockLineData = [
+    { val: 10 }, { val: 40 }, { val: 20 }, { val: 50 }, { val: 30 }, { val: 70 }, { val: 90 }
 ];
 
-const mockSparkData = [
-    { val: 10 }, { val: 20 }, { val: 15 }, { val: 35 }, { val: 25 }, { val: 40 }, { val: 30 }
+const mockBarData = [
+    { month: 'Jan', value: 45 }, { month: 'Feb', value: 38 },
+    { month: 'Mar', value: 25 }, { month: 'Apr', value: 35 },
+    { month: 'May', value: 55, striped: true }, { month: 'Jun', value: 35 },
+    { month: 'Jul', value: 20 }
 ];
 
 const PortfolioView = () => {
-    const [baseTimeframe, setBaseTimeframe] = useState('Week');
-
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="custom-tooltip">
-                    {payload.map((p, idx) => (
-                        <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.25rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <span className={`dot ${idx === 0 ? 'dot-green' : 'dot-red'}`}></span>
-                                <span style={{ fontWeight: 600 }}>{((p.value / 6000) * 100).toFixed(1)}%</span>
-                            </div>
-                            <span style={{ color: 'rgba(255,255,255,0.6)' }}>{idx === 0 ? 'High' : 'Low'}</span>
-                        </div>
-                    ))}
-                </div>
-            );
-        }
-        return null;
-    };
+    const [activeMonth, setActiveMonth] = useState(0);
 
     return (
-        <div className="dashboard-grid">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-            {/* Left Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <div className="overview-header">
-                    <h1 className="overview-title">Here's Your Current<br />Energy Overview</h1>
-                    <p className="overview-subtitle">Your current sales summary and activity</p>
+            {/* Top Row: Solar Image & Month Summary */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem', height: '320px' }}>
+
+                {/* Top Left: Solar Array Card */}
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Overview</h2>
+                    <div className="glass-card" style={{ padding: 0, position: 'relative', overflow: 'hidden', height: '100%' }}>
+
+                        {/* The Generated Solar Grid Background */}
+                        <img
+                            src="/solar-grid.png"
+                            alt="Solar Array"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
+                        />
+
+                        {/* Address Overlay */}
+                        <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500, letterSpacing: '0.05em' }}>
+                            450 FASHION AVE, NY, USA
+                        </div>
+
+                        {/* Yellow Arrow Button Overlay */}
+                        <div style={{ position: 'absolute', top: '3.5rem', left: '1.5rem', background: 'var(--accent-yellow)', width: '32px', height: '32px', borderRadius: '4px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#000', cursor: 'pointer' }}>
+                            <ArrowUpRight size={18} strokeWidth={2.5} />
+                        </div>
+
+                        {/* Mini Chart Overlay (Right Side) */}
+                        <div style={{ position: 'absolute', right: '1.5rem', top: '50%', transform: 'translateY(-50%)', width: '250px', height: '120px', background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1rem' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={mockLineData}>
+                                    <defs>
+                                        <linearGradient id="colorYellow" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="var(--accent-yellow)" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="var(--accent-yellow)" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <Tooltip contentStyle={{ display: 'none' }} cursor={false} />
+                                    <Area type="natural" dataKey="val" stroke="var(--accent-yellow)" strokeWidth={2} fillOpacity={1} fill="url(#colorYellow)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                            <div style={{ position: 'absolute', bottom: '0.5rem', right: '1rem', fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Good<br /><span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500 }}>100%</span></div>
+                            <div style={{ position: 'absolute', bottom: '0.5rem', left: '1rem', fontSize: '0.65rem', color: 'var(--text-secondary)' }}><br /><span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500 }}>0%</span></div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div className="building-image-container">
-                    <img src="/building.png" alt="Commercial Building" className="building-image" />
-                </div>
+                {/* Top Right: Monthly Summary */}
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', marginTop: '0.5rem' }}>
+                        <h2 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', fontWeight: 500 }}>01.06.2025 - 01.06.2025</h2>
+                        <div style={{ background: 'var(--bg-input)', padding: '0.5rem', borderRadius: '50%', cursor: 'pointer' }}><Filter size={16} color="var(--text-secondary)" /></div>
+                    </div>
 
-                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end', marginTop: '-3rem', position: 'relative', zIndex: 10 }}>
-                    <div className="group-pill" style={{ marginBottom: '1.5rem' }}>
-                        {['Week', 'Month', 'Year'].map(t => (
-                            <button
-                                key={t}
-                                onClick={() => setBaseTimeframe(t)}
-                                className={`btn-pill ${baseTimeframe === t ? 'active' : ''}`}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', height: '140px' }}>
+                        {[0, 1, 2, 3].map((i) => (
+                            <div
+                                key={i}
+                                onClick={() => setActiveMonth(i)}
+                                style={{
+                                    background: i === activeMonth ? 'rgba(245, 211, 74, 0.05)' : 'var(--bg-card)',
+                                    border: i === activeMonth ? '1px solid var(--accent-yellow)' : '1px solid var(--border-light)',
+                                    borderRadius: '16px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '0.75rem',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease'
+                                }}
                             >
-                                {t}
-                            </button>
+                                <div style={{ fontSize: '1rem', fontWeight: 500, color: i === activeMonth ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>Jun</div>
+                                <Bell size={18} color="var(--text-primary)" />
+                                <div style={{ fontSize: '0.9rem', color: i === activeMonth ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>180 kwh</div>
+                            </div>
                         ))}
                     </div>
 
-                    <div className="card" style={{ flex: 1 }}>
-                        <div className="card-header">
-                            <div className="card-icon" style={{ color: 'var(--accent-yellow)', background: '#FCF9EE' }}>
-                                <Sun size={16} />
-                            </div>
-                            <div>
-                                <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Solar PV <span style={{ color: 'var(--text-secondary)', fontWeight: 400, fontSize: '0.75rem', marginLeft: '0.25rem' }}>22.0KWh</span></div>
-                                <div className="card-title" style={{ textTransform: 'none' }}>Propensity health score</div>
-                            </div>
+                    <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', "alignItems": "center" }}>
+                            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Min/Max Used</span>
+                            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>August 180 kwh / July 301 kwh</span>
                         </div>
-                        <div className="value-pill">
-                            <div className="value-pill-main">164.1 kwh</div>
-                            <div className="value-pill-sub">7 days</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', "alignItems": "center" }}>
+                            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Total Used</span>
+                            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>318 kwh</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Right Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: '100%' }}>
+            {/* Middle Row: Charts */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem', height: '350px' }}>
 
-                {/* Top Mini Widgets */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
-                    <div className="card" style={{ padding: '1.25rem' }}>
-                        <div className="card-header">
-                            <div className="card-icon" style={{ background: '#F5F5F5' }}>
-                                <User size={14} color="var(--text-secondary)" />
-                            </div>
-                            <div className="card-title">Local Power</div>
-                        </div>
-                        <div className="card-value">356</div>
+                {/* Left: Energy Produced Bar Chart */}
+                <div className="glass-card">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 500 }}>Energy Produced</h3>
+                        <select style={{ background: 'var(--bg-input)', border: '1px solid var(--border-light)', color: 'var(--text-secondary)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', outline: 'none' }}>
+                            <option>Monthly</option>
+                            <option>Weekly</option>
+                        </select>
                     </div>
-                    <div className="card" style={{ padding: '1.25rem' }}>
-                        <div className="card-header">
-                            <div className="card-icon" style={{ background: '#FCF9EE' }}>
-                                <FileText size={14} color="var(--accent-yellow)" />
-                            </div>
-                            <div className="card-title">Grid Power</div>
-                        </div>
-                        <div className="card-value">284</div>
-                    </div>
-                    <div className="card" style={{ padding: '1.25rem' }}>
-                        <div className="card-header">
-                            <div className="card-icon" style={{ background: '#F5F5F5' }}>
-                                <Lightbulb size={14} color="var(--text-secondary)" />
-                            </div>
-                            <div className="card-title">PV Power</div>
-                        </div>
-                        <div className="card-value">89</div>
-                    </div>
-                </div>
 
-                {/* Main Chart Card */}
-                <div className="card" style={{ padding: '1.5rem 1.5rem 1rem 0', flex: 1, minHeight: '320px' }}>
                     <ResponsiveContainer width="100%" height="100%">
-                        <ComposedChart data={mockChartData} margin={{ top: 20, right: 20, bottom: 0, left: 0 }}>
+                        <BarChart data={mockBarData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
+                            <defs>
+                                <pattern id="diagonalStripes" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                                    <rect width="8" height="8" fill="var(--bg-card)"></rect>
+                                    <line x1="0" y1="0" x2="0" y2="8" stroke="var(--accent-yellow)" strokeWidth="4"></line>
+                                </pattern>
+                                {/* Custom active glow effect for striped bar */}
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                            </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="time" axisLine={false} tickLine={false} dy={10} />
-                            <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `${val / 1000}K`} dx={-10} />
-                            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.02)' }} />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} dy={10} />
+                            <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `${val}%`} />
+                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: 'white' }} />
 
-                            <Bar dataKey="pv" barSize={10} fill="#F0C440" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="grid" barSize={10} fill="#EBEBEB" radius={[4, 4, 0, 0]} />
-                            <Line type="monotone" dataKey="load" stroke="#1A1A1A" strokeWidth={2} dot={{ r: 4, fill: '#fff', stroke: '#1A1A1A', strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                        </ComposedChart>
+                            <Bar dataKey="value" radius={[12, 12, 12, 12]} barSize={16}>
+                                {mockBarData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={entry.striped ? "url(#diagonalStripes)" : "var(--accent-yellow)"}
+                                        style={entry.striped ? { filter: 'url(#glow)' } : {}}
+                                    />
+                                ))}
+                            </Bar>
+                        </BarChart>
                     </ResponsiveContainer>
                 </div>
 
-                {/* Bottom Widgets */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: '1.5rem', height: '220px' }}>
+                {/* Right: Home Energy Consumption Details */}
+                <div className="glass-card">
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '1.5rem' }}>Home Energy Consumption</h3>
 
-                    <div className="card">
-                        <div className="card-header" style={{ marginBottom: 0 }}>
-                            <div className="card-icon" style={{ background: '#F0F4F8' }}>
-                                <Battery size={14} color="#8FA2AD" />
-                            </div>
-                            <div>
-                                <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Battery <span style={{ color: 'var(--text-secondary)', fontWeight: 400, fontSize: '0.75rem', marginLeft: '0.25rem' }}>75</span></div>
-                                <div className="card-title" style={{ textTransform: 'none' }}>Propensity health score</div>
-                            </div>
-                        </div>
-
-                        <div style={{ flex: 1, position: 'relative', marginTop: '-1rem' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={[{ value: 20 }, { value: 80 }]}
-                                        cx="50%" cy="100%"
-                                        startAngle={180} endAngle={0}
-                                        innerRadius="75%" outerRadius="100%"
-                                        stroke="none"
-                                        dataKey="value"
-                                    >
-                                        <Cell fill="#D0BFA5" />
-                                        <Cell fill="#F5F5F5" />
-                                    </Pie>
-                                </PieChart>
-                            </ResponsiveContainer>
-                            <div style={{ position: 'absolute', bottom: '15%', left: '0', width: '100%', textAlign: 'center' }}>
-                                <div style={{ fontSize: '2rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1 }}>20%</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Investment opportunities</div>
-                            </div>
-                        </div>
+                    {/* Stacked Progress Bar */}
+                    <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '16px', overflow: 'hidden', gap: '4px', marginBottom: '2rem' }}>
+                        <div style={{ width: '40%', height: '100%', background: 'var(--accent-yellow)', borderRadius: '16px' }}></div>
+                        <div style={{ width: '30%', height: '100%', background: 'var(--accent-purple)', borderRadius: '16px' }}></div>
+                        <div style={{ width: '23%', height: '100%', background: 'var(--accent-orange)', borderRadius: '16px' }}></div>
+                        <div style={{ width: '7%', height: '100%', background: 'var(--accent-blue)', borderRadius: '16px' }}></div>
                     </div>
 
-                    <div className="card">
-                        <div className="card-header" style={{ marginBottom: '1rem' }}>
-                            <div className="card-icon" style={{ background: '#F0F4F8' }}>
-                                <Settings2 size={14} color="#8FA2AD" />
+                    {/* List items */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                        {[
+                            { color: 'var(--accent-yellow)', label: 'Maximal Used', pct: '40%', val: '1.10 kw' },
+                            { color: 'var(--accent-purple)', label: 'Meter Energy', pct: '30%', val: '2.358 kwh' },
+                            { color: 'var(--accent-orange)', label: 'Unity Motor Uptime', pct: '23%', val: '75d 4h 25m' },
+                            { color: 'var(--accent-blue)', label: 'UPS Input Voltage', pct: '15%', val: '280.6 V' },
+                        ].map(item => (
+                            <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: item.color }}></span>
+                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{item.label} - {item.pct}</span>
+                                </div>
+                                <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 500 }}>{item.val}</span>
                             </div>
-                            <div>
-                                <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Inverter <span style={{ color: 'var(--text-secondary)', fontWeight: 400, fontSize: '0.75rem', marginLeft: '0.25rem' }}>22.0KWh</span></div>
-                                <div className="card-title" style={{ textTransform: 'none' }}>Propensity health score</div>
-                            </div>
+                        ))}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginLeft: '1.25rem' }}>Standard</span>
+                            <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 500 }}>15.5 p/kwh</span>
                         </div>
-
-                        <div style={{ flex: 1, position: 'relative' }}>
-                            <div style={{ position: 'absolute', left: '46%', top: '20%', width: '30px', height: '100%', background: 'var(--accent-yellow)', borderRadius: '8px', zIndex: 0, opacity: 0.8 }}></div>
-
-                            <ResponsiveContainer width="100%" height="100%" style={{ zIndex: 1, position: 'relative' }}>
-                                <AreaChart data={mockSparkData}>
-                                    <defs>
-                                        <linearGradient id="colorSpark" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#8FA2AD" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#8FA2AD" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <Tooltip cursor={false} contentStyle={{ display: 'none' }} />
-                                    <Area type="natural" dataKey="val" stroke="#8FA2AD" strokeWidth={2} fillOpacity={1} fill="url(#colorSpark)" />
-                                </AreaChart>
-                            </ResponsiveContainer>
-
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.25rem 0', position: 'relative', zIndex: 1 }}>
-                                <span>1st</span><span>2nd</span><span>3rd</span><span style={{ color: '#1A1A1A', fontWeight: 600 }}>4th</span><span>5th</span><span>6th</span><span>7th</span>
-                            </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginLeft: '1.25rem' }}>Meter Energy</span>
+                            <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 500 }}>$2,55</span>
                         </div>
                     </div>
+                </div>
 
+            </div>
+
+            {/* Bottom Table: Courses With A Teacher */}
+            <div className="glass-card" style={{ padding: '2rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 500 }}>Courses With A Teacher</h3>
+                    <button style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--bg-input)', border: '1px solid var(--border-light)', color: 'var(--text-primary)', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}>
+                        <Plus size={16} />
+                    </button>
+                </div>
+
+                <div style={{ width: '100%' }}>
+                    {/* Table Header */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 1fr 1fr', padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem', borderBottom: '1px solid var(--border-light)' }}>
+                        <div>Mentor</div>
+                        <div>Course title</div>
+                        <div>Status</div>
+                        <div style={{ textAlign: 'right' }}>Lessons Progress</div>
+                    </div>
+
+                    {/* Table Row */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 1fr 1fr', padding: '1.25rem 1rem', alignItems: 'center', background: 'var(--bg-input)', borderRadius: '12px', marginTop: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <img src="https://i.pravatar.cc/150?img=47" alt="Mentor" style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Esther Howard</span>
+                        </div>
+                        <div style={{ color: 'var(--text-secondary)' }}>Technical English for Beginners</div>
+                        <div>
+                            <span className="status-pill yellow">Beginner</span>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <span style={{ padding: '0.4rem 0.8rem', background: 'var(--accent-yellow)', color: '#000', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>94%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
     );
 };
