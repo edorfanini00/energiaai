@@ -6,8 +6,7 @@ const Sidebar = () => {
     return (
         <aside className="sidebar">
             <div className="sidebar-brand">
-                <Layers size={24} color="var(--accent-yellow)" />
-                SUN FLUX
+                <img src="/energia-logo.png" alt="Energia AI" style={{ height: '36px', width: 'auto', filter: 'brightness(0) invert(1)' }} />
             </div>
 
             <nav className="nav-menu" style={{ flex: 1, marginTop: '1rem' }}>
