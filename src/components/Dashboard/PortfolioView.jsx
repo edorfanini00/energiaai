@@ -1,22 +1,31 @@
 import React from 'react';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChart, Line, Cell, ReferenceLine } from 'recharts';
-import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Bell } from 'lucide-react';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChart, Line, Cell } from 'recharts';
+import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3 } from 'lucide-react';
 
-const mockSalesData = [
-    { year: '2017', bg: 15, value: 20 },
-    { year: '2018', bg: 20, value: 15 },
-    { year: '2019', bg: 25, value: 35 },
-    { year: '2020', bg: 18, value: 18 },
-    { year: '2021', bg: 20, value: 25 },
-    { year: '2022', bg: 16, value: 20 },
+const monthlyConsumption = [
+    { month: 'Jan', usage: 12400, bg: 15 },
+    { month: 'Feb', usage: 11800, bg: 18 },
+    { month: 'Mar', usage: 13200, bg: 20 },
+    { month: 'Apr', usage: 10500, bg: 14 },
+    { month: 'May', usage: 9800, bg: 12 },
+    { month: 'Jun', usage: 14100, bg: 22 },
 ];
 
-const mockMgmtData = [
-    { month: 'Jan', val: 50, type: 'white' },
-    { month: 'Feb', val: 70, type: 'striped' },
-    { month: 'Mar', val: 40, type: 'white' },
-    { month: 'Apr', val: 60, type: 'green' },
-    { month: 'May', val: 65, type: 'striped' },
+const emissionsData = [
+    { month: 'Jan', emissions: 3.8, reduced: 0.9 },
+    { month: 'Feb', emissions: 3.5, reduced: 1.1 },
+    { month: 'Mar', emissions: 4.0, reduced: 0.8 },
+    { month: 'Apr', emissions: 3.1, reduced: 1.3 },
+    { month: 'May', emissions: 2.9, reduced: 1.5 },
+    { month: 'Jun', emissions: 4.2, reduced: 0.7 },
+];
+
+const savingsBreakdown = [
+    { month: 'Jan', val: 820, type: 'green' },
+    { month: 'Feb', val: 1100, type: 'white' },
+    { month: 'Mar', val: 650, type: 'striped' },
+    { month: 'Apr', val: 1350, type: 'green' },
+    { month: 'May', val: 1560, type: 'green' },
 ];
 
 const CustomDot = (props) => {
@@ -28,6 +37,15 @@ const CustomDot = (props) => {
         </g>
     );
 };
+
+const kpiCards = [
+    { label: 'Total Energy Consumption', value: '45,850 kWh', sub: 'Across all buildings', icon: Zap, color: 'var(--accent-green)' },
+    { label: 'Total Energy Cost', value: '$15,950', sub: 'This billing period', icon: DollarSign, color: '#ef4444' },
+    { label: 'Total Energy Savings', value: '$4,100', sub: 'vs. last period', icon: TrendingDown, color: '#22d3ee' },
+    { label: 'Efficiency Rating', value: '88%', sub: 'Portfolio average', icon: Gauge, color: 'var(--accent-green)' },
+    { label: 'Carbon Emissions', value: '12.6t', sub: 'This month', icon: Leaf, color: '#f97316' },
+    { label: 'Emissions Reduced', value: '3.6t', sub: 'Through optimizations', icon: BarChart3, color: '#a78bfa' },
+];
 
 const PortfolioView = () => {
     return (
@@ -54,53 +72,68 @@ const PortfolioView = () => {
                 </div>
             </div>
 
-            {/* Top Cards Row */}
+            {/* KPI Summary Row — 6 Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1rem' }}>
+                {kpiCards.map((kpi) => (
+                    <div key={kpi.label} className="glass-card" style={{ padding: '1.25rem', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <kpi.icon size={18} color={kpi.color} />
+                            {/* Mini circular indicator */}
+                            <svg width="28" height="28" viewBox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={kpi.color} strokeWidth="3" strokeDasharray="75, 100" />
+                            </svg>
+                        </div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '-0.02em' }}>{kpi.value}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{kpi.label}</div>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '-0.1rem' }}>{kpi.sub}</div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Main Charts Row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) minmax(500px, 1.5fr)', gap: '1.5rem', height: '360px' }}>
 
-                {/* Top Spend Card */}
+                {/* Total Consumption Gauge */}
                 <div className="glass-card" style={{ position: 'relative', overflow: 'hidden' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Top Spend</h2>
-                        {/* Mini Gauge SVG */}
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Consumption</h2>
                         <svg width="40" height="40" viewBox="0 0 36 36">
                             <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-green)" strokeWidth="4" strokeDasharray="75, 100" />
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-green)" strokeWidth="4" strokeDasharray="88, 100" />
                         </svg>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem', zIndex: 2 }}>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total</span>
-                        <span style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em', marginTop: '0.25rem' }}>5,388</span>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total kWh</span>
+                        <span style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em', marginTop: '0.25rem' }}>45,850</span>
                     </div>
 
-                    {/* Large Arc SVG positioned at bottom */}
+                    {/* Large Arc */}
                     <div style={{ position: 'absolute', bottom: '-4rem', left: '50%', transform: 'translateX(-50%)', width: '280px', height: '280px' }}>
                         <svg viewBox="0 0 100 100" width="100%" height="100%">
-                            {/* Background Path */}
                             <path d="M 15,80 A 40,40 0 1,1 85,80" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="16" strokeLinecap="round" />
-                            {/* Foreground Path (Yellow/White) */}
                             <path d="M 15,80 A 40,40 0 0,1 85,80" fill="none" stroke="var(--text-primary)" strokeWidth="16" strokeLinecap="round" strokeDasharray="140 200" />
-                            {/* Optional yellow highlight on right edge */}
                             <path d="M 72.8,45 A 40,40 0 0,1 85,80" fill="none" stroke="var(--accent-green)" strokeWidth="16" strokeLinecap="round" />
                         </svg>
                         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', marginTop: '3rem' }}>
-                            <div style={{ fontSize: '1rem', fontWeight: 600 }}>$2,981</div>
-                            <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>BGT7621701RQ</div>
+                            <div style={{ fontSize: '1rem', fontWeight: 600 }}>88% Eff.</div>
+                            <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Portfolio Rating</div>
                         </div>
                     </div>
                 </div>
 
-                {/* Sales Statistic Card */}
+                {/* Monthly Consumption Chart */}
                 <div className="glass-card">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Sales statistic</h2>
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Energy Usage Trend</h2>
                         <div style={{ background: 'var(--bg-card-hover)', padding: '0.5rem 1rem', borderRadius: '16px', fontSize: '0.85rem', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            Annual <ChevronDown size={14} />
+                            Monthly <ChevronDown size={14} />
                         </div>
                     </div>
 
                     <ResponsiveContainer width="100%" height="100%">
-                        <ComposedChart data={mockSalesData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                        <ComposedChart data={monthlyConsumption} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4} />
@@ -112,92 +145,70 @@ const PortfolioView = () => {
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="year" axisLine={false} tickLine={false} dy={10} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
-                            <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => v === 0 ? '0' : `${Math.round(v / 10)}M`} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
-                            <Tooltip cursor={false} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} dy={10} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                            <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => v === 0 ? '0' : `${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                            <Tooltip cursor={false} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} formatter={(v) => [`${v.toLocaleString()} kWh`]} />
 
                             <Bar dataKey="bg" fill="url(#colorBar)" barSize={24} radius={[2, 2, 0, 0]} />
-                            <Area type="monotone" dataKey="value" stroke="var(--accent-green)" strokeWidth={2} fillOpacity={1} fill="url(#colorGreen)" />
-                            <Line type="monotone" dataKey="value" stroke="none" dot={<CustomDot />} activeDot={{ r: 6, fill: '#fff' }} />
+                            <Area type="monotone" dataKey="usage" stroke="var(--accent-green)" strokeWidth={2} fillOpacity={1} fill="url(#colorGreen)" />
+                            <Line type="monotone" dataKey="usage" stroke="none" dot={<CustomDot />} activeDot={{ r: 6, fill: '#fff' }} />
                         </ComposedChart>
                     </ResponsiveContainer>
                 </div>
             </div>
 
             {/* Bottom Cards Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', height: '220px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', height: '240px' }}>
 
-                {/* Schedule Card */}
-                <div className="glass-card" style={{ padding: '1.5rem', overflowY: 'auto' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1.5rem' }}>Schedule</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {/* Carbon Emissions by Month */}
+                <div className="glass-card" style={{ padding: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1.25rem' }}>Carbon Emissions</h3>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={emissionsData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${v}t`} />
+                            <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                            <Bar dataKey="emissions" name="Emissions (t)" fill="#f97316" radius={[8, 8, 8, 8]} barSize={14} />
+                            <Bar dataKey="reduced" name="Reduced (t)" fill="var(--accent-green)" radius={[8, 8, 8, 8]} barSize={14} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+
+                {/* Efficiency & Savings Overview */}
+                <div className="glass-card" style={{ position: 'relative', padding: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Efficiency</h3>
+                    <div style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>88%</div>
+
+                    <div style={{ position: 'absolute', right: '1.5rem', top: '4rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '130px' }}>
                         {[
-                            { t: '09:30', title: 'Design Review', sub: 'Team organization' },
-                            { t: '10:30', title: 'Meeting', sub: 'Product solution' },
-                            { t: '11:00', title: 'Discussion', sub: 'Development team' },
-                            { t: '11:30', title: 'Interview', sub: 'New candidate' }
-                        ].map((item, idx) => (
-                            <div key={idx} style={{ display: 'flex', gap: '1.5rem', padding: '0.85rem 0', borderBottom: idx === 3 ? 'none' : '1px solid rgba(255,255,255,0.05)' }}>
-                                <div style={{ color: 'var(--accent-green)', fontSize: '1rem', fontWeight: 500 }}>{item.t}</div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                                    <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>{item.title}</span>
-                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.sub}</span>
+                            { label: 'North Tower', pct: 92 },
+                            { label: 'South Center', pct: 88 },
+                            { label: 'West Complex', pct: 76 },
+                            { label: 'East Wing', pct: 95 },
+                        ].map((b) => (
+                            <div key={b.label}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.35rem' }}>
+                                    <span style={{ color: 'var(--text-secondary)' }}>{b.label}</span>
+                                    <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{b.pct}%</span>
+                                </div>
+                                <div style={{ width: '100%', height: '3px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px' }}>
+                                    <div style={{ width: `${b.pct}%`, height: '100%', background: b.pct >= 85 ? 'var(--accent-green)' : '#f97316', borderRadius: '3px' }}></div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Active Buyers Card */}
-                <div className="glass-card" style={{ position: 'relative' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Active Buyers</h3>
-                    <div style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>10.8k</div>
-
-                    <div style={{ position: 'absolute', right: '1.5rem', top: '4rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '120px' }}>
-                        <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-                                <span style={{ color: 'var(--text-secondary)' }}>THAI</span>
-                                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>50%</span>
-                            </div>
-                            <div style={{ width: '100%', height: '2px', background: 'rgba(255,255,255,0.1)' }}>
-                                <div style={{ width: '50%', height: '100%', background: 'var(--text-primary)' }}></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-                                <span style={{ color: 'var(--text-secondary)' }}>AFR</span>
-                                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>30%</span>
-                            </div>
-                            <div style={{ width: '100%', height: '2px', background: 'rgba(255,255,255,0.1)' }}>
-                                <div style={{ width: '30%', height: '100%', background: 'var(--text-primary)' }}></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Dotted Map Simulation */}
-                    <svg style={{ position: 'absolute', bottom: '1rem', left: '1rem', width: '180px', height: '80px', opacity: 0.6 }} viewBox="0 0 100 50">
-                        {Array.from({ length: 15 }).map((_, r) =>
-                            Array.from({ length: 30 }).map((_, c) => {
-                                const x = c * 3 + 4;
-                                const y = r * 3 + 4;
-                                const isLand = Math.sin(x * 0.1) * Math.cos(y * 0.1) > 0.1 || (x > 60 && y < 30) || (x < 30 && y < 40);
-                                if (!isLand) return null;
-                                return <circle key={`${r}-${c}`} cx={x} cy={y} r="0.75" fill="var(--text-secondary)" />;
-                            })
-                        )}
-                    </svg>
-                </div>
-
-                {/* Management Card */}
-                <div className="glass-card">
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Management</h3>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                        <span style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>40-189</span>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>bpm</span>
+                {/* Energy Savings Breakdown */}
+                <div className="glass-card" style={{ padding: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Energy Savings</h3>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '1rem' }}>
+                        <span style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>$4,100</span>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>total</span>
                     </div>
 
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={mockMgmtData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                        <BarChart data={savingsBreakdown} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                             <defs>
                                 <pattern id="diagStripe" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
                                     <rect width="6" height="6" fill="rgba(255,255,255,0.05)" />
@@ -205,11 +216,11 @@ const PortfolioView = () => {
                                 </pattern>
                             </defs>
                             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
-                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px' }} />
+                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px' }} formatter={(v) => [`$${v}`]} />
                             <Bar dataKey="val" radius={[10, 10, 10, 10]} barSize={20}>
-                                {mockMgmtData.map((entry, index) => {
+                                {savingsBreakdown.map((entry, index) => {
                                     let fill = "var(--text-primary)";
-                                    if (entry.type === 'yellow') fill = "var(--accent-green)";
+                                    if (entry.type === 'green') fill = "var(--accent-green)";
                                     if (entry.type === 'striped') fill = "url(#diagStripe)";
                                     return <Cell key={`cell-${index}`} fill={fill} />;
                                 })}
