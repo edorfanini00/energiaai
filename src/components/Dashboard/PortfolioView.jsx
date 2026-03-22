@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChart, Line, Cell } from 'recharts';
 import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3 } from 'lucide-react';
 
@@ -48,6 +48,11 @@ const kpiCards = [
 ];
 
 const PortfolioView = () => {
+    const [isDateOpen, setIsDateOpen] = useState(false);
+    const [dateRange, setDateRange] = useState('30 Days');
+
+    const dateOptions = ['Today', 'Past 7 Days', '30 Days', 'This Month', 'Past Year', 'All Time'];
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
@@ -67,8 +72,30 @@ const PortfolioView = () => {
                         <Edit2 size={16} /> Customize
                     </div>
                 </div>
-                <div className="date-pill">
-                    <Calendar size={14} /> 30 Days - 21 Oct 2024 <ChevronDown size={14} />
+                <div style={{ position: 'relative' }}>
+                    <div
+                        className="date-pill"
+                        style={{ cursor: 'pointer', userSelect: 'none' }}
+                        onClick={() => setIsDateOpen(!isDateOpen)}
+                    >
+                        <Calendar size={14} /> {dateRange} <ChevronDown size={14} style={{ transform: isDateOpen ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                    </div>
+
+                    {isDateOpen && (
+                        <div className="glass-card" style={{ position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0, padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', zIndex: 50, minWidth: '160px', border: '1px solid var(--border-light)' }}>
+                            {dateOptions.map(opt => (
+                                <div
+                                    key={opt}
+                                    onClick={() => { setDateRange(opt); setIsDateOpen(false); }}
+                                    style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer', color: dateRange === opt ? 'var(--accent-green)' : 'var(--text-primary)', background: dateRange === opt ? 'rgba(255,255,255,0.05)' : 'transparent', fontWeight: dateRange === opt ? 500 : 400, transition: '0.2s' }}
+                                    onMouseEnter={(e) => { if (dateRange !== opt) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+                                    onMouseLeave={(e) => { if (dateRange !== opt) e.currentTarget.style.background = 'transparent' }}
+                                >
+                                    {opt}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -230,7 +257,7 @@ const PortfolioView = () => {
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 };
 
