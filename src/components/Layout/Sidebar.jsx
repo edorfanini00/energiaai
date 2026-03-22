@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, LayoutGrid, MessageSquare, Box, PlusSquare, List, ChevronRight, Cloud, Eye, Info } from 'lucide-react';
+import { Home, Map, Building2, Zap, TrendingUp, FileText, Settings, HelpCircle, ChevronRight, Cloud, Eye, Info } from 'lucide-react';
 
 const Sidebar = () => {
     return (
@@ -13,30 +13,39 @@ const Sidebar = () => {
             {/* Main Menu */}
             <div className="sidebar-header-text" style={{ marginTop: '1.5rem' }}>Dashboard</div>
             <nav className="nav-menu" style={{ flex: 1 }}>
-                <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <NavLink to="/" end className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <Home size={18} className="nav-icon" /> Home
                 </NavLink>
-                <div className="nav-item active" style={{ justifyContent: 'space-between' }}>
+                <NavLink to="/buildings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} style={{ justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                        <LayoutGrid size={18} className="nav-icon" /> Summary Details
+                        <Map size={18} className="nav-icon" /> Buildings
                     </div>
                     <ChevronRight size={16} className="nav-icon" />
+                </NavLink>
+                <NavLink to="/building/1" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <Building2 size={18} className="nav-icon" /> Building Detail
+                </NavLink>
+                <NavLink to="/energy" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <Zap size={18} className="nav-icon" /> Energy
+                </NavLink>
+                <div className="nav-item">
+                    <TrendingUp size={18} className="nav-icon" /> Upgrades
                 </div>
                 <div className="nav-item">
-                    <MessageSquare size={18} className="nav-icon" /> Discussions
-                </div>
-                <div className="nav-item">
-                    <Box size={18} className="nav-icon" /> Products
-                </div>
-                <div className="nav-item">
-                    <PlusSquare size={18} className="nav-icon" /> Add Product
-                </div>
-                <div className="nav-item">
-                    <List size={18} className="nav-icon" /> Product Lists
+                    <FileText size={18} className="nav-icon" /> Reports
                 </div>
             </nav>
 
-            {/* Bottom Integrations */}
+            {/* Bottom */}
+            <nav className="nav-menu" style={{ marginBottom: '0.5rem' }}>
+                <div className="nav-item">
+                    <Settings size={18} className="nav-icon" /> Settings
+                </div>
+                <div className="nav-item">
+                    <HelpCircle size={18} className="nav-icon" /> Help & support
+                </div>
+            </nav>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0 1.5rem', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}>
                 <Info size={14} /> Automated imports
             </div>
@@ -60,7 +69,6 @@ const Sidebar = () => {
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>last sync yesterday</span>
                 </div>
             </div>
-
         </aside>
     );
 };
