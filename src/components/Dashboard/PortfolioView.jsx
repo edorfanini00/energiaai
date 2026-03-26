@@ -628,7 +628,10 @@ const PortfolioView = () => {
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1.5rem', zIndex: 2 }}>
                         <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total</span>
-                        <span style={{ fontSize: '2.8rem', fontWeight: 500, letterSpacing: '-0.02em', marginTop: '0.2rem' }}>45,850</span>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.2rem' }}>
+                            <span style={{ fontSize: '2.8rem', fontWeight: 500, letterSpacing: '-0.02em' }}>{totalEnergy.toLocaleString()}</span>
+                            <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>kWh</span>
+                        </div>
                     </div>
 
                     {/* Half Arc with Pattern */}
