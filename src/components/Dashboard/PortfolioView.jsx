@@ -314,7 +314,7 @@ const kpiCards = [
     },
     {
         id: 'efficiency',
-        label: 'EFFICIENCY RATING',
+        label: 'COMFORT RATING',
         mainValue: '88',
         mainUnit: 'portfolio score (0–100)',
         splits: [],
@@ -864,7 +864,7 @@ const PortfolioView = () => {
 
                 {/* Efficiency & Savings Overview */}
                 <div className="glass-card" style={{ position: 'relative', padding: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Efficiency</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Comfort</h3>
                     <div style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>{activeEfficiency.score}%</div>
 
                     <div style={{ position: 'absolute', right: '1.5rem', top: '4rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '130px' }}>
