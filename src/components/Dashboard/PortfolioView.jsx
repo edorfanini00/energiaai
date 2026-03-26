@@ -615,8 +615,8 @@ const PortfolioView = () => {
                     </div>
 
                     {/* Half Arc with Pattern */}
-                    <div style={{ position: 'relative', width: '280px', height: '140px', marginTop: '2rem', overflow: 'hidden' }}>
-                        <svg viewBox="0 0 200 100" width="100%" height="100%" style={{ overflow: 'visible' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '180px', marginTop: '2rem', overflow: 'hidden' }}>
+                        <svg viewBox="0 0 200 100" width="100%" height="100%" style={{ overflow: 'visible', padding: '0 1rem' }}>
                             <defs>
                                 <pattern id="diagonalStripeLight" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
                                     <rect width="6" height="6" fill="#ffffff" />
@@ -624,30 +624,28 @@ const PortfolioView = () => {
                                 </pattern>
                             </defs>
                             {/* Base track (dark gray background arc) */}
-                            <path d="M 20,100 A 80,80 0 0,1 180,100" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="36" strokeLinecap="butt" />
+                            <path d="M 10,100 A 90,90 0 0,1 190,100" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="40" strokeLinecap="butt" />
                             
                             {/* Right Side (Gas) - Solid Green. Drawn first so it sits UNDER the left cap */}
-                            {/* We start at top center (100,20) and go to right (180,100) */}
-                            <path d="M 100,20 A 80,80 0 0,1 180,100" fill="none" stroke="var(--accent-green)" strokeWidth="36" strokeLinecap="butt" />
+                            <path d="M 100,10 A 90,90 0 0,1 190,100" fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="butt" />
                             
                             {/* Left Side (Electricity) - Patterned White. Drawn second so its round cap sits ON TOP */}
-                            {/* Start from left (20,100) and go exactly to top center (100,20). Set linecap to round so it creates that overlap effect */}
-                            <path d="M 20,100 A 80,80 0 0,1 100,20" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="36" strokeLinecap="round" />
+                            <path d="M 10,100 A 90,90 0 0,1 100,10" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="round" />
                             
-                            {/* We need a flat bottom cap for the patterned left side, so we add a flat rect or a butt-capped path to square it off */}
-                            <path d="M 20,100 L 20,100" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="36" strokeLinecap="butt" />
+                            {/* We need a flat bottom cap for the patterned left side */}
+                            <path d="M 10,100 L 10,100" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" />
                             
                             {/* We need a round cap for the right green side at the bottom */}
-                            <circle cx="180" cy="100" r="18" fill="var(--accent-green)" />
+                            <circle cx="190" cy="100" r="20" fill="var(--accent-green)" />
                         </svg>
 
                         {/* Centered text inside the arc */}
                         <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                            <div style={{ width: '130px', height: '130px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '1rem' }}>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fff' }}>40,300</span>
-                                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>ELEC KWH</span>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fff', marginTop: '0.5rem' }}>5,550</span>
-                                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>GAS THERMS</span>
+                            <div style={{ width: '150px', height: '150px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '1.5rem' }}>
+                                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff' }}>40,300</span>
+                                <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>ELEC KWH</span>
+                                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff', marginTop: '0.5rem' }}>5,550</span>
+                                <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>GAS THERMS</span>
                             </div>
                         </div>
                     </div>
