@@ -624,9 +624,9 @@ const PortfolioView = () => {
                     <div style={{ position: 'relative', width: '100%', height: 'auto', marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
                         <svg viewBox="20 20 200 125" width="100%" height="100%" style={{ overflow: 'visible', maxWidth: '440px' }}>
                             <defs>
-                                <pattern id="diagonalStripeLight" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-                                    <rect width="6" height="6" fill="#ffffff" />
-                                    <line x1="0" y1="0" x2="0" y2="6" stroke="#d4d4d8" strokeWidth="2" />
+                                <pattern id="diagonalStripeLight" width="4.5" height="4.5" patternTransform="rotate(-45)" patternUnits="userSpaceOnUse">
+                                    <rect width="4.5" height="4.5" fill="#ffffff" />
+                                    <line x1="0" y1="0" x2="0" y2="4.5" stroke="#d4d4d8" strokeWidth="1.75" />
                                 </pattern>
                             </defs>
                             {/* Base track (dark gray background arc) */}
@@ -798,18 +798,18 @@ const PortfolioView = () => {
                     animation: 'fadeIn 0.2s ease-out'
                 }}>
                     <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
-                        {hoveredArc === 'elec' ? 'Electricity' : 'Gas'}
+                        {hoveredArc === 'elec' ? 'Gas' : 'Electricity'}
                     </div>
                     <div style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.4rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
-                        {hoveredArc === 'elec' ? '40,300' : '5,550'}
+                        {hoveredArc === 'elec' ? '5,550' : '40,300'}
                         <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'rgba(255,255,255,0.5)' }}>
-                            {hoveredArc === 'elec' ? 'kWh' : 'Therms'}
+                            {hoveredArc === 'elec' ? 'Therms' : 'kWh'}
                         </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: hoveredArc === 'elec' ? '#fff' : 'var(--accent-green)' }} />
-                        <span style={{ fontSize: '0.9rem', color: hoveredArc === 'elec' ? '#f8fafc' : 'var(--accent-green)', fontWeight: 500 }}>
-                            {hoveredArc === 'elec' ? '87.9% of Total' : '12.1% of Total'}
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: hoveredArc === 'elec' ? 'var(--accent-green)' : '#fff' }} />
+                        <span style={{ fontSize: '0.9rem', color: hoveredArc === 'elec' ? 'var(--accent-green)' : '#f8fafc', fontWeight: 500 }}>
+                            {hoveredArc === 'elec' ? '12.1% of Total' : '87.9% of Total'}
                         </span>
                     </div>
                 </div>
