@@ -620,19 +620,25 @@ const PortfolioView = () => {
                             <defs>
                                 <pattern id="diagonalStripeLight" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
                                     <rect width="6" height="6" fill="#ffffff" />
-                                    <line x1="0" y1="0" x2="0" y2="6" stroke="#e0e0e0" strokeWidth="2" />
+                                    <line x1="0" y1="0" x2="0" y2="6" stroke="#d4d4d8" strokeWidth="2" />
                                 </pattern>
                             </defs>
-                            {/* Base track */}
-                            <path d="M 20,100 A 80,80 0 0,1 180,100" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="28" strokeLinecap="round" />
-                            {/* Left Side (Electricity) - Patterned White */}
-                            <path d="M 20,100 A 80,80 0 0,1 100,20" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="28" strokeLinecap="butt" />
-                            {/* Right Side (Gas) - Solid Green */}
-                            <path d="M 100,20 A 80,80 0 0,1 180,100" fill="none" stroke="var(--accent-green)" strokeWidth="28" strokeLinecap="butt" />
+                            {/* Base track (dark gray background arc) */}
+                            <path d="M 20,100 A 80,80 0 0,1 180,100" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="36" strokeLinecap="butt" />
                             
-                            {/* Circular Caps for smooth ends */}
-                            <circle cx="20" cy="100" r="14" fill="url(#diagonalStripeLight)" />
-                            <circle cx="180" cy="100" r="14" fill="var(--accent-green)" />
+                            {/* Right Side (Gas) - Solid Green. Drawn first so it sits UNDER the left cap */}
+                            {/* We start at top center (100,20) and go to right (180,100) */}
+                            <path d="M 100,20 A 80,80 0 0,1 180,100" fill="none" stroke="var(--accent-green)" strokeWidth="36" strokeLinecap="butt" />
+                            
+                            {/* Left Side (Electricity) - Patterned White. Drawn second so its round cap sits ON TOP */}
+                            {/* Start from left (20,100) and go exactly to top center (100,20). Set linecap to round so it creates that overlap effect */}
+                            <path d="M 20,100 A 80,80 0 0,1 100,20" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="36" strokeLinecap="round" />
+                            
+                            {/* We need a flat bottom cap for the patterned left side, so we add a flat rect or a butt-capped path to square it off */}
+                            <path d="M 20,100 L 20,100" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="36" strokeLinecap="butt" />
+                            
+                            {/* We need a round cap for the right green side at the bottom */}
+                            <circle cx="180" cy="100" r="18" fill="var(--accent-green)" />
                         </svg>
 
                         {/* Centered text inside the arc */}
