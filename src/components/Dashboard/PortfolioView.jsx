@@ -439,8 +439,32 @@ const PortfolioView = () => {
     const [isDateOpen, setIsDateOpen] = useState(false);
     const [dateRange, setDateRange] = useState('30 Days');
     const [activeModal, setActiveModal] = useState(null);
+    const [savingsPeriod, setSavingsPeriod] = useState('ytd');
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [customStart, setCustomStart] = useState('');
+    const [customEnd, setCustomEnd] = useState('');
 
     const dateOptions = ['Today', 'Past 7 Days', '30 Days', 'This Month', 'Past Year', 'All Time'];
+    const savingsPeriods = [
+        { key: '24h', label: '24 Hours' },
+        { key: '7d', label: '7 Days' },
+        { key: '1m', label: '1 Month' },
+        { key: 'ytd', label: 'YTD' },
+    ];
+
+    const savingsDataByPeriod = {
+        '24h': { elec: '128', gas: '42', money: '$340', elecTrend: -2.1, gasTrend: -3.4, moneyTrend: 5.8, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
+        '7d':  { elec: '890', gas: '295', money: '$2,370', elecTrend: -3.5, gasTrend: -4.1, moneyTrend: 8.2, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
+        '1m':  { elec: '3,820', gas: '1,260', money: '$5,480', elecTrend: -5.2, gasTrend: -6.8, moneyTrend: 12.4, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
+        'ytd': { elec: '12,450', gas: '4,180', money: '$15,200', elecTrend: -4.2, gasTrend: -5.9, moneyTrend: 18.5, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
+        'custom': { elec: '—', gas: '—', money: '—', elecTrend: 0, gasTrend: 0, moneyTrend: 0, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
+    };
+    const sd = savingsDataByPeriod[savingsPeriod];
+    const savingsCards = [
+        { label: 'ELECTRICITY SAVINGS', value: sd.elec, unit: sd.elecUnit, trend: sd.elecTrend, accentColor: 'var(--accent-green)' },
+        { label: 'GAS SAVINGS', value: sd.gas, unit: sd.gasUnit, trend: sd.gasTrend, accentColor: '#f97316' },
+        { label: 'MONETARY SAVINGS', value: sd.money, unit: sd.moneyUnit, trend: sd.moneyTrend, accentColor: '#22d3ee' },
+    ];
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -488,17 +512,59 @@ const PortfolioView = () => {
                 </div>
             </div>
 
-            {/* ═══ Section 1 — KPI Overview Cards (2 rows × 3) ═══ */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-                {kpiCards.map((kpi) => (
-                    <div
-                        key={kpi.id}
-                        className="glass-card kpi-card-hover"
-                        onClick={() => setActiveModal(kpi)}
+            {/* ═══ Section 1 — Savings Cards with Period Selector ═══ */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '-0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {savingsPeriods.map((p) => (
+                        <button
+                            key={p.key}
+                            onClick={() => { setSavingsPeriod(p.key); setShowCalendar(false); }}
+                            style={{
+                                padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
+                                border: '1px solid', cursor: 'pointer', transition: 'all 0.2s',
+                                background: savingsPeriod === p.key ? 'rgba(255,255,255,0.08)' : 'transparent',
+                                borderColor: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--border-light)',
+                                color: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--text-secondary)',
+                            }}
+                        >
+                            {p.label}
+                        </button>
+                    ))}
+                </div>
+                <div style={{ position: 'relative' }}>
+                    <button
+                        onClick={() => setShowCalendar(!showCalendar)}
                         style={{
-                            padding: '1.25rem 1.4rem',
-                            gap: '0.6rem',
-                            cursor: 'pointer',
+                            padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
+                            border: '1px solid', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem',
+                            background: savingsPeriod === 'custom' ? 'rgba(255,255,255,0.08)' : 'transparent',
+                            borderColor: savingsPeriod === 'custom' ? 'var(--accent-green)' : 'var(--border-light)',
+                            color: savingsPeriod === 'custom' ? 'var(--accent-green)' : 'var(--text-secondary)',
+                        }}
+                    >
+                        <Calendar size={14} /> Custom Range
+                    </button>
+                    {showCalendar && (
+                        <div className="glass-card" style={{ position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0, padding: '1rem', zIndex: 60, border: '1px solid var(--border-light)', minWidth: '260px', gap: '0.75rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Start Date</label>
+                                <input type="date" value={customStart} onChange={(e) => setCustomStart(e.target.value)} style={{ background: 'var(--bg-input)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '0.5rem', color: 'var(--text-primary)', fontSize: '0.85rem', colorScheme: 'dark' }} />
+                                <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>End Date</label>
+                                <input type="date" value={customEnd} onChange={(e) => setCustomEnd(e.target.value)} style={{ background: 'var(--bg-input)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '0.5rem', color: 'var(--text-primary)', fontSize: '0.85rem', colorScheme: 'dark' }} />
+                                <button onClick={() => { setSavingsPeriod('custom'); setShowCalendar(false); }} style={{ marginTop: '0.25rem', padding: '0.5rem', borderRadius: '6px', background: 'var(--accent-green)', color: '#000', fontWeight: 600, fontSize: '0.8rem', border: 'none', cursor: 'pointer' }}>Apply</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                {savingsCards.map((card) => (
+                    <div
+                        key={card.label}
+                        className="glass-card"
+                        style={{
+                            padding: '1.5rem 1.75rem',
                             position: 'relative',
                             overflow: 'hidden',
                             border: '1px solid transparent',
@@ -506,7 +572,7 @@ const PortfolioView = () => {
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.borderColor = 'var(--border-light)';
-                            e.currentTarget.style.boxShadow = `0 0 24px ${kpi.color}15`;
+                            e.currentTarget.style.boxShadow = `0 0 24px ${card.accentColor}15`;
                             e.currentTarget.style.transform = 'translateY(-2px)';
                         }}
                         onMouseLeave={(e) => {
@@ -515,103 +581,19 @@ const PortfolioView = () => {
                             e.currentTarget.style.transform = 'none';
                         }}
                     >
-                        {/* Subtle gradient glow in top-left */}
-                        <div style={{
-                            position: 'absolute', top: '-30px', left: '-30px',
-                            width: '90px', height: '90px', borderRadius: '50%',
-                            background: kpi.color, opacity: 0.06, filter: 'blur(24px)', pointerEvents: 'none',
-                        }} />
-
-                        {/* Row 1: Icon + Label + Sparkline */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <div style={{
-                                    width: 32, height: 32, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    background: `${kpi.color}14`,
-                                }}>
-                                    <kpi.icon size={16} color={kpi.color} />
-                                </div>
-                                <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1.2, maxWidth: '120px' }}>
-                                    {kpi.label}
-                                </span>
-                            </div>
-                            <MiniSparkline data={kpi.sparkData} color={kpi.sparkColor} />
-                        </div>
-
-                        {/* Row 2: Main Value */}
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.15rem' }}>
-                            {kpi.isScore ? (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                    <ScoreRing score={Number(kpi.mainValue)} color={kpi.color} />
-                                    <div>
-                                        <div style={{ fontSize: '1.6rem', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1 }}>{kpi.mainValue}</div>
-                                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{kpi.mainUnit}</div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <>
-                                    <span style={{ fontSize: '1.6rem', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1 }}>
-                                        {kpi.mainValue}
-                                    </span>
-                                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                                        {kpi.mainUnit}
-                                    </span>
-                                </>
-                            )}
-                        </div>
-
-                        {/* Row 3: Unique per-card visualization */}
-                        {kpi.id === 'consumption' && (
-                            <ProportionBar splits={[
-                                { label: 'Electricity', pct: 88, color: 'var(--accent-green)' },
-                                { label: 'Gas', pct: 12, color: '#f97316' },
-                            ]} />
-                        )}
-                        {kpi.id === 'cost' && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.15rem' }}>
-                                <MiniDonut segments={[
-                                    { pct: 57, color: 'var(--accent-green)' },
-                                    { pct: 43, color: '#f97316' },
-                                ]} />
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>⚡ Elec <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>$9,050</span></span>
-                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>🔥 Gas <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>$6,900</span></span>
-                                </div>
-                            </div>
-                        )}
-                        {kpi.id === 'savings' && (
-                            <GrowthBars data={savingsGrowth} color="#22d3ee" />
-                        )}
-                        {kpi.id === 'emissions' && (
-                            <StackedBar elecPct={65} gasPct={35} />
-                        )}
-                        {kpi.id === 'reduced' && (
-                            <ImpactMeter value={3.6} max={5} color="#a78bfa" />
-                        )}
-
-                        {/* Row 4: Trend % */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.1rem' }}>
-                            {kpi.trend > 0 ? (
-                                <TrendingUp size={12} color="var(--accent-green)" />
-                            ) : (
-                                <TrendingDown size={12} color={kpi.id === 'cost' || kpi.id === 'emissions' ? 'var(--accent-green)' : '#ef4444'} />
-                            )}
-                            <span style={{
-                                fontSize: '0.72rem', fontWeight: 600,
-                                color: (kpi.trend > 0 && (kpi.id === 'savings' || kpi.id === 'reduced' || kpi.id === 'efficiency'))
-                                    || (kpi.trend < 0 && (kpi.id === 'cost' || kpi.id === 'emissions' || kpi.id === 'consumption'))
-                                    ? 'var(--accent-green)' : '#ef4444',
-                            }}>
-                                {kpi.trend > 0 ? '+' : ''}{kpi.trend}%
+                        <div style={{ position: 'absolute', top: '-30px', left: '-30px', width: '90px', height: '90px', borderRadius: '50%', background: card.accentColor, opacity: 0.06, filter: 'blur(24px)', pointerEvents: 'none' }} />
+                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>{card.label}</span>
+                        <div style={{ fontSize: '2.4rem', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, marginTop: '0.6rem' }}>{card.value}</div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{card.unit}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.6rem' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: card.trend > 0 ? 'var(--accent-green)' : card.trend < 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                                {card.trend > 0 ? '+' : ''}{card.trend}%
                             </span>
-                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>vs last year</span>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>vs prior period</span>
                         </div>
                     </div>
                 ))}
             </div>
-
-            {/* ═══ Trend Modal ═══ */}
-            {activeModal && <TrendModal card={activeModal} onClose={() => setActiveModal(null)} />}
 
             {/* Main Charts Row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) minmax(500px, 1.5fr)', gap: '1.5rem', height: '360px' }}>
