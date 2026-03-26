@@ -44,37 +44,19 @@ const trendDataByPeriod = {
     ],
 };
 
-// Emissions data keyed by period
+// Dense emissions breakdown keyed by period (for modal visualization)
 const emissionsDataByPeriod = {
-    '24h': [
-        { month: '6AM', emissions: 0.5, reduced: 0.1 },
-        { month: '9AM', emissions: 0.8, reduced: 0.2 },
-        { month: '12PM', emissions: 1.0, reduced: 0.3 },
-        { month: '3PM', emissions: 0.7, reduced: 0.2 },
-        { month: '6PM', emissions: 0.6, reduced: 0.2 },
-        { month: '9PM', emissions: 0.4, reduced: 0.1 },
-    ],
+    '24h': Array.from({ length: 24 }).map((_, i) => ({ month: `${i}:00`, emissions: (Math.random() * 2 + 0.5).toFixed(1), reduced: (Math.random() * 0.5 + 0.1).toFixed(1) })),
     '7d': [
-        { month: 'Mon', emissions: 3.2, reduced: 0.8 },
-        { month: 'Tue', emissions: 2.9, reduced: 0.9 },
-        { month: 'Wed', emissions: 3.5, reduced: 0.7 },
-        { month: 'Thu', emissions: 3.0, reduced: 1.1 },
-        { month: 'Fri', emissions: 2.7, reduced: 1.2 },
-        { month: 'Sat', emissions: 2.1, reduced: 0.5 },
+        { month: 'Mon', emissions: 3.2, reduced: 0.8 }, { month: 'Tue', emissions: 2.9, reduced: 0.9 }, { month: 'Wed', emissions: 3.5, reduced: 0.7 },
+        { month: 'Thu', emissions: 3.0, reduced: 1.1 }, { month: 'Fri', emissions: 2.7, reduced: 1.2 }, { month: 'Sat', emissions: 2.1, reduced: 0.5 }, { month: 'Sun', emissions: 1.9, reduced: 0.4 }
     ],
-    '1m': [
-        { month: 'Week 1', emissions: 3.8, reduced: 0.9 },
-        { month: 'Week 2', emissions: 3.5, reduced: 1.1 },
-        { month: 'Week 3', emissions: 4.0, reduced: 0.8 },
-        { month: 'Week 4', emissions: 3.1, reduced: 1.3 },
-    ],
+    '1m': Array.from({ length: 30 }).map((_, i) => ({ month: `${i + 1}`, emissions: (Math.random() * 3 + 1).toFixed(1), reduced: (Math.random() * 1 + 0.2).toFixed(1) })),
     'ytd': [
-        { month: 'Jan', emissions: 3.8, reduced: 0.9 },
-        { month: 'Feb', emissions: 3.5, reduced: 1.1 },
-        { month: 'Mar', emissions: 4.0, reduced: 0.8 },
-        { month: 'Apr', emissions: 3.1, reduced: 1.3 },
-        { month: 'May', emissions: 2.9, reduced: 1.5 },
-        { month: 'Jun', emissions: 4.2, reduced: 0.7 },
+        { month: 'Jan', emissions: 3.8, reduced: 0.9 }, { month: 'Feb', emissions: 3.5, reduced: 1.1 }, { month: 'Mar', emissions: 4.0, reduced: 0.8 },
+        { month: 'Apr', emissions: 3.1, reduced: 1.3 }, { month: 'May', emissions: 2.9, reduced: 1.5 }, { month: 'Jun', emissions: 4.2, reduced: 0.7 },
+        { month: 'Jul', emissions: 4.5, reduced: 1.0 }, { month: 'Aug', emissions: 4.8, reduced: 1.2 }, { month: 'Sep', emissions: 3.9, reduced: 0.8 },
+        { month: 'Oct', emissions: 3.4, reduced: 0.9 }, { month: 'Nov', emissions: 3.2, reduced: 1.4 }, { month: 'Dec', emissions: 3.6, reduced: 1.6 }
     ]
 };
 
@@ -583,6 +565,16 @@ const PortfolioView = () => {
     const activeEfficiency = efficiencyByPeriod[savingsPeriod];
     const activeSavingsTotal = savingsTotalByPeriod[savingsPeriod];
 
+    // Compute generic Emission string for modal header manually
+    const emissionsTotalStrByPeriod = {
+        '24h': '16.4',
+        '7d': '45.1',
+        '1m': '182.5',
+        'ytd': '685.2',
+        'custom': '—'
+    };
+    const activeEmissionsTotal = emissionsTotalStrByPeriod[savingsPeriod];
+
     const buildingOptions = ['All Buildings', 'North Tower', 'South Center', 'West Complex', 'East Wing'];
     const savingsPeriods = [
         { key: '24h', label: '24 Hours' },
@@ -840,15 +832,37 @@ const PortfolioView = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', height: '240px' }}>
 
                 {/* Carbon Emissions by Month */}
-                <div className="glass-card" style={{ padding: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1.25rem' }}>Carbon Emissions</h3>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={activeEmissionsData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <div 
+                    className="glass-card" 
+                    onClick={() => setActiveModal('emissions')}
+                    style={{ 
+                        padding: '1.5rem', 
+                        cursor: 'pointer',
+                        border: '1px solid transparent',
+                        transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border-light)';
+                        e.currentTarget.style.boxShadow = `0 0 24px rgba(249,115,22,0.15)`;
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'transparent';
+                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.transform = 'none';
+                    }}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400 }}>Carbon Emissions</h3>
+                        <Maximize2 size={16} color="var(--text-muted)" />
+                    </div>
+                    <ResponsiveContainer width="100%" height="calc(100% - 2.5rem)">
+                        <BarChart data={activeEmissionsData.slice(0, 7)} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
                             <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${v}t`} />
                             <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
-                            <Bar dataKey="emissions" name="Emissions (t)" fill="#f97316" radius={[8, 8, 8, 8]} barSize={14} />
-                            <Bar dataKey="reduced" name="Reduced (t)" fill="var(--accent-green)" radius={[8, 8, 8, 8]} barSize={14} />
+                            <Bar dataKey="emissions" name="Emissions (t)" fill="#f97316" radius={[4, 4, 4, 4]} barSize={12} />
+                            <Bar dataKey="reduced" name="Reduced (t)" fill="var(--accent-green)" radius={[4, 4, 4, 4]} barSize={12} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -918,7 +932,7 @@ const PortfolioView = () => {
             {/* Savings Modal */}
             {activeModal === 'savings' && (
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
-                    <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                    <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column', animation: 'modalSlideIn 0.25s ease-out' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>Energy Savings Breakdown</h3>
@@ -930,7 +944,7 @@ const PortfolioView = () => {
                             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', alignItems: 'center' }}>
                                 {savingsPeriods.map((p) => (
                                     <button
-                                        key={`modal-${p.key}`}
+                                        key={`modal-sav-${p.key}`}
                                         onClick={() => setSavingsPeriod(p.key)}
                                         style={{
                                             padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
@@ -961,6 +975,65 @@ const PortfolioView = () => {
                                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
                                     <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '1.1rem' }} formatter={(v) => [`$${v}`]} />
                                     <Bar dataKey="val" fill="url(#solidGreenGrad)" radius={[6, 6, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Emissions Modal */}
+            {activeModal === 'emissions' && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                    <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column', animation: 'modalSlideIn 0.25s ease-out' }}>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <div>
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>Carbon Emissions Snapshot</h3>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
+                                    <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#f97316' }}>{activeEmissionsTotal}</span>
+                                    <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>tons CO₂eq emitted overall</span>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', alignItems: 'center' }}>
+                                {savingsPeriods.map((p) => (
+                                    <button
+                                        key={`modal-emi-${p.key}`}
+                                        onClick={() => setSavingsPeriod(p.key)}
+                                        style={{
+                                            padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
+                                            border: '1px solid', cursor: 'pointer', transition: 'all 0.2s',
+                                            background: savingsPeriod === p.key ? 'rgba(255,255,255,0.08)' : 'transparent',
+                                            borderColor: savingsPeriod === p.key ? '#f97316' : 'var(--border-light)',
+                                            color: savingsPeriod === p.key ? '#f97316' : 'var(--text-secondary)',
+                                        }}
+                                    >
+                                        {p.label}
+                                    </button>
+                                ))}
+                                <button onClick={() => setActiveModal(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', marginLeft: '1rem', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+                                    <X size={24} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style={{ flex: 1, position: 'relative' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={activeEmissionsData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="solidOrangeGrad" x1="0" y1="1" x2="0" y2="0">
+                                            <stop offset="0%" stopColor="#f97316" stopOpacity={0.1}/>
+                                            <stop offset="100%" stopColor="#f97316" stopOpacity={1}/>
+                                        </linearGradient>
+                                        <linearGradient id="solidEmiGreenGrad" x1="0" y1="1" x2="0" y2="0">
+                                            <stop offset="0%" stopColor="var(--accent-green)" stopOpacity={0.1}/>
+                                            <stop offset="100%" stopColor="var(--accent-green)" stopOpacity={1}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
+                                    <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '1.1rem' }} itemStyle={{color: '#fff'}} formatter={(v, n) => [`${v}t`, n === 'emissions' ? 'Emitted' : 'Reduced']} />
+                                    <Bar dataKey="emissions" fill="url(#solidOrangeGrad)" radius={[6, 6, 0, 0]} />
+                                    <Bar dataKey="reduced" fill="url(#solidEmiGreenGrad)" radius={[6, 6, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
