@@ -591,35 +591,7 @@ const PortfolioView = () => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
-            {/* Tool Bar Row */}
-            <div className="toolbar-row">
-                <div style={{ flex: 1 }}></div>
-                <div style={{ position: 'relative' }}>
-                    <div
-                        className="date-pill"
-                        style={{ cursor: 'pointer', userSelect: 'none' }}
-                        onClick={() => setIsBuildingOpen(!isBuildingOpen)}
-                    >
-                        <LayoutList size={14} /> {selectedBuilding} <ChevronDown size={14} style={{ transform: isBuildingOpen ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
-                    </div>
 
-                    {isBuildingOpen && (
-                        <div className="glass-card" style={{ position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0, padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', zIndex: 50, minWidth: '160px', border: '1px solid var(--border-light)' }}>
-                            {buildingOptions.map(opt => (
-                                <div
-                                    key={opt}
-                                    onClick={() => { setSelectedBuilding(opt); setIsBuildingOpen(false); }}
-                                    style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer', color: selectedBuilding === opt ? 'var(--accent-green)' : 'var(--text-primary)', background: selectedBuilding === opt ? 'rgba(255,255,255,0.05)' : 'transparent', fontWeight: selectedBuilding === opt ? 500 : 400, transition: '0.2s' }}
-                                    onMouseEnter={(e) => { if (selectedBuilding !== opt) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
-                                    onMouseLeave={(e) => { if (selectedBuilding !== opt) e.currentTarget.style.background = 'transparent' }}
-                                >
-                                    {opt}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
 
             {/* ═══ Section 1 — Savings Cards with Period Selector ═══ */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-0.5rem' }}>

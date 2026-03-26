@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, LayoutGrid, MessageSquare, Box, PlusSquare, List, ChevronRight, Cloud, Eye, Info } from 'lucide-react';
+import { Home, LayoutGrid, MessageSquare, Box, PlusSquare, List, ChevronRight, Cloud, Eye, Info, Building2 } from 'lucide-react';
 
 const Sidebar = () => {
     return (
@@ -16,12 +16,14 @@ const Sidebar = () => {
                 <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <Home size={18} className="nav-icon" /> Home
                 </NavLink>
-                <div className="nav-item active" style={{ justifyContent: 'space-between' }}>
+                <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} style={{ justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                         <LayoutGrid size={18} className="nav-icon" /> Portfolio Overview
                     </div>
-                    <ChevronRight size={16} className="nav-icon" />
-                </div>
+                </NavLink>
+                <NavLink to="/building" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <Building2 size={18} className="nav-icon" /> Building Analytics
+                </NavLink>
                 <div className="nav-item">
                     <MessageSquare size={18} className="nav-icon" /> Discussions
                 </div>
