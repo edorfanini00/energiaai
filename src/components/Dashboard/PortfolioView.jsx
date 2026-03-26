@@ -450,6 +450,17 @@ const PortfolioView = () => {
         setMousePos({ x: e.clientX, y: e.clientY });
     };
 
+    // Calculate dynamic intersection for the arc based on consumption totals
+    const elecVal = 40300;
+    const gasVal = 5550;
+    const totalEnergy = elecVal + gasVal;
+    const elecPct = elecVal / totalEnergy;
+    
+    // SVG arc from PI to 0. Intersection angle in radians:
+    const intersectionAngle = Math.PI * (1 - elecPct);
+    const intX = 120 + 80 * Math.cos(intersectionAngle);
+    const intY = 120 - 80 * Math.sin(intersectionAngle);
+
     const dateOptions = ['Today', 'Past 7 Days', '30 Days', 'This Month', 'Past Year', 'All Time'];
     const savingsPeriods = [
         { key: '24h', label: '24 Hours' },
@@ -640,8 +651,8 @@ const PortfolioView = () => {
                                 style={{ cursor: 'crosshair', transition: 'opacity 0.2s' }}
                                 opacity={hoveredArc === 'elec' ? 0.4 : 1}
                             >
-                                <path d="M 120,40 A 80,80 0 0,1 200,120" fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="butt" pointerEvents="stroke" />
-                                <circle cx="200" cy="120" r="20" fill="var(--accent-green)" />
+                                {/* strokeLinecap='round' handles both the right edge cap AND the rounded start underbelly for the intersection */}
+                                <path d={`M ${intX},${intY} A 80,80 0 0,1 200,120`} fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="round" pointerEvents="stroke" />
                             </g>
                             
                             {/* Left Side (Electricity) - Patterned White */}
@@ -652,8 +663,8 @@ const PortfolioView = () => {
                                 style={{ cursor: 'crosshair', transition: 'opacity 0.2s' }}
                                 opacity={hoveredArc === 'gas' ? 0.4 : 1}
                             >
-                                <path d="M 40,120 A 80,80 0 0,1 120,40" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="round" pointerEvents="stroke" />
-                                <path d="M 40,120 L 40,120" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" pointerEvents="stroke" />
+                                <path d={`M 40,120 A 80,80 0 0,1 ${intX},${intY}`} fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" pointerEvents="stroke" />
+                                <circle cx={intX} cy={intY} r="20" fill="url(#diagonalStripeLight)" pointerEvents="none" />
                             </g>
                         </svg>
 
