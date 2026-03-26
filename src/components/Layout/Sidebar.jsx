@@ -7,7 +7,7 @@ const Sidebar = () => {
         <aside className="sidebar">
             {/* Brand */}
             <div className="sidebar-brand">
-                <img src="/energia-logo.png" alt="Energia AI" style={{ height: '36px', width: 'auto', filter: 'brightness(0) invert(1)' }} />
+                <img src="/energia-logo.png" alt="Energia AI" className="sidebar-logo" />
             </div>
 
             {/* Main Menu */}
