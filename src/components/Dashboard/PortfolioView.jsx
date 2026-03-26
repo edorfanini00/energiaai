@@ -3,13 +3,31 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContai
 import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3, X, TrendingUp, Flame } from 'lucide-react';
 
 /* ─── Mock Data ─── */
-const monthlyConsumption = [
-    { month: 'Jan', usage: 12400, bg: 15 },
-    { month: 'Feb', usage: 11800, bg: 18 },
-    { month: 'Mar', usage: 13200, bg: 20 },
-    { month: 'Apr', usage: 10500, bg: 14 },
-    { month: 'May', usage: 9800, bg: 12 },
-    { month: 'Jun', usage: 14100, bg: 22 },
+const trendAnnual = [
+    { label: '2017', base: 600, mid: 600, top: 900, total: 2100 },
+    { label: '2018', base: 600, mid: 600, top: 650, total: 1850 },
+    { label: '2019', base: 600, mid: 600, top: 1700, total: 2900 },
+    { label: '2020', base: 600, mid: 600, top: 200, total: 1400 },
+    { label: '2021', base: 600, mid: 600, top: 600, total: 1800 },
+    { label: '2022', base: 600, mid: 600, top: 350, total: 1550 },
+];
+
+const trendMonthly = [
+    { label: 'Jan', base: 600, mid: 600, top: 700, total: 1900 },
+    { label: 'Feb', base: 600, mid: 600, top: 1100, total: 2300 },
+    { label: 'Mar', base: 600, mid: 600, top: 400, total: 1600 },
+    { label: 'Apr', base: 600, mid: 600, top: 1800, total: 3000 },
+    { label: 'May', base: 600, mid: 600, top: 900, total: 2100 },
+    { label: 'Jun', base: 600, mid: 600, top: 1200, total: 2400 },
+];
+
+const trendDaily = [
+    { label: 'Feb 1', base: 600, mid: 600, top: 1500, total: 2700 },
+    { label: 'Feb 2', base: 600, mid: 600, top: 800, total: 2000 },
+    { label: 'Feb 3', base: 600, mid: 600, top: 1400, total: 2600 },
+    { label: 'Feb 4', base: 600, mid: 600, top: 500, total: 1700 },
+    { label: 'Feb 5', base: 600, mid: 600, top: 900, total: 2100 },
+    { label: 'Feb 6', base: 600, mid: 600, top: 1100, total: 2300 },
 ];
 
 const emissionsData = [
@@ -445,7 +463,7 @@ const PortfolioView = () => {
     const [customEnd, setCustomEnd] = useState('');
     const [hoveredArc, setHoveredArc] = useState(null);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
+    const [trendPeriod, setTrendPeriod] = useState('Annual');
     const handleArcMouseMove = (e) => {
         setMousePos({ x: e.clientX, y: e.clientY });
     };
@@ -690,35 +708,57 @@ const PortfolioView = () => {
                     </div>
                 </div>
 
-                {/* Monthly Consumption Chart */}
+                {/* Energy Usage Trend Chart */}
                 <div className="glass-card">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                         <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Energy Usage Trend</h2>
-                        <div style={{ background: 'var(--bg-card-hover)', padding: '0.5rem 1rem', borderRadius: '16px', fontSize: '0.85rem', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            Monthly <ChevronDown size={14} />
+                        
+                        {/* Period Selection Dropdown */}
+                        <div style={{ position: 'relative' }}>
+                            <select 
+                                value={trendPeriod} 
+                                onChange={(e) => setTrendPeriod(e.target.value)}
+                                style={{ 
+                                    appearance: 'none', 
+                                    background: 'var(--bg-card-hover)', 
+                                    padding: '0.5rem 2.5rem 0.5rem 1rem', 
+                                    borderRadius: '16px', 
+                                    fontSize: '0.85rem', 
+                                    color: 'var(--text-secondary)', 
+                                    border: '1px solid rgba(255,255,255,0.05)',
+                                    cursor: 'pointer',
+                                    outline: 'none'
+                                }}
+                            >
+                                <option value="Annual">Annual</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Daily">Daily</option>
+                            </select>
+                            <ChevronDown size={14} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-secondary)' }} />
                         </div>
                     </div>
 
                     <ResponsiveContainer width="100%" height="100%">
-                        <ComposedChart data={monthlyConsumption} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
+                        <ComposedChart data={trendPeriod === 'Annual' ? trendAnnual : trendPeriod === 'Monthly' ? trendMonthly : trendDaily} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
                             <defs>
-                                <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
+                                <linearGradient id="colorGreenTrend" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4} />
                                     <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0} />
                                 </linearGradient>
-                                <linearGradient id="colorBar" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="rgba(255,255,255,0.15)" />
-                                    <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
-                                </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} dy={10} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                            <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                            <XAxis dataKey="label" axisLine={false} tickLine={false} dy={10} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
                             <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => v === 0 ? '0' : `${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
-                            <Tooltip cursor={false} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} formatter={(v) => [`${v.toLocaleString()} kWh`]} />
+                            <Tooltip cursor={{fill: 'rgba(255,255,255,0.02)'}} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} formatter={(v, name) => [name === 'total' ? `${v.toLocaleString()} kWh` : null]} labelStyle={{ color: 'var(--text-secondary)' }} />
 
-                            <Bar dataKey="bg" fill="url(#colorBar)" barSize={24} radius={[2, 2, 0, 0]} />
-                            <Area type="monotone" dataKey="usage" stroke="var(--accent-green)" strokeWidth={2} fillOpacity={1} fill="url(#colorGreen)" />
-                            <Line type="monotone" dataKey="usage" stroke="none" dot={<CustomDot />} activeDot={{ r: 6, fill: '#fff' }} />
+                            {/* Stacked Bars representing structural depth */}
+                            <Bar dataKey="base" stackId="a" fill="rgba(255,255,255,0.04)" barSize={32} />
+                            <Bar dataKey="mid" stackId="a" fill="rgba(255,255,255,0.08)" barSize={32} />
+                            <Bar dataKey="top" stackId="a" fill="var(--accent-green)" opacity={0.65} barSize={32} radius={[12, 12, 0, 0]} />
+                            
+                            {/* Line & Gradient Area tracking the total peak */}
+                            <Area type="monotone" dataKey="total" stroke="var(--accent-green)" strokeWidth={2.5} fillOpacity={1} fill="url(#colorGreenTrend)" />
+                            <Line type="monotone" dataKey="total" stroke="none" activeDot={{ r: 6, fill: '#fff', stroke: 'var(--accent-green)', strokeWidth: 2 }} dot={{ r: 4, fill: '#111', stroke: 'var(--accent-green)', strokeWidth: 2 }} />
                         </ComposedChart>
                     </ResponsiveContainer>
                 </div>
