@@ -266,9 +266,9 @@ const kpiCards = [
         splits: [],
         trend: 18.5,
         icon: TrendingDown,
-        color: '#22d3ee',
+        color: '#eab308',
         sparkData: sparkSavings,
-        sparkColor: '#22d3ee',
+        sparkColor: '#eab308',
     },
     {
         id: 'emissions',
@@ -602,7 +602,7 @@ const PortfolioView = () => {
     const savingsCards = [
         { label: 'ELECTRICITY SAVINGS', value: sd.elec, unit: sd.elecUnit, trend: sd.elecTrend, accentColor: 'var(--accent-green)' },
         { label: 'GAS SAVINGS', value: sd.gas, unit: sd.gasUnit, trend: sd.gasTrend, accentColor: '#f97316' },
-        { label: 'MONETARY SAVINGS', value: sd.money, unit: sd.moneyUnit, trend: sd.moneyTrend, accentColor: '#22d3ee' },
+        { label: 'MONETARY SAVINGS', value: sd.money, unit: sd.moneyUnit, trend: sd.moneyTrend, accentColor: '#eab308' },
     ];
 
     return (
@@ -923,7 +923,7 @@ const PortfolioView = () => {
                             <div>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>Energy Savings Breakdown</h3>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
-                                    <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#22d3ee' }}>{activeSavingsTotal}</span>
+                                    <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#eab308' }}>{activeSavingsTotal}</span>
                                     <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>total saved this period</span>
                                 </div>
                             </div>
