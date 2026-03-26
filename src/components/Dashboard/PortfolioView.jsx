@@ -42,6 +42,7 @@ const trendDataByPeriod = {
         { label: 'Jun', elec: 1300, gas: 1100, total: 2400 },
         { label: 'Jul', elec: 1500, gas: 1300, total: 2800 },
     ],
+    'custom': [],
 };
 
 // Dense emissions breakdown keyed by period (for modal visualization)
@@ -57,7 +58,8 @@ const emissionsDataByPeriod = {
         { month: 'Apr', emissions: 3.1, reduced: 1.3 }, { month: 'May', emissions: 2.9, reduced: 1.5 }, { month: 'Jun', emissions: 4.2, reduced: 0.7 },
         { month: 'Jul', emissions: 4.5, reduced: 1.0 }, { month: 'Aug', emissions: 4.8, reduced: 1.2 }, { month: 'Sep', emissions: 3.9, reduced: 0.8 },
         { month: 'Oct', emissions: 3.4, reduced: 0.9 }, { month: 'Nov', emissions: 3.2, reduced: 1.4 }, { month: 'Dec', emissions: 3.6, reduced: 1.6 }
-    ]
+    ],
+    'custom': []
 };
 
 // Dense savings breakdown keyed by period (for modal visualization)
@@ -73,7 +75,8 @@ const savingsBreakdownByPeriod = {
         { month: 'Apr', val: 1350 }, { month: 'May', val: 1560 }, { month: 'Jun', val: 950 },
         { month: 'Jul', val: 1200 }, { month: 'Aug', val: 1400 }, { month: 'Sep', val: 1150 },
         { month: 'Oct', val: 980 }, { month: 'Nov', val: 1600 }, { month: 'Dec', val: 1800 }
-    ]
+    ],
+    'custom': []
 };
 
 // Consumption arc data keyed by period
@@ -82,6 +85,7 @@ const arcDataByPeriod = {
     '7d':  { elec: 890, gas: 980 },
     '1m':  { elec: 3820, gas: 4260 },
     'ytd': { elec: 21550, gas: 24300 },
+    'custom': { elec: 0, gas: 0 },
 };
 
 // Efficiency data keyed by period
@@ -90,6 +94,7 @@ const efficiencyByPeriod = {
     '7d':  { score: 89, buildings: [{ label: 'North Tower', pct: 93 }, { label: 'South Center', pct: 89 }, { label: 'West Complex', pct: 78 }, { label: 'East Wing', pct: 96 }] },
     '1m':  { score: 87, buildings: [{ label: 'North Tower', pct: 91 }, { label: 'South Center', pct: 87 }, { label: 'West Complex', pct: 75 }, { label: 'East Wing', pct: 94 }] },
     'ytd': { score: 88, buildings: [{ label: 'North Tower', pct: 92 }, { label: 'South Center', pct: 88 }, { label: 'West Complex', pct: 76 }, { label: 'East Wing', pct: 95 }] },
+    'custom': { score: 0, buildings: [{ label: 'North Tower', pct: 0 }, { label: 'South Center', pct: 0 }, { label: 'West Complex', pct: 0 }, { label: 'East Wing', pct: 0 }] },
 };
 
 // Energy savings total keyed by period
@@ -98,6 +103,7 @@ const savingsTotalByPeriod = {
     '7d': '$2,370',
     '1m': '$5,480',
     'ytd': '$4,100',
+    'custom': '—',
 };
 
 const CustomTrendTooltip = ({ active, payload, label }) => {
