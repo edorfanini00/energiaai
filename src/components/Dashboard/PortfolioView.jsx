@@ -615,8 +615,8 @@ const PortfolioView = () => {
                     </div>
 
                     {/* Half Arc with Pattern */}
-                    <div style={{ position: 'relative', width: '100%', height: '180px', marginTop: '2rem', overflow: 'hidden' }}>
-                        <svg viewBox="0 0 200 100" width="100%" height="100%" style={{ overflow: 'visible', padding: '0 1rem' }}>
+                    <div style={{ position: 'relative', width: '100%', height: 'auto', marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
+                        <svg viewBox="0 0 240 150" width="100%" height="100%" style={{ overflow: 'visible', maxWidth: '380px' }}>
                             <defs>
                                 <pattern id="diagonalStripeLight" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
                                     <rect width="6" height="6" fill="#ffffff" />
@@ -624,19 +624,19 @@ const PortfolioView = () => {
                                 </pattern>
                             </defs>
                             {/* Base track (dark gray background arc) */}
-                            <path d="M 10,100 A 90,90 0 0,1 190,100" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="40" strokeLinecap="butt" />
+                            <path d="M 40,120 A 80,80 0 0,1 200,120" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="40" strokeLinecap="butt" />
                             
                             {/* Right Side (Gas) - Solid Green. Drawn first so it sits UNDER the left cap */}
-                            <path d="M 100,10 A 90,90 0 0,1 190,100" fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="butt" />
+                            <path d="M 120,40 A 80,80 0 0,1 200,120" fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="butt" />
                             
                             {/* Left Side (Electricity) - Patterned White. Drawn second so its round cap sits ON TOP */}
-                            <path d="M 10,100 A 90,90 0 0,1 100,10" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="round" />
+                            <path d="M 40,120 A 80,80 0 0,1 120,40" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="round" />
                             
                             {/* We need a flat bottom cap for the patterned left side */}
-                            <path d="M 10,100 L 10,100" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" />
+                            <path d="M 40,120 L 40,120" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" />
                             
                             {/* We need a round cap for the right green side at the bottom */}
-                            <circle cx="190" cy="100" r="20" fill="var(--accent-green)" />
+                            <circle cx="200" cy="120" r="20" fill="var(--accent-green)" />
                         </svg>
 
                         {/* Centered text inside the arc */}
