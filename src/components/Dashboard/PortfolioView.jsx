@@ -10,6 +10,7 @@ const trendAnnual = [
     { label: '2020', elec: 800,  gas: 600,  total: 1400 },
     { label: '2021', elec: 1000, gas: 800,  total: 1800 },
     { label: '2022', elec: 900,  gas: 650,  total: 1550 },
+    { label: '2023', elec: 1050, gas: 800,  total: 1850 },
 ];
 
 const trendMonthly = [
@@ -19,6 +20,7 @@ const trendMonthly = [
     { label: 'Apr', elec: 1600, gas: 1400, total: 3000 },
     { label: 'May', elec: 1100, gas: 1000, total: 2100 },
     { label: 'Jun', elec: 1300, gas: 1100, total: 2400 },
+    { label: 'Jul', elec: 1500, gas: 1300, total: 2800 },
 ];
 
 const trendDaily = [
@@ -28,6 +30,7 @@ const trendDaily = [
     { label: 'Feb 4', elec: 900,  gas: 800,  total: 1700 },
     { label: 'Feb 5', elec: 1100, gas: 1000, total: 2100 },
     { label: 'Feb 6', elec: 1200, gas: 1100, total: 2300 },
+    { label: 'Feb 7', elec: 1050, gas: 950,  total: 2000 },
 ];
 
 const CustomTrendTooltip = ({ active, payload, label }) => {
