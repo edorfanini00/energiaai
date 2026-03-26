@@ -3,35 +3,135 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContai
 import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3, X, TrendingUp, Flame } from 'lucide-react';
 
 /* ─── Mock Data ─── */
-const trendAnnual = [
-    { label: '2017', elec: 1100, gas: 1000, total: 2100 },
-    { label: '2018', elec: 1000, gas: 850,  total: 1850 },
-    { label: '2019', elec: 1600, gas: 1300, total: 2900 },
-    { label: '2020', elec: 800,  gas: 600,  total: 1400 },
-    { label: '2021', elec: 1000, gas: 800,  total: 1800 },
-    { label: '2022', elec: 900,  gas: 650,  total: 1550 },
-    { label: '2023', elec: 1050, gas: 800,  total: 1850 },
-];
 
-const trendMonthly = [
-    { label: 'Jan', elec: 1000, gas: 900,  total: 1900 },
-    { label: 'Feb', elec: 1200, gas: 1100, total: 2300 },
-    { label: 'Mar', elec: 900,  gas: 700,  total: 1600 },
-    { label: 'Apr', elec: 1600, gas: 1400, total: 3000 },
-    { label: 'May', elec: 1100, gas: 1000, total: 2100 },
-    { label: 'Jun', elec: 1300, gas: 1100, total: 2400 },
-    { label: 'Jul', elec: 1500, gas: 1300, total: 2800 },
-];
+// Energy Usage Trend data keyed by period
+const trendDataByPeriod = {
+    '24h': [
+        { label: '6AM', elec: 80, gas: 60, total: 140 },
+        { label: '9AM', elec: 120, gas: 90, total: 210 },
+        { label: '12PM', elec: 150, gas: 110, total: 260 },
+        { label: '3PM', elec: 130, gas: 100, total: 230 },
+        { label: '6PM', elec: 110, gas: 85, total: 195 },
+        { label: '9PM', elec: 90, gas: 70, total: 160 },
+        { label: '12AM', elec: 60, gas: 45, total: 105 },
+    ],
+    '7d': [
+        { label: 'Mar 20', elec: 900, gas: 750, total: 1650 },
+        { label: 'Mar 21', elec: 1050, gas: 880, total: 1930 },
+        { label: 'Mar 22', elec: 980, gas: 820, total: 1800 },
+        { label: 'Mar 23', elec: 1120, gas: 950, total: 2070 },
+        { label: 'Mar 24', elec: 870, gas: 710, total: 1580 },
+        { label: 'Mar 25', elec: 1200, gas: 1050, total: 2250 },
+        { label: 'Mar 26', elec: 1080, gas: 900, total: 1980 },
+    ],
+    '1m': [
+        { label: 'Week 1', elec: 3200, gas: 2800, total: 6000 },
+        { label: 'Week 2', elec: 3800, gas: 3100, total: 6900 },
+        { label: 'Week 3', elec: 2900, gas: 2500, total: 5400 },
+        { label: 'Week 4', elec: 4100, gas: 3600, total: 7700 },
+        { label: 'Week 5', elec: 3500, gas: 3000, total: 6500 },
+        { label: 'Week 6', elec: 3900, gas: 3400, total: 7300 },
+        { label: 'Week 7', elec: 3600, gas: 3100, total: 6700 },
+    ],
+    'ytd': [
+        { label: 'Jan', elec: 1000, gas: 900, total: 1900 },
+        { label: 'Feb', elec: 1200, gas: 1100, total: 2300 },
+        { label: 'Mar', elec: 900, gas: 700, total: 1600 },
+        { label: 'Apr', elec: 1600, gas: 1400, total: 3000 },
+        { label: 'May', elec: 1100, gas: 1000, total: 2100 },
+        { label: 'Jun', elec: 1300, gas: 1100, total: 2400 },
+        { label: 'Jul', elec: 1500, gas: 1300, total: 2800 },
+    ],
+};
 
-const trendDaily = [
-    { label: 'Feb 1', elec: 1400, gas: 1300, total: 2700 },
-    { label: 'Feb 2', elec: 1100, gas: 900,  total: 2000 },
-    { label: 'Feb 3', elec: 1400, gas: 1200, total: 2600 },
-    { label: 'Feb 4', elec: 900,  gas: 800,  total: 1700 },
-    { label: 'Feb 5', elec: 1100, gas: 1000, total: 2100 },
-    { label: 'Feb 6', elec: 1200, gas: 1100, total: 2300 },
-    { label: 'Feb 7', elec: 1050, gas: 950,  total: 2000 },
-];
+// Emissions data keyed by period
+const emissionsDataByPeriod = {
+    '24h': [
+        { month: '6AM', emissions: 0.5, reduced: 0.1 },
+        { month: '9AM', emissions: 0.8, reduced: 0.2 },
+        { month: '12PM', emissions: 1.0, reduced: 0.3 },
+        { month: '3PM', emissions: 0.7, reduced: 0.2 },
+        { month: '6PM', emissions: 0.6, reduced: 0.2 },
+        { month: '9PM', emissions: 0.4, reduced: 0.1 },
+    ],
+    '7d': [
+        { month: 'Mon', emissions: 3.2, reduced: 0.8 },
+        { month: 'Tue', emissions: 2.9, reduced: 0.9 },
+        { month: 'Wed', emissions: 3.5, reduced: 0.7 },
+        { month: 'Thu', emissions: 3.0, reduced: 1.1 },
+        { month: 'Fri', emissions: 2.7, reduced: 1.2 },
+        { month: 'Sat', emissions: 2.1, reduced: 0.5 },
+    ],
+    '1m': [
+        { month: 'Week 1', emissions: 3.8, reduced: 0.9 },
+        { month: 'Week 2', emissions: 3.5, reduced: 1.1 },
+        { month: 'Week 3', emissions: 4.0, reduced: 0.8 },
+        { month: 'Week 4', emissions: 3.1, reduced: 1.3 },
+    ],
+    'ytd': [
+        { month: 'Jan', emissions: 3.8, reduced: 0.9 },
+        { month: 'Feb', emissions: 3.5, reduced: 1.1 },
+        { month: 'Mar', emissions: 4.0, reduced: 0.8 },
+        { month: 'Apr', emissions: 3.1, reduced: 1.3 },
+        { month: 'May', emissions: 2.9, reduced: 1.5 },
+        { month: 'Jun', emissions: 4.2, reduced: 0.7 },
+    ]
+};
+
+// Savings breakdown keyed by period
+const savingsBreakdownByPeriod = {
+    '24h': [
+        { month: '6AM', val: 120, type: 'green' },
+        { month: '9AM', val: 180, type: 'white' },
+        { month: '12PM', val: 90, type: 'striped' },
+        { month: '3PM', val: 210, type: 'green' },
+        { month: '6PM', val: 150, type: 'green' },
+    ],
+    '7d': [
+        { month: 'Mon', val: 420, type: 'green' },
+        { month: 'Tue', val: 560, type: 'white' },
+        { month: 'Wed', val: 380, type: 'striped' },
+        { month: 'Thu', val: 620, type: 'green' },
+        { month: 'Fri', val: 710, type: 'green' },
+    ],
+    '1m': [
+        { month: 'Week 1', val: 1200, type: 'green' },
+        { month: 'Week 2', val: 1450, type: 'white' },
+        { month: 'Week 3', val: 980, type: 'striped' },
+        { month: 'Week 4', val: 1680, type: 'green' },
+    ],
+    'ytd': [
+        { month: 'Jan', val: 820, type: 'green' },
+        { month: 'Feb', val: 1100, type: 'white' },
+        { month: 'Mar', val: 650, type: 'striped' },
+        { month: 'Apr', val: 1350, type: 'green' },
+        { month: 'May', val: 1560, type: 'green' },
+    ]
+};
+
+// Consumption arc data keyed by period
+const arcDataByPeriod = {
+    '24h': { elec: 128, gas: 142 },
+    '7d':  { elec: 890, gas: 980 },
+    '1m':  { elec: 3820, gas: 4260 },
+    'ytd': { elec: 21550, gas: 24300 },
+};
+
+// Efficiency data keyed by period
+const efficiencyByPeriod = {
+    '24h': { score: 91, buildings: [{ label: 'North Tower', pct: 94 }, { label: 'South Center', pct: 90 }, { label: 'West Complex', pct: 82 }, { label: 'East Wing', pct: 97 }] },
+    '7d':  { score: 89, buildings: [{ label: 'North Tower', pct: 93 }, { label: 'South Center', pct: 89 }, { label: 'West Complex', pct: 78 }, { label: 'East Wing', pct: 96 }] },
+    '1m':  { score: 87, buildings: [{ label: 'North Tower', pct: 91 }, { label: 'South Center', pct: 87 }, { label: 'West Complex', pct: 75 }, { label: 'East Wing', pct: 94 }] },
+    'ytd': { score: 88, buildings: [{ label: 'North Tower', pct: 92 }, { label: 'South Center', pct: 88 }, { label: 'West Complex', pct: 76 }, { label: 'East Wing', pct: 95 }] },
+};
+
+// Energy savings total keyed by period
+const savingsTotalByPeriod = {
+    '24h': '$340',
+    '7d': '$2,370',
+    '1m': '$5,480',
+    'ytd': '$4,100',
+};
 
 const CustomTrendTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -58,23 +158,6 @@ const CustomTrendTooltip = ({ active, payload, label }) => {
     }
     return null;
 };
-
-const emissionsData = [
-    { month: 'Jan', emissions: 3.8, reduced: 0.9 },
-    { month: 'Feb', emissions: 3.5, reduced: 1.1 },
-    { month: 'Mar', emissions: 4.0, reduced: 0.8 },
-    { month: 'Apr', emissions: 3.1, reduced: 1.3 },
-    { month: 'May', emissions: 2.9, reduced: 1.5 },
-    { month: 'Jun', emissions: 4.2, reduced: 0.7 },
-];
-
-const savingsBreakdown = [
-    { month: 'Jan', val: 820, type: 'green' },
-    { month: 'Feb', val: 1100, type: 'white' },
-    { month: 'Mar', val: 650, type: 'striped' },
-    { month: 'Apr', val: 1350, type: 'green' },
-    { month: 'May', val: 1560, type: 'green' },
-];
 
 const CustomDot = (props) => {
     const { cx, cy } = props;
@@ -492,14 +575,15 @@ const PortfolioView = () => {
     const [customEnd, setCustomEnd] = useState('');
     const [hoveredArc, setHoveredArc] = useState(null);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [trendPeriod, setTrendPeriod] = useState('Annual');
+
     const handleArcMouseMove = (e) => {
         setMousePos({ x: e.clientX, y: e.clientY });
     };
 
-    // Calculate dynamic intersection for the arc based on consumption totals
-    const elecVal = 21550; // roughly 47%
-    const gasVal = 24300;  // roughly 53%
+    // Pull period-synced data
+    const arcData = arcDataByPeriod[savingsPeriod];
+    const elecVal = arcData.elec;
+    const gasVal = arcData.gas;
     const totalEnergy = elecVal + gasVal;
     const elecPct = elecVal / totalEnergy;
     
@@ -507,6 +591,12 @@ const PortfolioView = () => {
     const intersectionAngle = Math.PI * (1 - elecPct);
     const intX = 120 + 80 * Math.cos(intersectionAngle);
     const intY = 120 - 80 * Math.sin(intersectionAngle);
+
+    const activeTrendData = trendDataByPeriod[savingsPeriod];
+    const activeEmissionsData = emissionsDataByPeriod[savingsPeriod];
+    const activeSavingsBreakdown = savingsBreakdownByPeriod[savingsPeriod];
+    const activeEfficiency = efficiencyByPeriod[savingsPeriod];
+    const activeSavingsTotal = savingsTotalByPeriod[savingsPeriod];
 
     const dateOptions = ['Today', 'Past 7 Days', '30 Days', 'This Month', 'Past Year', 'All Time'];
     const savingsPeriods = [
@@ -728,34 +818,10 @@ const PortfolioView = () => {
                 <div className="glass-card">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                         <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Energy Usage Trend</h2>
-                        
-                        {/* Period Selection Dropdown */}
-                        <div style={{ position: 'relative' }}>
-                            <select 
-                                value={trendPeriod} 
-                                onChange={(e) => setTrendPeriod(e.target.value)}
-                                style={{ 
-                                    appearance: 'none', 
-                                    background: 'var(--bg-card-hover)', 
-                                    padding: '0.5rem 2.5rem 0.5rem 1rem', 
-                                    borderRadius: '16px', 
-                                    fontSize: '0.85rem', 
-                                    color: 'var(--text-secondary)', 
-                                    border: '1px solid rgba(255,255,255,0.05)',
-                                    cursor: 'pointer',
-                                    outline: 'none'
-                                }}
-                            >
-                                <option value="Annual">Annual</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="Daily">Daily</option>
-                            </select>
-                            <ChevronDown size={14} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-secondary)' }} />
-                        </div>
                     </div>
 
                     <ResponsiveContainer width="100%" height="100%">
-                        <ComposedChart data={trendPeriod === 'Annual' ? trendAnnual : trendPeriod === 'Monthly' ? trendMonthly : trendDaily} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
+                        <ComposedChart data={activeTrendData} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorGreenTrend" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4} />
@@ -786,7 +852,7 @@ const PortfolioView = () => {
                 <div className="glass-card" style={{ padding: '1.5rem' }}>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1.25rem' }}>Carbon Emissions</h3>
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={emissionsData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                        <BarChart data={activeEmissionsData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
                             <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${v}t`} />
                             <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
@@ -799,15 +865,10 @@ const PortfolioView = () => {
                 {/* Efficiency & Savings Overview */}
                 <div className="glass-card" style={{ position: 'relative', padding: '1.5rem' }}>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Efficiency</h3>
-                    <div style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>88%</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>{activeEfficiency.score}%</div>
 
                     <div style={{ position: 'absolute', right: '1.5rem', top: '4rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '130px' }}>
-                        {[
-                            { label: 'North Tower', pct: 92 },
-                            { label: 'South Center', pct: 88 },
-                            { label: 'West Complex', pct: 76 },
-                            { label: 'East Wing', pct: 95 },
-                        ].map((b) => (
+                        {activeEfficiency.buildings.map((b) => (
                             <div key={b.label}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.35rem' }}>
                                     <span style={{ color: 'var(--text-secondary)' }}>{b.label}</span>
@@ -825,12 +886,12 @@ const PortfolioView = () => {
                 <div className="glass-card" style={{ padding: '1.5rem' }}>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Energy Savings</h3>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '1rem' }}>
-                        <span style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>$4,100</span>
+                        <span style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>{activeSavingsTotal}</span>
                         <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>total</span>
                     </div>
 
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={savingsBreakdown} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                        <BarChart data={activeSavingsBreakdown} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                             <defs>
                                 <pattern id="diagStripe" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
                                     <rect width="6" height="6" fill="rgba(255,255,255,0.05)" />
@@ -840,7 +901,7 @@ const PortfolioView = () => {
                             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
                             <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px' }} formatter={(v) => [`$${v}`]} />
                             <Bar dataKey="val" radius={[10, 10, 10, 10]} barSize={20}>
-                                {savingsBreakdown.map((entry, index) => {
+                                {activeSavingsBreakdown.map((entry, index) => {
                                     let fill = "var(--text-primary)";
                                     if (entry.type === 'green') fill = "var(--accent-green)";
                                     if (entry.type === 'striped') fill = "url(#diagStripe)";
