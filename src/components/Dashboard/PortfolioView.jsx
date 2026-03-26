@@ -4,31 +4,57 @@ import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, Tren
 
 /* ─── Mock Data ─── */
 const trendAnnual = [
-    { label: '2017', base: 600, mid: 600, top: 900, total: 2100 },
-    { label: '2018', base: 600, mid: 600, top: 650, total: 1850 },
-    { label: '2019', base: 600, mid: 600, top: 1700, total: 2900 },
-    { label: '2020', base: 600, mid: 600, top: 200, total: 1400 },
-    { label: '2021', base: 600, mid: 600, top: 600, total: 1800 },
-    { label: '2022', base: 600, mid: 600, top: 350, total: 1550 },
+    { label: '2017', elec: 1100, gas: 1000, total: 2100 },
+    { label: '2018', elec: 1000, gas: 850,  total: 1850 },
+    { label: '2019', elec: 1600, gas: 1300, total: 2900 },
+    { label: '2020', elec: 800,  gas: 600,  total: 1400 },
+    { label: '2021', elec: 1000, gas: 800,  total: 1800 },
+    { label: '2022', elec: 900,  gas: 650,  total: 1550 },
 ];
 
 const trendMonthly = [
-    { label: 'Jan', base: 600, mid: 600, top: 700, total: 1900 },
-    { label: 'Feb', base: 600, mid: 600, top: 1100, total: 2300 },
-    { label: 'Mar', base: 600, mid: 600, top: 400, total: 1600 },
-    { label: 'Apr', base: 600, mid: 600, top: 1800, total: 3000 },
-    { label: 'May', base: 600, mid: 600, top: 900, total: 2100 },
-    { label: 'Jun', base: 600, mid: 600, top: 1200, total: 2400 },
+    { label: 'Jan', elec: 1000, gas: 900,  total: 1900 },
+    { label: 'Feb', elec: 1200, gas: 1100, total: 2300 },
+    { label: 'Mar', elec: 900,  gas: 700,  total: 1600 },
+    { label: 'Apr', elec: 1600, gas: 1400, total: 3000 },
+    { label: 'May', elec: 1100, gas: 1000, total: 2100 },
+    { label: 'Jun', elec: 1300, gas: 1100, total: 2400 },
 ];
 
 const trendDaily = [
-    { label: 'Feb 1', base: 600, mid: 600, top: 1500, total: 2700 },
-    { label: 'Feb 2', base: 600, mid: 600, top: 800, total: 2000 },
-    { label: 'Feb 3', base: 600, mid: 600, top: 1400, total: 2600 },
-    { label: 'Feb 4', base: 600, mid: 600, top: 500, total: 1700 },
-    { label: 'Feb 5', base: 600, mid: 600, top: 900, total: 2100 },
-    { label: 'Feb 6', base: 600, mid: 600, top: 1100, total: 2300 },
+    { label: 'Feb 1', elec: 1400, gas: 1300, total: 2700 },
+    { label: 'Feb 2', elec: 1100, gas: 900,  total: 2000 },
+    { label: 'Feb 3', elec: 1400, gas: 1200, total: 2600 },
+    { label: 'Feb 4', elec: 900,  gas: 800,  total: 1700 },
+    { label: 'Feb 5', elec: 1100, gas: 1000, total: 2100 },
+    { label: 'Feb 6', elec: 1200, gas: 1100, total: 2300 },
 ];
+
+const CustomTrendTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        return (
+            <div style={{ background: 'rgba(30, 30, 35, 0.9)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '1rem', borderRadius: '12px', color: '#fff', boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)' }}>
+                <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,255,255,0.9)' }} />Electricity</span>
+                        <span style={{ fontWeight: 500, marginLeft: '2rem' }}>{data.elec.toLocaleString()} kWh</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-green)' }} />Gas</span>
+                        <span style={{ fontWeight: 500, marginLeft: '2rem' }}>{data.gas.toLocaleString()} kWh</span>
+                    </div>
+                    <div style={{ paddingTop: '0.6rem', borderTop: '1px solid rgba(255,255,255,0.15)', marginTop: '0.2rem', display: 'flex', justifyContent: 'space-between', fontSize: '1rem', fontWeight: 600 }}>
+                        <span>Total Sum</span>
+                        <span>{data.total.toLocaleString()} kWh</span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    return null;
+};
 
 const emissionsData = [
     { month: 'Jan', emissions: 3.8, reduced: 0.9 },
@@ -749,12 +775,11 @@ const PortfolioView = () => {
                             <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.06)" vertical={false} />
                             <XAxis dataKey="label" axisLine={false} tickLine={false} dy={10} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
                             <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => v === 0 ? '0' : `${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
-                            <Tooltip cursor={{fill: 'rgba(255,255,255,0.02)'}} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} formatter={(v, name) => [name === 'total' ? `${v.toLocaleString()} kWh` : null]} labelStyle={{ color: 'var(--text-secondary)' }} />
+                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} content={<CustomTrendTooltip />} />
 
-                            {/* Stacked Bars representing structural depth */}
-                            <Bar dataKey="base" stackId="a" fill="rgba(255,255,255,0.04)" barSize={32} />
-                            <Bar dataKey="mid" stackId="a" fill="rgba(255,255,255,0.08)" barSize={32} />
-                            <Bar dataKey="top" stackId="a" fill="var(--accent-green)" opacity={0.65} barSize={32} radius={[12, 12, 0, 0]} />
+                            {/* Stacked Bars representing Electricity (White) and Gas (Green) depth */}
+                            <Bar dataKey="elec" stackId="a" fill="rgba(255,255,255,0.85)" barSize={32} />
+                            <Bar dataKey="gas" stackId="a" fill="var(--accent-green)" opacity={0.9} barSize={32} radius={[12, 12, 0, 0]} />
                             
                             {/* Line & Gradient Area tracking the total peak */}
                             <Area type="monotone" dataKey="total" stroke="var(--accent-green)" strokeWidth={2.5} fillOpacity={1} fill="url(#colorGreenTrend)" />
