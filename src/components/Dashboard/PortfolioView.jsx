@@ -360,6 +360,78 @@ const ScoreRing = ({ score, color }) => {
     );
 };
 
+/* ─── Unique Card Visualizations ─── */
+const ProportionBar = ({ splits }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%', marginTop: '0.25rem' }}>
+        {splits.map((s) => (
+            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', width: '28px', flexShrink: 0 }}>{s.label.slice(0, 4)}</span>
+                <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ width: s.pct + '%', height: '100%', background: `linear-gradient(90deg, ${s.color}, ${s.color}88)`, borderRadius: '3px', transition: 'width 0.8s ease' }} />
+                </div>
+                <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', width: '30px', textAlign: 'right' }}>{s.pct}%</span>
+            </div>
+        ))}
+    </div>
+);
+
+const MiniDonut = ({ segments, size = 44 }) => {
+    const r = 16, c = 2 * Math.PI * r;
+    let offset = 0;
+    return (
+        <svg width={size} height={size} viewBox="0 0 44 44" style={{ flexShrink: 0 }}>
+            <circle cx="22" cy="22" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+            {segments.map((seg, i) => {
+                const dash = (seg.pct / 100) * c;
+                const el = <circle key={i} cx="22" cy="22" r={r} fill="none" stroke={seg.color} strokeWidth="5" strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={-offset} transform="rotate(-90 22 22)" style={{ transition: 'all 0.8s ease' }} />;
+                offset += dash;
+                return el;
+            })}
+        </svg>
+    );
+};
+
+const GrowthBars = ({ data, color }) => (
+    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '32px' }}>
+        {data.map((d, i) => (
+            <div key={i} style={{ flex: 1, background: `linear-gradient(to top, ${color}22, ${color})`, borderRadius: '2px', height: `${d.pct}%`, transition: 'height 0.5s ease', minWidth: '4px', opacity: 0.5 + (i / data.length) * 0.5 }} />
+        ))}
+    </div>
+);
+
+const StackedBar = ({ elecPct, gasPct }) => (
+    <div style={{ width: '100%', marginTop: '0.25rem' }}>
+        <div style={{ display: 'flex', height: '8px', borderRadius: '4px', overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
+            <div style={{ width: elecPct + '%', background: 'linear-gradient(90deg, #a78bfa, #a78bfa88)', transition: 'width 0.8s' }} />
+            <div style={{ width: gasPct + '%', background: 'linear-gradient(90deg, #f97316, #f9731688)', transition: 'width 0.8s' }} />
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem' }}>
+            <span style={{ fontSize: '0.55rem', color: '#a78bfa' }}>Elec {elecPct}%</span>
+            <span style={{ fontSize: '0.55rem', color: '#f97316' }}>Gas {gasPct}%</span>
+        </div>
+    </div>
+);
+
+const ImpactMeter = ({ value, max, color }) => {
+    const pct = Math.min((value / max) * 100, 100);
+    return (
+        <div style={{ width: '100%', marginTop: '0.25rem' }}>
+            <div style={{ position: 'relative', height: '8px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                <div style={{ width: pct + '%', height: '100%', borderRadius: '4px', background: `linear-gradient(90deg, ${color}44, ${color})`, transition: 'width 0.8s', boxShadow: `0 0 8px ${color}44` }} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.2rem' }}>
+                <span style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>0t</span>
+                <span style={{ fontSize: '0.55rem', color, fontWeight: 600 }}>{value}t saved</span>
+                <span style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>{max}t goal</span>
+            </div>
+        </div>
+    );
+};
+
+const savingsGrowth = [
+    { pct: 25 }, { pct: 38 }, { pct: 52 }, { pct: 62 }, { pct: 71 }, { pct: 80 }, { pct: 88 }, { pct: 95 }, { pct: 100 }
+];
+
 /* ═══════════════════════════════════════════
    PortfolioView Component
    ═══════════════════════════════════════════ */
@@ -488,18 +560,33 @@ const PortfolioView = () => {
                             )}
                         </div>
 
-                        {/* Row 3: Splits (if any) */}
-                        {kpi.splits.length > 0 && (
-                            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.15rem' }}>
-                                {kpi.splits.map((s) => (
-                                    <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
-                                        <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
-                                            {s.label}: <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{s.value}</span>
-                                        </span>
-                                    </div>
-                                ))}
+                        {/* Row 3: Unique per-card visualization */}
+                        {kpi.id === 'consumption' && (
+                            <ProportionBar splits={[
+                                { label: 'Electricity', pct: 88, color: 'var(--accent-green)' },
+                                { label: 'Gas', pct: 12, color: '#f97316' },
+                            ]} />
+                        )}
+                        {kpi.id === 'cost' && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.15rem' }}>
+                                <MiniDonut segments={[
+                                    { pct: 57, color: 'var(--accent-green)' },
+                                    { pct: 43, color: '#f97316' },
+                                ]} />
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>⚡ Elec <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>$9,050</span></span>
+                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>🔥 Gas <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>$6,900</span></span>
+                                </div>
                             </div>
+                        )}
+                        {kpi.id === 'savings' && (
+                            <GrowthBars data={savingsGrowth} color="#22d3ee" />
+                        )}
+                        {kpi.id === 'emissions' && (
+                            <StackedBar elecPct={65} gasPct={35} />
+                        )}
+                        {kpi.id === 'reduced' && (
+                            <ImpactMeter value={3.6} max={5} color="#a78bfa" />
                         )}
 
                         {/* Row 4: Trend % */}
