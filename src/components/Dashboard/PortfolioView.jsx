@@ -599,30 +599,50 @@ const PortfolioView = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) minmax(500px, 1.5fr)', gap: '1.5rem', height: '360px' }}>
 
                 {/* Total Consumption Gauge */}
-                <div className="glass-card" style={{ position: 'relative', overflow: 'hidden' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Consumption</h2>
+                <div className="glass-card" style={{ position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 300, letterSpacing: '-0.02em' }}>Consumption</h2>
                         <svg width="40" height="40" viewBox="0 0 36 36">
                             <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-green)" strokeWidth="4" strokeDasharray="88, 100" />
+                            <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--text-secondary)" strokeWidth="4" strokeDasharray="30 100" strokeDashoffset="25" />
+                            <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#fff" strokeWidth="4" strokeDasharray="10 100" strokeDashoffset="-5" />
                         </svg>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem', zIndex: 2 }}>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total kWh</span>
-                        <span style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em', marginTop: '0.25rem' }}>45,850</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1.5rem', zIndex: 2 }}>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total</span>
+                        <span style={{ fontSize: '2.8rem', fontWeight: 500, letterSpacing: '-0.02em', marginTop: '0.2rem' }}>45,850</span>
                     </div>
 
-                    {/* Large Arc */}
-                    <div style={{ position: 'absolute', bottom: '-4rem', left: '50%', transform: 'translateX(-50%)', width: '280px', height: '280px' }}>
-                        <svg viewBox="0 0 100 100" width="100%" height="100%">
-                            <path d="M 15,80 A 40,40 0 1,1 85,80" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="16" strokeLinecap="round" />
-                            <path d="M 15,80 A 40,40 0 0,1 85,80" fill="none" stroke="var(--text-primary)" strokeWidth="16" strokeLinecap="round" strokeDasharray="140 200" />
-                            <path d="M 72.8,45 A 40,40 0 0,1 85,80" fill="none" stroke="var(--accent-green)" strokeWidth="16" strokeLinecap="round" />
+                    {/* Half Arc with Pattern */}
+                    <div style={{ position: 'relative', width: '280px', height: '140px', marginTop: '2rem', overflow: 'hidden' }}>
+                        <svg viewBox="0 0 200 100" width="100%" height="100%" style={{ overflow: 'visible' }}>
+                            <defs>
+                                <pattern id="diagonalStripeLight" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                                    <rect width="6" height="6" fill="#ffffff" />
+                                    <line x1="0" y1="0" x2="0" y2="6" stroke="#e0e0e0" strokeWidth="2" />
+                                </pattern>
+                            </defs>
+                            {/* Base track */}
+                            <path d="M 20,100 A 80,80 0 0,1 180,100" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="28" strokeLinecap="round" />
+                            {/* Left Side (Electricity) - Patterned White */}
+                            <path d="M 20,100 A 80,80 0 0,1 100,20" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="28" strokeLinecap="butt" />
+                            {/* Right Side (Gas) - Solid Green */}
+                            <path d="M 100,20 A 80,80 0 0,1 180,100" fill="none" stroke="var(--accent-green)" strokeWidth="28" strokeLinecap="butt" />
+                            
+                            {/* Circular Caps for smooth ends */}
+                            <circle cx="20" cy="100" r="14" fill="url(#diagonalStripeLight)" />
+                            <circle cx="180" cy="100" r="14" fill="var(--accent-green)" />
                         </svg>
-                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', marginTop: '3rem' }}>
-                            <div style={{ fontSize: '1rem', fontWeight: 600 }}>88% Eff.</div>
-                            <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Portfolio Rating</div>
+
+                        {/* Centered text inside the arc */}
+                        <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                            <div style={{ width: '130px', height: '130px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '1rem' }}>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fff' }}>40,300</span>
+                                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>ELEC KWH</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fff', marginTop: '0.5rem' }}>5,550</span>
+                                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>GAS THERMS</span>
+                            </div>
                         </div>
                     </div>
                 </div>
