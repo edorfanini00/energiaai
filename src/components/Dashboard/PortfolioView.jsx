@@ -845,7 +845,9 @@ const PortfolioView = () => {
                         padding: '1.5rem', 
                         cursor: 'pointer',
                         border: '1px solid transparent',
-                        transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s'
+                        transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s',
+                        display: 'flex',
+                        flexDirection: 'column'
                     }}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.borderColor = 'var(--border-light)';
@@ -862,15 +864,17 @@ const PortfolioView = () => {
                         <h3 style={{ fontSize: '1.25rem', fontWeight: 400 }}>Carbon Emissions</h3>
                         <Maximize2 size={16} color="var(--text-muted)" />
                     </div>
-                    <ResponsiveContainer width="100%" height="calc(100% - 2.5rem)">
-                        <BarChart data={activeEmissionsData.slice(0, 7)} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
-                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${v}t`} />
-                            <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
-                            <Bar dataKey="emissions" name="Emissions (t)" fill="#f97316" radius={[4, 4, 4, 4]} barSize={12} />
-                            <Bar dataKey="reduced" name="Reduced (t)" fill="var(--accent-green)" radius={[4, 4, 4, 4]} barSize={12} />
-                        </BarChart>
-                    </ResponsiveContainer>
+                    <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={activeEmissionsData.slice(0, 7)} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${v}t`} />
+                                <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                                <Bar dataKey="emissions" name="Emissions (t)" fill="#f97316" radius={[4, 4, 4, 4]} barSize={12} />
+                                <Bar dataKey="reduced" name="Reduced (t)" fill="var(--accent-green)" radius={[4, 4, 4, 4]} barSize={12} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
 
                 {/* Efficiency & Savings Overview */}
