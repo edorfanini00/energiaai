@@ -18,7 +18,7 @@ const Sidebar = () => {
                 </NavLink>
                 <div className="nav-item active" style={{ justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                        <LayoutGrid size={18} className="nav-icon" /> Summary Details
+                        <LayoutGrid size={18} className="nav-icon" /> Portfolio Overview
                     </div>
                     <ChevronRight size={16} className="nav-icon" />
                 </div>

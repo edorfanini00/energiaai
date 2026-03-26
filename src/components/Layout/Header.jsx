@@ -34,7 +34,7 @@ const Header = () => {
 
     return (
         <header className="top-header" style={{ position: 'relative', overflow: 'visible' }}>
-            <h1 className="header-title">Summary Details</h1>
+            <h1 className="header-title">Portfolio Overview</h1>
 
             <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
 
