@@ -532,20 +532,7 @@ const PortfolioView = () => {
 
             {/* Tool Bar Row */}
             <div className="toolbar-row">
-                <div className="toolbar-links">
-                    <div className="toolbar-item active">
-                        <LayoutList size={16} /> Overview
-                    </div>
-                    <div className="toolbar-item">
-                        <Share2 size={16} /> PPC
-                    </div>
-                    <div className="toolbar-item">
-                        <Calendar size={16} /> Year to year
-                    </div>
-                    <div className="toolbar-item">
-                        <Edit2 size={16} /> Customize
-                    </div>
-                </div>
+                <div style={{ flex: 1 }}></div>
                 <div style={{ position: 'relative' }}>
                     <div
                         className="date-pill"
