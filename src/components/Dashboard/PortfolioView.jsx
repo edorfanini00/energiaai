@@ -919,10 +919,6 @@ const PortfolioView = () => {
             {activeModal === 'savings' && (
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
                     <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-                        <button onClick={() => setActiveModal(null)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
-                            <X size={24} />
-                        </button>
-                        
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>Energy Savings Breakdown</h3>
@@ -931,7 +927,7 @@ const PortfolioView = () => {
                                     <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>total saved this period</span>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', alignItems: 'center' }}>
                                 {savingsPeriods.map((p) => (
                                     <button
                                         key={`modal-${p.key}`}
@@ -947,6 +943,9 @@ const PortfolioView = () => {
                                         {p.label}
                                     </button>
                                 ))}
+                                <button onClick={() => setActiveModal(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', marginLeft: '1rem', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+                                    <X size={24} />
+                                </button>
                             </div>
                         </div>
 
