@@ -78,34 +78,19 @@ const emissionsDataByPeriod = {
     ]
 };
 
-// Savings breakdown keyed by period
+// Dense savings breakdown keyed by period (for modal visualization)
 const savingsBreakdownByPeriod = {
-    '24h': [
-        { month: '6AM', val: 120, type: 'green' },
-        { month: '9AM', val: 180, type: 'white' },
-        { month: '12PM', val: 90, type: 'striped' },
-        { month: '3PM', val: 210, type: 'green' },
-        { month: '6PM', val: 150, type: 'green' },
-    ],
+    '24h': Array.from({ length: 24 }).map((_, i) => ({ month: `${i}:00`, val: Math.floor(Math.random() * 50) + 10 })),
     '7d': [
-        { month: 'Mon', val: 420, type: 'green' },
-        { month: 'Tue', val: 560, type: 'white' },
-        { month: 'Wed', val: 380, type: 'striped' },
-        { month: 'Thu', val: 620, type: 'green' },
-        { month: 'Fri', val: 710, type: 'green' },
+        { month: 'Mon', val: 420 }, { month: 'Tue', val: 560 }, { month: 'Wed', val: 380 }, 
+        { month: 'Thu', val: 620 }, { month: 'Fri', val: 710 }, { month: 'Sat', val: 230 }, { month: 'Sun', val: 190 }
     ],
-    '1m': [
-        { month: 'Week 1', val: 1200, type: 'green' },
-        { month: 'Week 2', val: 1450, type: 'white' },
-        { month: 'Week 3', val: 980, type: 'striped' },
-        { month: 'Week 4', val: 1680, type: 'green' },
-    ],
+    '1m': Array.from({ length: 30 }).map((_, i) => ({ month: `${i + 1}`, val: Math.floor(Math.random() * 300) + 100 })),
     'ytd': [
-        { month: 'Jan', val: 820, type: 'green' },
-        { month: 'Feb', val: 1100, type: 'white' },
-        { month: 'Mar', val: 650, type: 'striped' },
-        { month: 'Apr', val: 1350, type: 'green' },
-        { month: 'May', val: 1560, type: 'green' },
+        { month: 'Jan', val: 820 }, { month: 'Feb', val: 1100 }, { month: 'Mar', val: 650 }, 
+        { month: 'Apr', val: 1350 }, { month: 'May', val: 1560 }, { month: 'Jun', val: 950 },
+        { month: 'Jul', val: 1200 }, { month: 'Aug', val: 1400 }, { month: 'Sep', val: 1150 },
+        { month: 'Oct', val: 980 }, { month: 'Nov', val: 1600 }, { month: 'Dec', val: 1800 }
     ]
 };
 
@@ -938,31 +923,45 @@ const PortfolioView = () => {
                             <X size={24} />
                         </button>
                         
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '1.5rem' }}>Energy Savings Breakdown</h3>
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
-                            <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#22d3ee' }}>{activeSavingsTotal}</span>
-                            <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>total saved this period</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <div>
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>Energy Savings Breakdown</h3>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
+                                    <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#22d3ee' }}>{activeSavingsTotal}</span>
+                                    <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>total saved this period</span>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem' }}>
+                                {savingsPeriods.map((p) => (
+                                    <button
+                                        key={`modal-${p.key}`}
+                                        onClick={() => setSavingsPeriod(p.key)}
+                                        style={{
+                                            padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
+                                            border: '1px solid', cursor: 'pointer', transition: 'all 0.2s',
+                                            background: savingsPeriod === p.key ? 'rgba(255,255,255,0.08)' : 'transparent',
+                                            borderColor: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--border-light)',
+                                            color: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--text-secondary)',
+                                        }}
+                                    >
+                                        {p.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         <div style={{ flex: 1, position: 'relative' }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={activeSavingsBreakdown} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                                     <defs>
-                                        <pattern id="diagStripeModal" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-                                            <rect width="8" height="8" fill="rgba(255,255,255,0.05)" />
-                                            <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,0.2)" strokeWidth="2.5" />
-                                        </pattern>
+                                        <linearGradient id="solidGreenGrad" x1="0" y1="1" x2="0" y2="0">
+                                            <stop offset="0%" stopColor="var(--accent-green)" stopOpacity={0.1}/>
+                                            <stop offset="100%" stopColor="var(--accent-green)" stopOpacity={1}/>
+                                        </linearGradient>
                                     </defs>
                                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
                                     <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '1.1rem' }} formatter={(v) => [`$${v}`]} />
-                                    <Bar dataKey="val" radius={[12, 12, 12, 12]} barSize={40}>
-                                        {activeSavingsBreakdown.map((entry, index) => {
-                                            let fill = "var(--text-primary)";
-                                            if (entry.type === 'green') fill = "var(--accent-green)";
-                                            if (entry.type === 'striped') fill = "url(#diagStripeModal)";
-                                            return <Cell key={`cell-${index}`} fill={fill} />;
-                                        })}
-                                    </Bar>
+                                    <Bar dataKey="val" fill="url(#solidGreenGrad)" radius={[6, 6, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
