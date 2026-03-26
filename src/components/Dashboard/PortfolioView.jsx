@@ -443,6 +443,12 @@ const PortfolioView = () => {
     const [showCalendar, setShowCalendar] = useState(false);
     const [customStart, setCustomStart] = useState('');
     const [customEnd, setCustomEnd] = useState('');
+    const [hoveredArc, setHoveredArc] = useState(null);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+    const handleArcMouseMove = (e) => {
+        setMousePos({ x: e.clientX, y: e.clientY });
+    };
 
     const dateOptions = ['Today', 'Past 7 Days', '30 Days', 'This Month', 'Past Year', 'All Time'];
     const savingsPeriods = [
@@ -616,7 +622,7 @@ const PortfolioView = () => {
 
                     {/* Half Arc with Pattern */}
                     <div style={{ position: 'relative', width: '100%', height: 'auto', marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
-                        <svg viewBox="20 20 200 125" width="100%" height="100%" style={{ overflow: 'visible' }}>
+                        <svg viewBox="20 20 200 125" width="100%" height="100%" style={{ overflow: 'visible', maxWidth: '440px' }}>
                             <defs>
                                 <pattern id="diagonalStripeLight" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
                                     <rect width="6" height="6" fill="#ffffff" />
@@ -626,17 +632,29 @@ const PortfolioView = () => {
                             {/* Base track (dark gray background arc) */}
                             <path d="M 40,120 A 80,80 0 0,1 200,120" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="40" strokeLinecap="butt" />
                             
-                            {/* Right Side (Gas) - Solid Green. Drawn first so it sits UNDER the left cap */}
-                            <path d="M 120,40 A 80,80 0 0,1 200,120" fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="butt" />
+                            {/* Right Side (Gas) - Solid Green */}
+                            <g 
+                                onMouseEnter={() => setHoveredArc('gas')} 
+                                onMouseLeave={() => setHoveredArc(null)} 
+                                onMouseMove={handleArcMouseMove}
+                                style={{ cursor: 'crosshair', transition: 'opacity 0.2s' }}
+                                opacity={hoveredArc === 'elec' ? 0.4 : 1}
+                            >
+                                <path d="M 120,40 A 80,80 0 0,1 200,120" fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="butt" pointerEvents="stroke" />
+                                <circle cx="200" cy="120" r="20" fill="var(--accent-green)" />
+                            </g>
                             
-                            {/* Left Side (Electricity) - Patterned White. Drawn second so its round cap sits ON TOP */}
-                            <path d="M 40,120 A 80,80 0 0,1 120,40" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="round" />
-                            
-                            {/* We need a flat bottom cap for the patterned left side */}
-                            <path d="M 40,120 L 40,120" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" />
-                            
-                            {/* We need a round cap for the right green side at the bottom */}
-                            <circle cx="200" cy="120" r="20" fill="var(--accent-green)" />
+                            {/* Left Side (Electricity) - Patterned White */}
+                            <g
+                                onMouseEnter={() => setHoveredArc('elec')} 
+                                onMouseLeave={() => setHoveredArc(null)} 
+                                onMouseMove={handleArcMouseMove}
+                                style={{ cursor: 'crosshair', transition: 'opacity 0.2s' }}
+                                opacity={hoveredArc === 'gas' ? 0.4 : 1}
+                            >
+                                <path d="M 40,120 A 80,80 0 0,1 120,40" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="round" pointerEvents="stroke" />
+                                <path d="M 40,120 L 40,120" fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" pointerEvents="stroke" />
+                            </g>
                         </svg>
 
                         {/* Centered text inside the arc */}
@@ -758,6 +776,44 @@ const PortfolioView = () => {
                 </div>
 
             </div>
+
+            {/* Tooltip for Arc Hover */}
+            {hoveredArc && (
+                <div style={{
+                    position: 'fixed',
+                    top: mousePos.y - 120,
+                    left: mousePos.x + 15,
+                    background: 'rgba(50, 50, 55, 0.75)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    padding: '1.25rem',
+                    borderRadius: '16px',
+                    zIndex: 9999,
+                    pointerEvents: 'none',
+                    color: '#fff',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)',
+                    minWidth: '180px',
+                    transition: 'opacity 0.2s',
+                    animation: 'fadeIn 0.2s ease-out'
+                }}>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
+                        {hoveredArc === 'elec' ? 'Electricity' : 'Gas'}
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.4rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+                        {hoveredArc === 'elec' ? '40,300' : '5,550'}
+                        <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'rgba(255,255,255,0.5)' }}>
+                            {hoveredArc === 'elec' ? 'kWh' : 'Therms'}
+                        </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: hoveredArc === 'elec' ? '#fff' : 'var(--accent-green)' }} />
+                        <span style={{ fontSize: '0.9rem', color: hoveredArc === 'elec' ? '#f8fafc' : 'var(--accent-green)', fontWeight: 500 }}>
+                            {hoveredArc === 'elec' ? '87.9% of Total' : '12.1% of Total'}
+                        </span>
+                    </div>
+                </div>
+            )}
         </div >
     );
 };
