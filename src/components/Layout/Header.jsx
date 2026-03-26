@@ -12,6 +12,15 @@ const Header = () => {
     const [isDark, setIsDark] = useState(true);
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
+    const toggleTheme = () => {
+        if (isDark) {
+            document.body.classList.add('light-theme');
+        } else {
+            document.body.classList.remove('light-theme');
+        }
+        setIsDark(!isDark);
+    };
+
     // Reusable pill component for priority
     const PriorityPill = ({ priority }) => (
         <span style={{
@@ -32,7 +41,7 @@ const Header = () => {
                 {/* Theme Toggle */}
                 <button
                     className="icon-button"
-                    onClick={() => setIsDark(!isDark)}
+                    onClick={toggleTheme}
                     style={{ color: isDark ? '#fde047' : 'var(--text-primary)' }}
                 >
                     {isDark ? <Moon size={20} /> : <Sun size={20} />}
