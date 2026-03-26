@@ -613,16 +613,26 @@ const PortfolioView = () => {
                         <span style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em', marginTop: '0.25rem' }}>45,850</span>
                     </div>
 
-                    {/* Large Arc */}
-                    <div style={{ position: 'absolute', bottom: '-4rem', left: '50%', transform: 'translateX(-50%)', width: '280px', height: '280px' }}>
+                    {/* Full Circle Chart (40% White, 60% Green) */}
+                    <div style={{ position: 'absolute', bottom: '-2rem', left: '50%', transform: 'translateX(-50%)', width: '220px', height: '220px', pointerEvents: 'none' }}>
                         <svg viewBox="0 0 100 100" width="100%" height="100%">
-                            <path d="M 15,80 A 40,40 0 1,1 85,80" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="16" strokeLinecap="round" />
-                            <path d="M 15,80 A 40,40 0 0,1 85,80" fill="none" stroke="var(--text-primary)" strokeWidth="16" strokeLinecap="round" strokeDasharray="140 200" />
-                            <path d="M 72.8,45 A 40,40 0 0,1 85,80" fill="none" stroke="var(--accent-green)" strokeWidth="16" strokeLinecap="round" />
+                            <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="16" />
+                            {/* Electricity (White) - 40% */}
+                            <circle cx="50" cy="50" r="38" fill="none" stroke="#ffffff" strokeWidth="16" strokeDasharray={`${0.4 * 2 * Math.PI * 38} ${2 * Math.PI * 38}`} strokeDashoffset={25} style={{ transition: 'all 1s ease' }} />
+                            {/* Gas (Green) - 60% */}
+                            <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-green)" strokeWidth="16" strokeDasharray={`${0.6 * 2 * Math.PI * 38} ${2 * Math.PI * 38}`} strokeDashoffset={-(0.4 * 2 * Math.PI * 38) + 25} style={{ transition: 'all 1s ease' }} />
                         </svg>
-                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', marginTop: '3rem' }}>
-                            <div style={{ fontSize: '1rem', fontWeight: 600 }}>88% Eff.</div>
-                            <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Portfolio Rating</div>
+                    </div>
+
+                    {/* Small Legend */}
+                    <div style={{ position: 'absolute', bottom: '1.5rem', width: '100%', display: 'flex', justifyContent: 'center', gap: '1.5rem', zIndex: 2 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffffff' }} />
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Elec 40%</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-green)' }} />
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Gas 60%</span>
                         </div>
                     </div>
                 </div>
