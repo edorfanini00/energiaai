@@ -451,8 +451,8 @@ const PortfolioView = () => {
     };
 
     // Calculate dynamic intersection for the arc based on consumption totals
-    const elecVal = 40300;
-    const gasVal = 5550;
+    const elecVal = 21550; // roughly 47%
+    const gasVal = 24300;  // roughly 53%
     const totalEnergy = elecVal + gasVal;
     const elecPct = elecVal / totalEnergy;
     
@@ -671,9 +671,9 @@ const PortfolioView = () => {
                         {/* Centered text inside the arc */}
                         <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', pointerEvents: 'none' }}>
                             <div style={{ width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '1.5rem', transform: 'translateY(15%)', pointerEvents: 'auto' }}>
-                                <span style={{ fontSize: '1.3rem', fontWeight: 600, color: '#fff' }}>40,300</span>
+                                <span style={{ fontSize: '1.3rem', fontWeight: 600, color: '#fff' }}>{elecVal.toLocaleString()}</span>
                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>ELEC KWH</span>
-                                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff', marginTop: '0.5rem' }}>5,550</span>
+                                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff', marginTop: '0.5rem' }}>{gasVal.toLocaleString()}</span>
                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>GAS THERMS</span>
                             </div>
                         </div>
@@ -812,7 +812,7 @@ const PortfolioView = () => {
                         {hoveredArc === 'elec' ? 'Gas' : 'Electricity'}
                     </div>
                     <div style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.4rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
-                        {hoveredArc === 'elec' ? '5,550' : '40,300'}
+                        {hoveredArc === 'elec' ? gasVal.toLocaleString() : elecVal.toLocaleString()}
                         <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'rgba(255,255,255,0.5)' }}>
                             {hoveredArc === 'elec' ? 'Therms' : 'kWh'}
                         </span>
@@ -820,7 +820,7 @@ const PortfolioView = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: hoveredArc === 'elec' ? 'var(--accent-green)' : '#fff' }} />
                         <span style={{ fontSize: '0.9rem', color: hoveredArc === 'elec' ? 'var(--accent-green)' : '#f8fafc', fontWeight: 500 }}>
-                            {hoveredArc === 'elec' ? '12.1% of Total' : '87.9% of Total'}
+                            {hoveredArc === 'elec' ? `${(100 - elecPct * 100).toFixed(1)}% of Total` : `${(elecPct * 100).toFixed(1)}% of Total`}
                         </span>
                     </div>
                 </div>
