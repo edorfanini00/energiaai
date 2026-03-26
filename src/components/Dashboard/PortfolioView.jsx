@@ -616,7 +616,7 @@ const PortfolioView = () => {
 
                     {/* Half Arc with Pattern */}
                     <div style={{ position: 'relative', width: '100%', height: 'auto', marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
-                        <svg viewBox="0 0 240 150" width="100%" height="100%" style={{ overflow: 'visible', maxWidth: '380px' }}>
+                        <svg viewBox="20 20 200 125" width="100%" height="100%" style={{ overflow: 'visible' }}>
                             <defs>
                                 <pattern id="diagonalStripeLight" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
                                     <rect width="6" height="6" fill="#ffffff" />
@@ -640,9 +640,9 @@ const PortfolioView = () => {
                         </svg>
 
                         {/* Centered text inside the arc */}
-                        <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                            <div style={{ width: '150px', height: '150px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '1.5rem' }}>
-                                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff' }}>40,300</span>
+                        <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+                            <div style={{ width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '1.5rem', transform: 'translateY(15%)' }}>
+                                <span style={{ fontSize: '1.3rem', fontWeight: 600, color: '#fff' }}>40,300</span>
                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>ELEC KWH</span>
                                 <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff', marginTop: '0.5rem' }}>5,550</span>
                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>GAS THERMS</span>
