@@ -820,13 +820,13 @@ const PortfolioView = () => {
                     </div>
                     <div style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.4rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
                         {hoveredArc === 'elec' ? gasVal.toLocaleString() : elecVal.toLocaleString()}
-                        <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'rgba(255,255,255,0.5)' }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 500, color: hoveredArc === 'elec' ? '#ef4444' : 'var(--accent-green)' }}>
                             {hoveredArc === 'elec' ? 'Therms' : 'kWh'}
                         </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: hoveredArc === 'elec' ? 'var(--accent-green)' : '#fff' }} />
-                        <span style={{ fontSize: '0.9rem', color: hoveredArc === 'elec' ? 'var(--accent-green)' : '#f8fafc', fontWeight: 500 }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)' }} />
+                        <span style={{ fontSize: '0.9rem', color: 'var(--accent-green)', fontWeight: 500 }}>
                             {hoveredArc === 'elec' ? `${(100 - elecPct * 100).toFixed(1)}% of Total` : `${(elecPct * 100).toFixed(1)}% of Total`}
                         </span>
                     </div>
