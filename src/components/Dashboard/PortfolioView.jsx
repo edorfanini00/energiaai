@@ -566,8 +566,8 @@ const savingsGrowth = [
    PortfolioView Component
    ═══════════════════════════════════════════ */
 const PortfolioView = () => {
-    const [isDateOpen, setIsDateOpen] = useState(false);
-    const [dateRange, setDateRange] = useState('30 Days');
+    const [isBuildingOpen, setIsBuildingOpen] = useState(false);
+    const [selectedBuilding, setSelectedBuilding] = useState('All Buildings');
     const [activeModal, setActiveModal] = useState(null);
     const [savingsPeriod, setSavingsPeriod] = useState('ytd');
     const [showCalendar, setShowCalendar] = useState(false);
@@ -598,7 +598,7 @@ const PortfolioView = () => {
     const activeEfficiency = efficiencyByPeriod[savingsPeriod];
     const activeSavingsTotal = savingsTotalByPeriod[savingsPeriod];
 
-    const dateOptions = ['Today', 'Past 7 Days', '30 Days', 'This Month', 'Past Year', 'All Time'];
+    const buildingOptions = ['All Buildings', 'North Tower', 'South Center', 'West Complex', 'East Wing'];
     const savingsPeriods = [
         { key: '24h', label: '24 Hours' },
         { key: '7d', label: '7 Days' },
@@ -630,20 +630,20 @@ const PortfolioView = () => {
                     <div
                         className="date-pill"
                         style={{ cursor: 'pointer', userSelect: 'none' }}
-                        onClick={() => setIsDateOpen(!isDateOpen)}
+                        onClick={() => setIsBuildingOpen(!isBuildingOpen)}
                     >
-                        <Calendar size={14} /> {dateRange} <ChevronDown size={14} style={{ transform: isDateOpen ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                        <LayoutList size={14} /> {selectedBuilding} <ChevronDown size={14} style={{ transform: isBuildingOpen ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
                     </div>
 
-                    {isDateOpen && (
+                    {isBuildingOpen && (
                         <div className="glass-card" style={{ position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0, padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', zIndex: 50, minWidth: '160px', border: '1px solid var(--border-light)' }}>
-                            {dateOptions.map(opt => (
+                            {buildingOptions.map(opt => (
                                 <div
                                     key={opt}
-                                    onClick={() => { setDateRange(opt); setIsDateOpen(false); }}
-                                    style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer', color: dateRange === opt ? 'var(--accent-green)' : 'var(--text-primary)', background: dateRange === opt ? 'rgba(255,255,255,0.05)' : 'transparent', fontWeight: dateRange === opt ? 500 : 400, transition: '0.2s' }}
-                                    onMouseEnter={(e) => { if (dateRange !== opt) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
-                                    onMouseLeave={(e) => { if (dateRange !== opt) e.currentTarget.style.background = 'transparent' }}
+                                    onClick={() => { setSelectedBuilding(opt); setIsBuildingOpen(false); }}
+                                    style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer', color: selectedBuilding === opt ? 'var(--accent-green)' : 'var(--text-primary)', background: selectedBuilding === opt ? 'rgba(255,255,255,0.05)' : 'transparent', fontWeight: selectedBuilding === opt ? 500 : 400, transition: '0.2s' }}
+                                    onMouseEnter={(e) => { if (selectedBuilding !== opt) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+                                    onMouseLeave={(e) => { if (selectedBuilding !== opt) e.currentTarget.style.background = 'transparent' }}
                                 >
                                     {opt}
                                 </div>
