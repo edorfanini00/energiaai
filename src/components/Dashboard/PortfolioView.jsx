@@ -513,7 +513,7 @@ const PortfolioView = () => {
             </div>
 
             {/* ═══ Section 1 — Savings Cards with Period Selector ═══ */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '-0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-0.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                     {savingsPeriods.map((p) => (
                         <button
@@ -530,8 +530,7 @@ const PortfolioView = () => {
                             {p.label}
                         </button>
                     ))}
-                </div>
-                <div style={{ position: 'relative' }}>
+                    <div style={{ position: 'relative' }}>
                     <button
                         onClick={() => setShowCalendar(!showCalendar)}
                         style={{
@@ -555,6 +554,7 @@ const PortfolioView = () => {
                             </div>
                         </div>
                     )}
+                    </div>
                 </div>
             </div>
 
