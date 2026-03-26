@@ -47,6 +47,47 @@ const emissionsDataByPeriod = {
     'custom': []
 };
 
+// Building Map mock data keyed by period
+const mapBuildingsByPeriod = {
+    '24h': [
+        { id: 'north', name: 'North Tower', status: 'Optimal', energy: '4.2k' },
+        { id: 'south', name: 'South Center', status: 'Warning', energy: '5.1k' },
+        { id: 'west', name: 'West Complex', status: 'Optimal', energy: '3.8k' },
+        { id: 'east', name: 'East Wing', status: 'Optimal', energy: '3.3k' }
+    ],
+    '7d': [
+        { id: 'north', name: 'North Tower', status: 'Optimal', energy: '29.5k' },
+        { id: 'south', name: 'South Center', status: 'Warning', energy: '36.2k' },
+        { id: 'west', name: 'West Complex', status: 'Optimal', energy: '27.1k' },
+        { id: 'east', name: 'East Wing', status: 'Optimal', energy: '23.4k' }
+    ],
+    '1m': [
+        { id: 'north', name: 'North Tower', status: 'Optimal', energy: '124k' },
+        { id: 'south', name: 'South Center', status: 'Warning', energy: '158k' },
+        { id: 'west', name: 'West Complex', status: 'Optimal', energy: '115k' },
+        { id: 'east', name: 'East Wing', status: 'Optimal', energy: '98k' }
+    ],
+    'ytd': [
+        { id: 'north', name: 'North Tower', status: 'Optimal', energy: '1.4M' },
+        { id: 'south', name: 'South Center', status: 'Warning', energy: '1.8M' },
+        { id: 'west', name: 'West Complex', status: 'Optimal', energy: '1.3M' },
+        { id: 'east', name: 'East Wing', status: 'Optimal', energy: '1.1M' }
+    ],
+    'custom': [
+        { id: 'north', name: 'North Tower', status: '—', energy: '—' },
+        { id: 'south', name: 'South Center', status: '—', energy: '—' },
+        { id: 'west', name: 'West Complex', status: '—', energy: '—' },
+        { id: 'east', name: 'East Wing', status: '—', energy: '—' }
+    ]
+};
+
+const mapCoordinates = {
+    'west':  { top: '38%', left: '12%' },
+    'south': { top: '65%', left: '42%' },
+    'north': { top: '25%', left: '68%' },
+    'east':  { top: '40%', left: '85%' }
+};
+
 // Dense savings breakdown keyed by period (for modal visualization)
 const savingsBreakdownByPeriod = {
     '24h': Array.from({ length: 24 }).map((_, i) => ({ month: `${i}:00`, val: Math.floor(Math.random() * 50) + 10 })),
@@ -533,10 +574,14 @@ const PortfolioView = () => {
     const [customEnd, setCustomEnd] = useState('');
     const [hoveredArc, setHoveredArc] = useState(null);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [activeMapBuilding, setActiveMapBuilding] = useState(null);
 
     const handleArcMouseMove = (e) => {
         setMousePos({ x: e.clientX, y: e.clientY });
     };
+
+    // Map bindings
+    const activeBuildingList = mapBuildingsByPeriod[savingsPeriod];
 
     // Pull period-synced data
     const arcData = arcDataByPeriod[savingsPeriod];
@@ -680,6 +725,107 @@ const PortfolioView = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* Interactive Portfolio Map & Building Registry */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 320px) 1fr', gap: '1.5rem', height: '440px' }}>
+                {/* Building Registry (Left) */}
+                <div className="glass-card" style={{ padding: '0', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ padding: '1.5rem 1.5rem 1rem 1.5rem', borderBottom: '1px solid var(--border-light)' }}>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 400 }}>Portfolio Registry</h2>
+                    </div>
+                    <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+                        {activeBuildingList.map((b) => (
+                            <div 
+                                key={b.id}
+                                onMouseEnter={() => setActiveMapBuilding(b.id)}
+                                onMouseLeave={() => setActiveMapBuilding(null)}
+                                style={{ 
+                                    padding: '1.25rem 1.5rem', 
+                                    borderBottom: '1px solid var(--border-light)', 
+                                    cursor: 'pointer',
+                                    background: activeMapBuilding === b.id ? 'rgba(255,255,255,0.04)' : 'transparent',
+                                    transition: 'background 0.2s',
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                                }}
+                            >
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                                    <span style={{ fontSize: '1rem', fontWeight: 500, color: activeMapBuilding === b.id ? '#fff' : 'var(--text-primary)' }}>{b.name}</span>
+                                    <span style={{ fontSize: '0.75rem', color: b.status === 'Warning' ? '#ef4444' : 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: b.status === 'Warning' ? '#ef4444' : 'var(--accent-green)' }}></div>
+                                        {b.status}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.2rem' }}>
+                                    <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>{b.energy}</span>
+                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>kWh</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Interactive SVG Map (Right) */}
+                <div className="glass-card" style={{ position: 'relative', overflow: 'hidden', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyItems: 'center' }}>
+                    
+                    <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', zIndex: 10 }}>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 400 }}>Live Footprint</h2>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Real-time location telemetry</span>
+                    </div>
+
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.15 }}>
+                        {/* Generic Vector representation of a landmass map */}
+                        <svg viewBox="0 0 1000 600" style={{ width: '90%', height: '90%', filter: 'blur(1px)' }}>
+                            <path d="M150,200 Q200,100 350,120 T600,150 T800,100 T900,250 T850,450 T700,550 T500,500 T400,550 T200,500 T100,350 Z" fill="none" stroke="#fff" strokeWidth="8" strokeDasharray="16 16" />
+                            <path d="M250,250 Q300,180 400,200 T600,220 T750,180 T800,300 T750,400 T600,450 T500,420 T400,480 T300,400 T200,300 Z" fill="rgba(255,255,255,0.05)" />
+                        </svg>
+                    </div>
+
+                    {/* Overlay Dots */}
+                    {activeBuildingList.map((b) => (
+                        <div 
+                            key={`map-dot-${b.id}`}
+                            onMouseEnter={() => setActiveMapBuilding(b.id)}
+                            onMouseLeave={() => setActiveMapBuilding(null)}
+                            style={{
+                                position: 'absolute',
+                                top: mapCoordinates[b.id].top,
+                                left: mapCoordinates[b.id].left,
+                                width: '16px', height: '16px',
+                                borderRadius: '50%',
+                                background: b.status === 'Warning' ? '#ef4444' : 'var(--accent-green)',
+                                cursor: 'pointer',
+                                transform: activeMapBuilding === b.id ? 'translate(-50%, -50%) scale(1.5)' : 'translate(-50%, -50%) scale(1)',
+                                transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                                zIndex: activeMapBuilding === b.id ? 20 : 10,
+                                boxShadow: activeMapBuilding === b.id 
+                                    ? `0 0 24px 8px ${b.status === 'Warning' ? 'rgba(239,68,68,0.4)' : 'rgba(52,199,89,0.4)'}` 
+                                    : 'none'
+                            }}
+                        >
+                            {/* Inner Dot Pulse Ring */}
+                            <div className="pulse-ring" style={{
+                                position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                                width: '100%', height: '100%', borderRadius: '50%',
+                                background: 'transparent',
+                                border: `2px solid ${b.status === 'Warning' ? '#ef4444' : 'var(--accent-green)'}`,
+                                animation: 'pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1)'
+                            }} />
+
+                            {/* Label Tag showing strictly on hover */}
+                            {activeMapBuilding === b.id && (
+                                <div style={{
+                                    position: 'absolute', top: '-35px', left: '50%', transform: 'translateX(-50%)',
+                                    background: 'var(--bg-input)', border: '1px solid var(--border-light)',
+                                    padding: '4px 8px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600,
+                                    color: '#fff', whiteSpace: 'nowrap', pointerEvents: 'none'
+                                }}>
+                                    {b.name}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
 
             {/* Main Charts Row */}
