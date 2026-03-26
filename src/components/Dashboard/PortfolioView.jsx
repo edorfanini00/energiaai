@@ -6,44 +6,29 @@ import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, Tren
 
 // Energy Usage Trend data keyed by period
 const trendDataByPeriod = {
-    '24h': [
-        { label: '6AM', elec: 80, gas: 60, total: 140 },
-        { label: '9AM', elec: 120, gas: 90, total: 210 },
-        { label: '12PM', elec: 150, gas: 110, total: 260 },
-        { label: '3PM', elec: 130, gas: 100, total: 230 },
-        { label: '6PM', elec: 110, gas: 85, total: 195 },
-        { label: '9PM', elec: 90, gas: 70, total: 160 },
-        { label: '12AM', elec: 60, gas: 45, total: 105 },
-    ],
+    '24h': Array.from({ length: 24 }).map((_, i) => ({ label: `${i}:00`, elec: Math.floor(Math.random() * 80 + 40), gas: Math.floor(Math.random() * 60 + 30), total: 0 })),
     '7d': [
-        { label: 'Mar 20', elec: 900, gas: 750, total: 1650 },
-        { label: 'Mar 21', elec: 1050, gas: 880, total: 1930 },
-        { label: 'Mar 22', elec: 980, gas: 820, total: 1800 },
-        { label: 'Mar 23', elec: 1120, gas: 950, total: 2070 },
-        { label: 'Mar 24', elec: 870, gas: 710, total: 1580 },
-        { label: 'Mar 25', elec: 1200, gas: 1050, total: 2250 },
-        { label: 'Mar 26', elec: 1080, gas: 900, total: 1980 },
+        { label: 'Mon', elec: 900, gas: 750, total: 1650 },
+        { label: 'Tue', elec: 1050, gas: 880, total: 1930 },
+        { label: 'Wed', elec: 980, gas: 820, total: 1800 },
+        { label: 'Thu', elec: 1120, gas: 950, total: 2070 },
+        { label: 'Fri', elec: 870, gas: 710, total: 1580 },
+        { label: 'Sat', elec: 1200, gas: 1050, total: 2250 },
+        { label: 'Sun', elec: 1080, gas: 900, total: 1980 },
     ],
-    '1m': [
-        { label: 'Week 1', elec: 3200, gas: 2800, total: 6000 },
-        { label: 'Week 2', elec: 3800, gas: 3100, total: 6900 },
-        { label: 'Week 3', elec: 2900, gas: 2500, total: 5400 },
-        { label: 'Week 4', elec: 4100, gas: 3600, total: 7700 },
-        { label: 'Week 5', elec: 3500, gas: 3000, total: 6500 },
-        { label: 'Week 6', elec: 3900, gas: 3400, total: 7300 },
-        { label: 'Week 7', elec: 3600, gas: 3100, total: 6700 },
-    ],
+    '1m': Array.from({ length: 30 }).map((_, i) => ({ label: `${i + 1}`, elec: Math.floor(Math.random() * 300 + 400), gas: Math.floor(Math.random() * 200 + 300), total: 0 })),
     'ytd': [
-        { label: 'Jan', elec: 1000, gas: 900, total: 1900 },
-        { label: 'Feb', elec: 1200, gas: 1100, total: 2300 },
-        { label: 'Mar', elec: 900, gas: 700, total: 1600 },
-        { label: 'Apr', elec: 1600, gas: 1400, total: 3000 },
-        { label: 'May', elec: 1100, gas: 1000, total: 2100 },
-        { label: 'Jun', elec: 1300, gas: 1100, total: 2400 },
-        { label: 'Jul', elec: 1500, gas: 1300, total: 2800 },
+        { label: 'Jan', elec: 1000, gas: 900, total: 1900 }, { label: 'Feb', elec: 1200, gas: 1100, total: 2300 }, { label: 'Mar', elec: 900, gas: 700, total: 1600 },
+        { label: 'Apr', elec: 1600, gas: 1400, total: 3000 }, { label: 'May', elec: 1100, gas: 1000, total: 2100 }, { label: 'Jun', elec: 1300, gas: 1100, total: 2400 },
+        { label: 'Jul', elec: 1500, gas: 1300, total: 2800 }, { label: 'Aug', elec: 1450, gas: 1250, total: 2700 }, { label: 'Sep', elec: 1250, gas: 1100, total: 2350 },
+        { label: 'Oct', elec: 1400, gas: 1200, total: 2600 }, { label: 'Nov', elec: 1550, gas: 1450, total: 3000 }, { label: 'Dec', elec: 1800, gas: 1600, total: 3400 }
     ],
     'custom': [],
 };
+
+Object.values(trendDataByPeriod).forEach(arr => {
+    arr.forEach(d => { if(d.total === 0) d.total = d.elec + d.gas; });
+});
 
 // Dense emissions breakdown keyed by period (for modal visualization)
 const emissionsDataByPeriod = {
@@ -804,13 +789,37 @@ const PortfolioView = () => {
                 </div>
 
                 {/* Energy Usage Trend Chart */}
-                <div className="glass-card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <div 
+                    className="glass-card"
+                    onClick={() => setActiveModal('trend')}
+                    style={{
+                        padding: '1.5rem',
+                        position: 'relative',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        cursor: 'pointer',
+                        border: '1px solid transparent',
+                        transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border-light)';
+                        e.currentTarget.style.boxShadow = `0 0 24px rgba(255,255,255,0.08)`;
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'transparent';
+                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.transform = 'none';
+                    }}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                         <h2 style={{ fontSize: '1.5rem', fontWeight: 400 }}>Energy Usage Trend</h2>
+                        <Maximize2 size={16} color="var(--text-muted)" />
                     </div>
 
-                    <ResponsiveContainer width="100%" height="100%">
-                        <ComposedChart data={activeTrendData} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
+                    <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <ComposedChart data={activeTrendData.slice(0, 8)} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorGreenTrend" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4} />
@@ -831,6 +840,7 @@ const PortfolioView = () => {
                             <Line type="monotone" dataKey="total" stroke="none" activeDot={{ r: 6, fill: '#fff', stroke: 'var(--accent-green)', strokeWidth: 2 }} dot={{ r: 4, fill: '#111', stroke: 'var(--accent-green)', strokeWidth: 2 }} />
                         </ComposedChart>
                     </ResponsiveContainer>
+                    </div>
                 </div>
             </div>
 
@@ -1045,6 +1055,65 @@ const PortfolioView = () => {
                                     <Bar dataKey="emissions" fill="url(#solidOrangeGrad)" radius={[6, 6, 0, 0]} />
                                     <Bar dataKey="reduced" fill="url(#solidEmiGreenGrad)" radius={[6, 6, 0, 0]} />
                                 </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Energy Trend Modal */}
+            {activeModal === 'trend' && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                    <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column', animation: 'modalSlideIn 0.25s ease-out' }}>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <div>
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>Energy Usage Trend</h3>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
+                                    <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#fff' }}>{(activeTrendData.reduce((acc, obj) => acc + obj.total, 0)).toLocaleString()}</span>
+                                    <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>kWh + therms combined overall</span>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', alignItems: 'center' }}>
+                                {savingsPeriods.map((p) => (
+                                    <button
+                                        key={`modal-trnd-${p.key}`}
+                                        onClick={() => setSavingsPeriod(p.key)}
+                                        style={{
+                                            padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
+                                            border: '1px solid', cursor: 'pointer', transition: 'all 0.2s',
+                                            background: savingsPeriod === p.key ? 'rgba(255,255,255,0.08)' : 'transparent',
+                                            borderColor: savingsPeriod === p.key ? '#fff' : 'var(--border-light)',
+                                            color: savingsPeriod === p.key ? '#fff' : 'var(--text-secondary)',
+                                        }}
+                                    >
+                                        {p.label}
+                                    </button>
+                                ))}
+                                <button onClick={() => setActiveModal(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', marginLeft: '1rem', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+                                    <X size={24} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style={{ flex: 1, position: 'relative' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={activeTrendData} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="modalColorGreenTrend" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4} />
+                                            <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                                    <XAxis dataKey="label" axisLine={false} tickLine={false} dy={10} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} />
+                                    <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => v === 0 ? '0' : `${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} />
+                                    <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} content={<CustomTrendTooltip />} />
+
+                                    <Bar dataKey="elec" stackId="a" fill="rgba(255,255,255,0.85)" barSize={14} />
+                                    <Bar dataKey="gas" stackId="a" fill="var(--accent-green)" opacity={0.9} barSize={14} radius={[6, 6, 0, 0]} />
+                                    <Area type="monotone" dataKey="total" stroke="var(--accent-green)" strokeWidth={2.5} fillOpacity={1} fill="url(#modalColorGreenTrend)" />
+                                </ComposedChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
