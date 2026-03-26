@@ -704,12 +704,18 @@ const PortfolioView = () => {
                     <div
                         key={card.label}
                         className="glass-card"
+                        onClick={() => {
+                            if (card.label === 'MONETARY SAVINGS') {
+                                setActiveModal('savings');
+                            }
+                        }}
                         style={{
                             padding: '1.5rem 1.75rem',
                             position: 'relative',
                             overflow: 'hidden',
                             border: '1px solid transparent',
                             transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s',
+                            cursor: card.label === 'MONETARY SAVINGS' ? 'pointer' : 'default',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.borderColor = 'var(--border-light)';
@@ -846,7 +852,7 @@ const PortfolioView = () => {
             </div>
 
             {/* Bottom Cards Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', height: '240px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', height: '240px' }}>
 
                 {/* Carbon Emissions by Month */}
                 <div className="glass-card" style={{ padding: '1.5rem' }}>
@@ -882,35 +888,7 @@ const PortfolioView = () => {
                     </div>
                 </div>
 
-                {/* Energy Savings Breakdown */}
-                <div className="glass-card" style={{ padding: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Energy Savings</h3>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '1rem' }}>
-                        <span style={{ fontSize: '2rem', fontWeight: 500, letterSpacing: '-0.02em' }}>{activeSavingsTotal}</span>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>total</span>
-                    </div>
 
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={activeSavingsBreakdown} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                            <defs>
-                                <pattern id="diagStripe" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-                                    <rect width="6" height="6" fill="rgba(255,255,255,0.05)" />
-                                    <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
-                                </pattern>
-                            </defs>
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} dy={5} />
-                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px' }} formatter={(v) => [`$${v}`]} />
-                            <Bar dataKey="val" radius={[10, 10, 10, 10]} barSize={20}>
-                                {activeSavingsBreakdown.map((entry, index) => {
-                                    let fill = "var(--text-primary)";
-                                    if (entry.type === 'green') fill = "var(--accent-green)";
-                                    if (entry.type === 'striped') fill = "url(#diagStripe)";
-                                    return <Cell key={`cell-${index}`} fill={fill} />;
-                                })}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
 
             </div>
 
@@ -948,6 +926,46 @@ const PortfolioView = () => {
                         <span style={{ fontSize: '0.9rem', color: 'var(--accent-green)', fontWeight: 500 }}>
                             {hoveredArc === 'elec' ? `${(100 - elecPct * 100).toFixed(1)}% of Total` : `${(elecPct * 100).toFixed(1)}% of Total`}
                         </span>
+                    </div>
+                </div>
+            )}
+
+            {/* Savings Modal */}
+            {activeModal === 'savings' && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                    <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                        <button onClick={() => setActiveModal(null)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                            <X size={24} />
+                        </button>
+                        
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '1.5rem' }}>Energy Savings Breakdown</h3>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
+                            <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#22d3ee' }}>{activeSavingsTotal}</span>
+                            <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>total saved this period</span>
+                        </div>
+
+                        <div style={{ flex: 1, position: 'relative' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={activeSavingsBreakdown} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <pattern id="diagStripeModal" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                                            <rect width="8" height="8" fill="rgba(255,255,255,0.05)" />
+                                            <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,0.2)" strokeWidth="2.5" />
+                                        </pattern>
+                                    </defs>
+                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
+                                    <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '1.1rem' }} formatter={(v) => [`$${v}`]} />
+                                    <Bar dataKey="val" radius={[12, 12, 12, 12]} barSize={40}>
+                                        {activeSavingsBreakdown.map((entry, index) => {
+                                            let fill = "var(--text-primary)";
+                                            if (entry.type === 'green') fill = "var(--accent-green)";
+                                            if (entry.type === 'striped') fill = "url(#diagStripeModal)";
+                                            return <Cell key={`cell-${index}`} fill={fill} />;
+                                        })}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </div>
             )}
