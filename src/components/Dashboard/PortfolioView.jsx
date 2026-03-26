@@ -648,11 +648,15 @@ const PortfolioView = () => {
                                 onMouseEnter={() => setHoveredArc('gas')} 
                                 onMouseLeave={() => setHoveredArc(null)} 
                                 onMouseMove={handleArcMouseMove}
-                                style={{ cursor: 'crosshair', transition: 'opacity 0.2s' }}
-                                opacity={hoveredArc === 'elec' ? 0.4 : 1}
+                                style={{ 
+                                    cursor: 'crosshair', 
+                                    transition: 'filter 0.3s ease',
+                                    filter: hoveredArc === 'elec' ? 'brightness(0.35) saturate(0.6)' : 'brightness(1) saturate(1)'
+                                }}
                             >
-                                {/* strokeLinecap='round' handles both the right edge cap AND the rounded start underbelly for the intersection */}
-                                <path d={`M ${intX},${intY} A 80,80 0 0,1 200,120`} fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="round" pointerEvents="stroke" />
+                                {/* By omitting round cap left-overlap, the green arc's edge natively conforms to the true shape of the opaque white cap biting into it. */}
+                                <path d={`M ${intX},${intY} A 80,80 0 0,1 200,120`} fill="none" stroke="var(--accent-green)" strokeWidth="40" strokeLinecap="butt" pointerEvents="stroke" />
+                                <circle cx="200" cy="120" r="20" fill="var(--accent-green)" pointerEvents="none" />
                             </g>
                             
                             {/* Left Side (Electricity) - Patterned White */}
@@ -660,8 +664,11 @@ const PortfolioView = () => {
                                 onMouseEnter={() => setHoveredArc('elec')} 
                                 onMouseLeave={() => setHoveredArc(null)} 
                                 onMouseMove={handleArcMouseMove}
-                                style={{ cursor: 'crosshair', transition: 'opacity 0.2s' }}
-                                opacity={hoveredArc === 'gas' ? 0.4 : 1}
+                                style={{ 
+                                    cursor: 'crosshair', 
+                                    transition: 'filter 0.3s ease',
+                                    filter: hoveredArc === 'gas' ? 'brightness(0.35) saturate(0.6)' : 'brightness(1) saturate(1)'
+                                }}
                             >
                                 <path d={`M 40,120 A 80,80 0 0,1 ${intX},${intY}`} fill="none" stroke="url(#diagonalStripeLight)" strokeWidth="40" strokeLinecap="butt" pointerEvents="stroke" />
                                 <circle cx={intX} cy={intY} r="20" fill="url(#diagonalStripeLight)" pointerEvents="none" />
