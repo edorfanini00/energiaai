@@ -61,14 +61,14 @@ const FinancialView = () => {
 
     return (
         <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
                     <h1 style={{ fontSize: '2rem', fontWeight: 600, margin: 0 }}>Financial Overview</h1>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '0.25rem' }}>Track solution costs, energy savings, and performance returns.</p>
                 </div>
                 
                 {/* Period Selector */}
-                <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-light)', width: 'fit-content' }}>
                     {['Day', 'Week', 'Month', 'Year'].map(p => (
                         <button
                             key={p}
