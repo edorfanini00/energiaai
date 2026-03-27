@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChart, Line, Cell, LineChart } from 'recharts';
 import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3, X, TrendingUp, Flame, Maximize2, Thermometer, Users, Sun, Wind, Shield, Droplets, AlertTriangle, CheckCircle2, Info, Activity } from 'lucide-react';
 
@@ -607,17 +607,31 @@ const scaleArr = (arr, mult, building, variationKey) => {
 /* ═══════════════════════════════════════════
    BuildingView Component
    ═══════════════════════════════════════════ */
+import { useLocation } from 'react-router-dom';
+
 const BuildingView = () => {
+    const location = useLocation();
+    
+    // Initialize from location state if available
+    const initialBuilding = location.state?.selectedBuilding || 'North Tower';
+    const initialTab = location.state?.activeTab || 'energy';
+
     const [isBuildingOpen, setIsBuildingOpen] = useState(false);
-    const [selectedBuilding, setSelectedBuilding] = useState('North Tower');
+    const [selectedBuilding, setSelectedBuilding] = useState(initialBuilding);
     const [activeModal, setActiveModal] = useState(null);
     const [savingsPeriod, setSavingsPeriod] = useState('ytd');
     const [showCalendar, setShowCalendar] = useState(false);
     const [customStart, setCustomStart] = useState('');
     const [customEnd, setCustomEnd] = useState('');
     const [hoveredArc, setHoveredArc] = useState(null);
-    const [activeTab, setActiveTab] = useState('energy');
+    const [activeTab, setActiveTab] = useState(initialTab);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+    // Update if location state changes while mounted
+    useEffect(() => {
+        if (location.state?.selectedBuilding) setSelectedBuilding(location.state.selectedBuilding);
+        if (location.state?.activeTab) setActiveTab(location.state.activeTab);
+    }, [location.state]);
 
     const handleArcMouseMove = (e) => {
         setMousePos({ x: e.clientX, y: e.clientY });

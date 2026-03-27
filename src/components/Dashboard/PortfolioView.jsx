@@ -612,7 +612,11 @@ const savingsGrowth = [
 /* ═══════════════════════════════════════════
    PortfolioView Component
    ═══════════════════════════════════════════ */
+import { useNavigate } from 'react-router-dom';
+
 const PortfolioView = () => {
+    const navigate = useNavigate();
+    const [activeAlertsMenu, setActiveAlertsMenu] = useState(null);
     const [isBuildingOpen, setIsBuildingOpen] = useState(false);
     const [selectedBuilding, setSelectedBuilding] = useState('All Buildings');
     const [activeModal, setActiveModal] = useState(null);
@@ -895,12 +899,46 @@ const PortfolioView = () => {
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{b.address}</span>
                                     </div>
                                     {b.alerts > 0 && (
-                                        <div style={{ 
-                                            padding: '0.25rem 0.5rem', background: 'rgba(239, 68, 68, 0.1)', 
-                                            border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '4px',
-                                            color: '#ef4444', fontSize: '0.7rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.2rem'
-                                        }}>
-                                            ⚠️ {b.alerts} Alert{b.alerts > 1 ? 's' : ''}
+                                        <div style={{ position: 'relative' }}>
+                                            <button 
+                                                onClick={() => setActiveAlertsMenu(activeAlertsMenu === b.id ? null : b.id)}
+                                                style={{ 
+                                                    padding: '0.25rem 0.5rem', background: 'rgba(239, 68, 68, 0.1)', 
+                                                    border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '4px',
+                                                    color: '#ef4444', fontSize: '0.7rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.2rem',
+                                                    cursor: 'pointer'
+                                                }}>
+                                                ⚠️ {b.alerts} Alert{b.alerts > 1 ? 's' : ''}
+                                            </button>
+                                            {activeAlertsMenu === b.id && (
+                                                <div style={{
+                                                    position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem',
+                                                    background: '#111827', border: '1px solid var(--border-light)',
+                                                    borderRadius: '8px', padding: '0.75rem', width: '220px',
+                                                    zIndex: 50, boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                                                }}>
+                                                    <div style={{ fontSize: '0.75rem', color: '#fff', marginBottom: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                                            <span style={{ color: '#ef4444' }}>●</span> HVAC Filter Mismatch
+                                                        </div>
+                                                        {b.alerts > 1 && (
+                                                            <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                                                <span style={{ color: '#f97316' }}>●</span> Security Override Active
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => navigate('/building', { state: { selectedBuilding: b.name, activeTab: 'status' } })}
+                                                        style={{
+                                                            width: '100%', padding: '0.4rem', background: 'var(--accent-green)',
+                                                            color: '#000', border: 'none', borderRadius: '4px', fontWeight: 600,
+                                                            fontSize: '0.75rem', cursor: 'pointer', marginTop: '0.5rem'
+                                                        }}
+                                                    >
+                                                        View Dashboard
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
