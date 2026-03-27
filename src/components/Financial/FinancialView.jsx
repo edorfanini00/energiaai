@@ -44,7 +44,7 @@ const FinancialView = () => {
             accentColor: 'var(--accent-green)'
         },
         {
-            label: 'Projected Savings',
+            label: 'Savings',
             value: '$42.5k',
             unit: 'Energy Maint.',
             trend: 15.3,
