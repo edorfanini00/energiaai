@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChart, Line, Cell, LineChart } from 'recharts';
-import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3, X, TrendingUp, Flame, Maximize2 } from 'lucide-react';
+import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3, X, TrendingUp, Flame, Maximize2, Thermometer, Users, Sun, Wind, Shield, Droplets, AlertTriangle, CheckCircle2, Info, Activity } from 'lucide-react';
 
 /* ─── Mock Data ─── */
 
@@ -616,6 +616,7 @@ const BuildingView = () => {
     const [customStart, setCustomStart] = useState('');
     const [customEnd, setCustomEnd] = useState('');
     const [hoveredArc, setHoveredArc] = useState(null);
+    const [activeTab, setActiveTab] = useState('summary');
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
     const handleArcMouseMove = (e) => {
@@ -715,6 +716,31 @@ const BuildingView = () => {
                     )}
                 </div>
             </div>
+
+            {/* ═══ Tab Navigation ═══ */}
+            <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '4px', border: '1px solid var(--border-light)' }}>
+                {[{ key: 'summary', label: 'Summary', icon: BarChart3 }, { key: 'energy', label: 'Energy', icon: Zap }, { key: 'status', label: 'Status', icon: Activity }].map(tab => (
+                    <button
+                        key={tab.key}
+                        onClick={() => setActiveTab(tab.key)}
+                        style={{
+                            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                            padding: '0.65rem 1.25rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 500,
+                            cursor: 'pointer', transition: 'all 0.25s',
+                            background: activeTab === tab.key ? 'rgba(255,255,255,0.08)' : 'transparent',
+                            border: activeTab === tab.key ? '1px solid var(--accent-green)' : '1px solid transparent',
+                            color: activeTab === tab.key ? 'var(--accent-green)' : 'var(--text-secondary)',
+                            boxShadow: activeTab === tab.key ? '0 0 12px rgba(0,255,136,0.08)' : 'none',
+                        }}
+                    >
+                        <tab.icon size={16} />
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* ═══ SUMMARY TAB ═══ */}
+            {activeTab === 'summary' && (<>
 
             {/* ═══ Building Savings Cards ═══ */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
@@ -1000,6 +1026,248 @@ const BuildingView = () => {
 
 
             </div>
+
+            </>)}
+
+            {/* ═══ ENERGY TAB ═══ */}
+            {activeTab === 'energy' && (<>
+                {/* Energy Savings Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                    {buildingSavingsCards.map((card) => (
+                        <div key={card.label} className="glass-card" style={{ padding: '1.5rem 1.75rem', border: '1px solid transparent', transition: 'border-color 0.25s, transform 0.2s' }}
+                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = card.accentColor; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'none'; }}>
+                            <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>{card.label}</span>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                <span style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-0.03em' }}>{card.value}</span>
+                                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{card.unit}</span>
+                            </div>
+                            <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', fontWeight: 600, color: card.trend > 0 ? 'var(--accent-green)' : 'var(--accent-green)' }}>
+                                {card.trend > 0 ? '+' : ''}{card.trend}% <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>vs prior period</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Consumption Arc + Trend */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                    {/* Consumption Arc */}
+                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, alignSelf: 'flex-start', marginBottom: '1rem' }}>Consumption Breakdown</h3>
+                        <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total</span>
+                            <div style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em' }}>{totalEnergy.toLocaleString()}<span style={{ fontSize: '1rem', color: 'var(--text-muted)', marginLeft: '0.35rem' }}>kWh</span></div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-green)', margin: '0 auto 0.5rem' }} />
+                                <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{elecVal.toLocaleString()}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ELEC kWh</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--accent-green)', fontWeight: 600, marginTop: '0.25rem' }}>{(elecPct * 100).toFixed(1)}%</div>
+                            </div>
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f97316', margin: '0 auto 0.5rem' }} />
+                                <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{gasVal.toLocaleString()}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>GAS Therms</div>
+                                <div style={{ fontSize: '0.75rem', color: '#f97316', fontWeight: 600, marginTop: '0.25rem' }}>{((1 - elecPct) * 100).toFixed(1)}%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Energy Trend */}
+                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Energy Usage Trend</h3>
+                        <div style={{ flex: 1, minHeight: '200px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={activeTrendData} margin={{ top: 5, right: 5, left: -15, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="energyGradElec" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="var(--accent-green)" stopOpacity={0.3} />
+                                            <stop offset="100%" stopColor="var(--accent-green)" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
+                                    <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                                    <Area type="monotone" dataKey="elec" fill="url(#energyGradElec)" stroke="var(--accent-green)" strokeWidth={2} name="Electricity" />
+                                    <Bar dataKey="gas" fill="#f97316" radius={[3,3,0,0]} barSize={8} name="Gas" />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Emissions + Savings */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Carbon Emissions</h3>
+                        <div style={{ flex: 1, minHeight: '180px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={activeEmissionsData.slice(0, 7)} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${v}t`} />
+                                    <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                                    <Bar dataKey="emissions" name="Emissions (t)" fill="#f97316" radius={[4,4,4,4]} barSize={12} />
+                                    <Bar dataKey="reduced" name="Reduced (t)" fill="var(--accent-green)" radius={[4,4,4,4]} barSize={12} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Savings Breakdown</h3>
+                        <div style={{ flex: 1, minHeight: '180px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={activeSavingsBreakdown} margin={{ top: 0, right: 0, left: -10, bottom: 0 }}>
+                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `$${v}`} />
+                                    <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} formatter={(v) => [`$${v}`]} />
+                                    <Bar dataKey="val" fill="var(--accent-green)" radius={[4,4,0,0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+            </>)}
+
+            {/* ═══ STATUS TAB ═══ */}
+            {activeTab === 'status' && (() => {
+                const statusData = {
+                    'North Tower':  { temp: 72, occupancy: 84, lighting: 60, airQuality: 96, hvac: 'operational', lighting_sys: 'optimal', security: 'operational', water: 'warning' },
+                    'South Center': { temp: 74, occupancy: 78, lighting: 72, airQuality: 91, hvac: 'operational', lighting_sys: 'warning', security: 'operational', water: 'operational' },
+                    'West Complex': { temp: 69, occupancy: 62, lighting: 55, airQuality: 83, hvac: 'warning', lighting_sys: 'operational', security: 'warning', water: 'operational' },
+                    'East Wing':    { temp: 71, occupancy: 91, lighting: 68, airQuality: 98, hvac: 'operational', lighting_sys: 'operational', security: 'operational', water: 'operational' },
+                };
+                const alertsData = {
+                    'North Tower': [
+                        { type: 'warning', msg: 'Water pressure anomaly detected in Floor 3', time: '12 minutes ago', icon: AlertTriangle, color: '#f97316' },
+                        { type: 'success', msg: 'Optimization complete: 15% energy reduction achieved', time: '1 hour ago', icon: CheckCircle2, color: 'var(--accent-green)' },
+                        { type: 'info', msg: 'Scheduled maintenance due for HVAC system', time: '3 hours ago', icon: Info, color: '#38bdf8' },
+                    ],
+                    'South Center': [
+                        { type: 'warning', msg: 'Lighting control module needs calibration — Zone A', time: '8 minutes ago', icon: AlertTriangle, color: '#f97316' },
+                        { type: 'success', msg: 'Fire suppression system test passed', time: '2 hours ago', icon: CheckCircle2, color: 'var(--accent-green)' },
+                        { type: 'info', msg: 'Elevator maintenance scheduled for next week', time: '5 hours ago', icon: Info, color: '#38bdf8' },
+                    ],
+                    'West Complex': [
+                        { type: 'warning', msg: 'HVAC compressor running at 92% capacity', time: '2 minutes ago', icon: AlertTriangle, color: '#f97316' },
+                        { type: 'warning', msg: 'Security camera offline — Parking Level B2', time: '25 minutes ago', icon: AlertTriangle, color: '#f97316' },
+                        { type: 'info', msg: 'Air filter replacement due in 5 days', time: '1 hour ago', icon: Info, color: '#38bdf8' },
+                    ],
+                    'East Wing': [
+                        { type: 'success', msg: 'AI-optimized HVAC scheduling saved 22% this week', time: '30 minutes ago', icon: CheckCircle2, color: 'var(--accent-green)' },
+                        { type: 'success', msg: 'All building systems operating at peak efficiency', time: '2 hours ago', icon: CheckCircle2, color: 'var(--accent-green)' },
+                        { type: 'info', msg: 'Monthly energy report available for download', time: '4 hours ago', icon: Info, color: '#38bdf8' },
+                    ],
+                };
+
+                const st = statusData[selectedBuilding];
+                const alerts = alertsData[selectedBuilding];
+
+                const statusLabel = (val, thresholds) => {
+                    if (val >= thresholds[0]) return { text: 'Excellent', color: 'var(--accent-green)' };
+                    if (val >= thresholds[1]) return { text: 'Optimal', color: 'var(--accent-green)' };
+                    if (val >= thresholds[2]) return { text: 'Moderate', color: '#eab308' };
+                    return { text: 'Low', color: '#f97316' };
+                };
+                const sysLabel = (val) => val === 'operational' ? { text: 'Operational', color: 'var(--accent-green)', icon: CheckCircle2 } : { text: 'Needs Attention', color: '#f97316', icon: AlertTriangle };
+
+                const statusRows = [
+                    { icon: Thermometer, label: 'Temperature', value: `${st.temp}°F`, status: statusLabel(st.temp, [72, 68, 65]) },
+                    { icon: Users, label: 'Occupancy', value: `${st.occupancy}%`, status: st.occupancy >= 80 ? { text: 'High', color: '#38bdf8' } : st.occupancy >= 60 ? { text: 'Moderate', color: '#eab308' } : { text: 'Low', color: 'var(--text-secondary)' } },
+                    { icon: Sun, label: 'Lighting', value: `${st.lighting}%`, status: statusLabel(st.lighting, [70, 55, 40]) },
+                    { icon: Wind, label: 'Air Quality', value: String(st.airQuality), status: statusLabel(st.airQuality, [95, 85, 70]) },
+                ];
+                const systemRows = [
+                    { icon: Flame, label: 'HVAC System', ...sysLabel(st.hvac) },
+                    { icon: Sun, label: 'Lighting Control', ...sysLabel(st.lighting_sys) },
+                    { icon: Shield, label: 'Security System', ...sysLabel(st.security) },
+                    { icon: Droplets, label: 'Water Management', ...sysLabel(st.water) },
+                ];
+
+                return (<>
+                    {/* Building Status */}
+                    <div className="glass-card" style={{ padding: '1.75rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1.5rem' }}>Building Status</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            {statusRows.map((row, i) => (
+                                <div key={row.label} style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                    padding: '1rem 1.25rem', borderRadius: '12px',
+                                    background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                                    transition: 'background 0.2s',
+                                }}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <row.icon size={20} color="var(--text-secondary)" />
+                                        <div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{row.label}</div>
+                                            <div style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '-0.02em' }}>{row.value}</div>
+                                        </div>
+                                    </div>
+                                    <span style={{ fontSize: '0.85rem', fontWeight: 600, color: row.status.color }}>{row.status.text}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* System Health */}
+                    <div className="glass-card" style={{ padding: '1.75rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1.5rem' }}>System Health</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            {systemRows.map((sys) => (
+                                <div key={sys.label} style={{
+                                    display: 'flex', alignItems: 'center', gap: '0.75rem',
+                                    padding: '1rem 1.25rem', borderRadius: '12px',
+                                    background: 'rgba(255,255,255,0.02)',
+                                    border: '1px solid',
+                                    borderColor: sys.color === 'var(--accent-green)' ? 'rgba(0,255,136,0.1)' : 'rgba(249,115,22,0.2)',
+                                    transition: 'border-color 0.25s, transform 0.2s',
+                                }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = sys.color === 'var(--accent-green)' ? 'rgba(0,255,136,0.3)' : 'rgba(249,115,22,0.5)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = sys.color === 'var(--accent-green)' ? 'rgba(0,255,136,0.1)' : 'rgba(249,115,22,0.2)'; e.currentTarget.style.transform = 'none'; }}
+                                >
+                                    <sys.icon size={22} color={sys.color} />
+                                    <div>
+                                        <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>{sys.label}</div>
+                                        <div style={{ fontSize: '0.75rem', color: sys.color, fontWeight: 600, marginTop: '0.15rem' }}>{sys.text}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Recent Alerts */}
+                    <div className="glass-card" style={{ padding: '1.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+                            <AlertTriangle size={20} color="#f97316" />
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 400 }}>Recent Alerts</h3>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            {alerts.map((alert, i) => (
+                                <div key={i} style={{
+                                    display: 'flex', alignItems: 'center', gap: '1rem',
+                                    padding: '1rem 1.25rem', borderRadius: '12px',
+                                    background: alert.type === 'warning' ? 'rgba(249,115,22,0.06)' : alert.type === 'success' ? 'rgba(0,255,136,0.04)' : 'rgba(56,189,248,0.04)',
+                                    border: '1px solid',
+                                    borderColor: alert.type === 'warning' ? 'rgba(249,115,22,0.15)' : alert.type === 'success' ? 'rgba(0,255,136,0.1)' : 'rgba(56,189,248,0.1)',
+                                    transition: 'border-color 0.25s',
+                                }}
+                                    onMouseEnter={(e) => e.currentTarget.style.borderColor = alert.color}
+                                    onMouseLeave={(e) => e.currentTarget.style.borderColor = alert.type === 'warning' ? 'rgba(249,115,22,0.15)' : alert.type === 'success' ? 'rgba(0,255,136,0.1)' : 'rgba(56,189,248,0.1)'}
+                                >
+                                    <alert.icon size={18} color={alert.color} style={{ flexShrink: 0 }} />
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>{alert.msg}</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{alert.time}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </>);
+            })()}
 
             {/* Tooltip for Arc Hover */}
             {hoveredArc && (
