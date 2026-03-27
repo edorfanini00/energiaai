@@ -19,9 +19,9 @@ const Sidebar = () => {
                 <NavLink to="/building" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <Building2 size={18} className="nav-icon" /> Building Analytics
                 </NavLink>
-                <div className="nav-item" style={{ cursor: 'pointer', opacity: 0.6 }}>
+                <NavLink to="/financial" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <DollarSign size={18} className="nav-icon" /> Financial
-                </div>
+                </NavLink>
                 <div className="nav-item" style={{ cursor: 'pointer', opacity: 0.6 }}>
                     <FileText size={18} className="nav-icon" /> Reports
                 </div>

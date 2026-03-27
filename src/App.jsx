@@ -5,6 +5,7 @@ import Header from './components/Layout/Header';
 import PortfolioView from './components/Dashboard/PortfolioView';
 import BuildingView from './components/Building/BuildingView';
 import EnergyView from './components/Energy/EnergyView';
+import FinancialView from './components/Financial/FinancialView';
 import './index.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<PortfolioView />} />
           <Route path="/building" element={<BuildingView />} />
           <Route path="/energy" element={<EnergyView />} />
+          <Route path="/financial" element={<FinancialView />} />
         </Routes>
       </main>
     </div>
