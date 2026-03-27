@@ -199,18 +199,18 @@ const trendHistory = {
     ],
 };
 
-/* ─── KPI Card Definitions ─── */
-const kpiCards = [
+/* ─── KPI Card Builder (per-building) ─── */
+const buildKpiCards = (bp) => [
     {
         id: 'consumption',
         label: 'TOTAL ENERGY CONSUMPTION',
-        mainValue: '45,850',
-        mainUnit: 'kWh + therms YTD',
+        mainValue: bp.consumption,
+        mainUnit: bp.consUnit,
         splits: [
-            { label: 'Electricity', value: '40,300 kWh', color: 'var(--accent-green)' },
-            { label: 'Gas', value: '5,550 therms', color: '#f97316' },
+            { label: 'Electricity', value: bp.elecSplit, color: 'var(--accent-green)' },
+            { label: 'Gas', value: bp.gasSplit, color: '#f97316' },
         ],
-        trend: -4.2,
+        trend: -4.2 * bp.mult,
         icon: Zap,
         color: 'var(--accent-green)',
         sparkData: sparkConsumption,
@@ -219,13 +219,13 @@ const kpiCards = [
     {
         id: 'cost',
         label: 'TOTAL ENERGY COST',
-        mainValue: '$15,950',
+        mainValue: bp.cost,
         mainUnit: 'YTD',
         splits: [
-            { label: 'Electricity', value: '$9,050', color: 'var(--accent-green)' },
-            { label: 'Gas', value: '$6,900', color: '#f97316' },
+            { label: 'Electricity', value: bp.elecCost, color: 'var(--accent-green)' },
+            { label: 'Gas', value: bp.gasCost, color: '#f97316' },
         ],
-        trend: -2.8,
+        trend: bp.costTrend,
         icon: DollarSign,
         color: '#ef4444',
         sparkData: sparkCost,
@@ -234,10 +234,10 @@ const kpiCards = [
     {
         id: 'savings',
         label: 'TOTAL ENERGY SAVINGS',
-        mainValue: '$15,200',
+        mainValue: bp.savings,
         mainUnit: 'since implementation',
         splits: [],
-        trend: 18.5,
+        trend: bp.savingsTrend,
         icon: TrendingDown,
         color: '#eab308',
         sparkData: sparkSavings,
@@ -246,13 +246,13 @@ const kpiCards = [
     {
         id: 'emissions',
         label: 'TOTAL CARBON EMISSIONS',
-        mainValue: '12.6',
+        mainValue: bp.emissions,
         mainUnit: 'tons CO₂ YTD',
         splits: [
-            { label: 'Electricity', value: '8.2t', color: '#a78bfa' },
-            { label: 'Gas', value: '4.4t', color: '#f97316' },
+            { label: 'Electricity', value: bp.emElec, color: '#a78bfa' },
+            { label: 'Gas', value: bp.emGas, color: '#f97316' },
         ],
-        trend: -6.1,
+        trend: bp.emTrend,
         icon: Leaf,
         color: '#f97316',
         sparkData: sparkEmissions,
@@ -261,10 +261,10 @@ const kpiCards = [
     {
         id: 'reduced',
         label: 'TOTAL EMISSIONS REDUCED',
-        mainValue: '3.6',
+        mainValue: bp.reduced,
         mainUnit: 'tons CO₂ saved',
         splits: [],
-        trend: 22.3,
+        trend: bp.reducedTrend,
         icon: BarChart3,
         color: '#a78bfa',
         sparkData: sparkReduced,
@@ -273,8 +273,8 @@ const kpiCards = [
     {
         id: 'efficiency',
         label: 'COMFORT RATING',
-        mainValue: '88',
-        mainUnit: 'portfolio score (0–100)',
+        mainValue: String(bp.effBase),
+        mainUnit: 'building score (0–100)',
         splits: [],
         trend: 5.4,
         icon: Gauge,
@@ -520,6 +520,53 @@ const savingsGrowth = [
     { pct: 25 }, { pct: 38 }, { pct: 52 }, { pct: 62 }, { pct: 71 }, { pct: 80 }, { pct: 88 }, { pct: 95 }, { pct: 100 }
 ];
 
+/* ─── Per-Building Data Profiles ─── */
+const buildingProfiles = {
+    'North Tower': {
+        mult: 1.0, effBase: 88, comfort: [94, 90, 82, 97],
+        consumption: '45,850', consUnit: 'kWh + therms YTD', elecSplit: '40,300 kWh', gasSplit: '5,550 therms',
+        cost: '$15,950', elecCost: '$9,050', gasCost: '$6,900', costTrend: -2.8,
+        savings: '$15,200', savingsTrend: 18.5,
+        emissions: '12.6', emElec: '8.2t', emGas: '4.4t', emTrend: -6.1,
+        reduced: '3.6', reducedTrend: 22.3,
+    },
+    'South Center': {
+        mult: 0.82, effBase: 85, comfort: [91, 87, 78, 94],
+        consumption: '37,600', consUnit: 'kWh + therms YTD', elecSplit: '33,050 kWh', gasSplit: '4,550 therms',
+        cost: '$13,100', elecCost: '$7,420', gasCost: '$5,680', costTrend: -1.9,
+        savings: '$11,800', savingsTrend: 14.2,
+        emissions: '10.3', emElec: '6.7t', emGas: '3.6t', emTrend: -4.8,
+        reduced: '2.9', reducedTrend: 17.6,
+    },
+    'West Complex': {
+        mult: 0.68, effBase: 79, comfort: [83, 76, 71, 88],
+        consumption: '31,180', consUnit: 'kWh + therms YTD', elecSplit: '27,400 kWh', gasSplit: '3,780 therms',
+        cost: '$10,850', elecCost: '$6,150', gasCost: '$4,700', costTrend: -3.5,
+        savings: '$9,400', savingsTrend: 10.8,
+        emissions: '8.6', emElec: '5.6t', emGas: '3.0t', emTrend: -3.2,
+        reduced: '2.1', reducedTrend: 12.4,
+    },
+    'East Wing': {
+        mult: 1.15, effBase: 92, comfort: [96, 93, 88, 99],
+        consumption: '52,730', consUnit: 'kWh + therms YTD', elecSplit: '46,350 kWh', gasSplit: '6,380 therms',
+        cost: '$18,350', elecCost: '$10,410', gasCost: '$7,940', costTrend: -5.1,
+        savings: '$18,600', savingsTrend: 22.1,
+        emissions: '14.5', emElec: '9.4t', emGas: '5.1t', emTrend: -7.3,
+        reduced: '4.5', reducedTrend: 28.9,
+    },
+};
+
+const scaleArr = (arr, mult) => arr.map(d => {
+    const out = { ...d };
+    if (out.elec !== undefined) out.elec = Math.round(out.elec * mult);
+    if (out.gas !== undefined) out.gas = Math.round(out.gas * mult);
+    if (out.total !== undefined) out.total = Math.round(out.total * mult);
+    if (out.val !== undefined) out.val = +(out.val * mult).toFixed(1);
+    if (out.emissions !== undefined) out.emissions = +(out.emissions * mult).toFixed(1);
+    if (out.reduced !== undefined) out.reduced = +(out.reduced * mult).toFixed(1);
+    return out;
+});
+
 /* ═══════════════════════════════════════════
    BuildingView Component
    ═══════════════════════════════════════════ */
@@ -538,10 +585,14 @@ const BuildingView = () => {
         setMousePos({ x: e.clientX, y: e.clientY });
     };
 
-    // Pull period-synced data
-    const arcData = arcDataByPeriod[savingsPeriod];
-    const elecVal = arcData.elec;
-    const gasVal = arcData.gas;
+    // Per-building profile & multiplier
+    const bp = buildingProfiles[selectedBuilding];
+    const m = bp.mult;
+
+    // Pull period-synced data (scaled per building)
+    const rawArc = arcDataByPeriod[savingsPeriod];
+    const elecVal = Math.round(rawArc.elec * m);
+    const gasVal = Math.round(rawArc.gas * m);
     const totalEnergy = elecVal + gasVal;
     const elecPct = elecVal / totalEnergy;
     
@@ -550,21 +601,20 @@ const BuildingView = () => {
     const intX = 120 + 80 * Math.cos(intersectionAngle);
     const intY = 120 - 80 * Math.sin(intersectionAngle);
 
-    const activeTrendData = trendDataByPeriod[savingsPeriod];
-    const activeEmissionsData = emissionsDataByPeriod[savingsPeriod];
-    const activeSavingsBreakdown = savingsBreakdownByPeriod[savingsPeriod];
-    const activeEfficiency = efficiencyByPeriod[savingsPeriod];
-    const activeSavingsTotal = savingsTotalByPeriod[savingsPeriod];
-
-    // Compute generic Emission string for modal header manually
-    const emissionsTotalStrByPeriod = {
-        '24h': '16.4',
-        '7d': '45.1',
-        '1m': '182.5',
-        'ytd': '685.2',
-        'custom': '—'
+    const activeTrendData = scaleArr(trendDataByPeriod[savingsPeriod], m);
+    const activeEmissionsData = scaleArr(emissionsDataByPeriod[savingsPeriod], m);
+    const activeSavingsBreakdown = scaleArr(savingsBreakdownByPeriod[savingsPeriod], m);
+    const rawEff = efficiencyByPeriod[savingsPeriod];
+    const effDelta = bp.effBase - 88; // offset from North Tower baseline
+    const activeEfficiency = {
+        score: Math.min(100, Math.max(0, rawEff.score + effDelta)),
+        buildings: rawEff.buildings.map((b, i) => ({ label: b.label, pct: Math.min(100, Math.max(0, bp.comfort[i] || b.pct)) }))
     };
-    const activeEmissionsTotal = emissionsTotalStrByPeriod[savingsPeriod];
+    const rawSavTotal = savingsTotalByPeriod[savingsPeriod];
+    const activeSavingsTotal = rawSavTotal === '—' ? '—' : '$' + Math.round(parseFloat(rawSavTotal.replace(/[^\d.]/g, '')) * m).toLocaleString();
+
+    const emBase = { '24h': 16.4, '7d': 45.1, '1m': 182.5, 'ytd': 685.2, 'custom': 0 };
+    const activeEmissionsTotal = emBase[savingsPeriod] === 0 ? '—' : (emBase[savingsPeriod] * m).toFixed(1);
 
     const buildingOptions = ['North Tower', 'South Center', 'West Complex', 'East Wing'];
     const savingsPeriods = [
