@@ -807,12 +807,14 @@ const BuildingView = () => {
                     <div
                         key={card.label}
                         className="glass-card"
+                        onClick={() => setActiveModal(card.label)}
                         style={{
                             padding: '1.5rem 1.75rem',
                             position: 'relative',
                             overflow: 'hidden',
                             border: '1px solid transparent',
                             transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s',
+                            cursor: 'pointer',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.borderColor = 'var(--border-light)';
@@ -1221,57 +1223,95 @@ const BuildingView = () => {
             )}
 
             {/* Savings Modal */}
-            {activeModal === 'savings' && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
-                    <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column', animation: 'modalSlideIn 0.25s ease-out' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <div>
-                                <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>Energy Savings Breakdown</h3>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
-                                    <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#eab308' }}>{activeSavingsTotal}</span>
-                                    <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>total saved this period</span>
+            {activeModal && activeModal.includes('SAVINGS') && (() => {
+                const isElec = activeModal === 'ELECTRICITY SAVINGS';
+                const isGas = activeModal === 'GAS SAVINGS';
+                
+                let modalColor = '#eab308';
+                let modalTotal = activeSavingsTotal;
+                let modalUnit = 'total saved this period';
+                let modalPrefix = '';
+                let scaleFactor = 1;
+
+                if (isElec) {
+                    modalColor = 'var(--accent-green)';
+                    modalTotal = bs.elec;
+                    modalUnit = 'kWh saved this period';
+                    scaleFactor = 0.8;
+                } else if (isGas) {
+                    modalColor = '#f97316';
+                    modalTotal = bs.gas;
+                    modalUnit = 'therms saved this period';
+                    scaleFactor = 0.25;
+                } else {
+                    modalPrefix = '$';
+                }
+
+                const chartData = activeSavingsBreakdown.map(d => ({
+                    month: d.month,
+                    val: Math.round(d.val * scaleFactor)
+                }));
+
+                const displayTotal = activeModal === 'MONETARY SAVINGS' 
+                    ? bs.money 
+                    : modalTotal;
+
+                return (
+                    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                        <div className="glass-card" style={{ padding: '2.5rem', width: '90%', maxWidth: '800px', height: '500px', position: 'relative', display: 'flex', flexDirection: 'column', animation: 'modalSlideIn 0.25s ease-out' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <div>
+                                    <h3 style={{ fontSize: '1.5rem', fontWeight: 400, marginBottom: '0.5rem' }}>
+                                        {isElec ? 'Electricity' : isGas ? 'Gas' : 'Monetary'} Savings Breakdown
+                                    </h3>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '2rem' }}>
+                                        <span style={{ fontSize: '3rem', fontWeight: 500, letterSpacing: '-0.02em', color: modalColor }}>
+                                            {activeModal === 'MONETARY SAVINGS' ? '' : modalPrefix}{displayTotal}
+                                        </span>
+                                        <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>{modalUnit}</span>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', alignItems: 'center' }}>
+                                    {savingsPeriods.map((p) => (
+                                        <button
+                                            key={`modal-sav-${p.key}`}
+                                            onClick={() => setSavingsPeriod(p.key)}
+                                            style={{
+                                                padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
+                                                border: '1px solid', cursor: 'pointer', transition: 'all 0.2s',
+                                                background: savingsPeriod === p.key ? 'rgba(255,255,255,0.08)' : 'transparent',
+                                                borderColor: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--border-light)',
+                                                color: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--text-secondary)',
+                                            }}
+                                        >
+                                            {p.label}
+                                        </button>
+                                    ))}
+                                    <button onClick={() => setActiveModal(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', marginLeft: '1rem', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+                                        <X size={24} />
+                                    </button>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', alignItems: 'center' }}>
-                                {savingsPeriods.map((p) => (
-                                    <button
-                                        key={`modal-sav-${p.key}`}
-                                        onClick={() => setSavingsPeriod(p.key)}
-                                        style={{
-                                            padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
-                                            border: '1px solid', cursor: 'pointer', transition: 'all 0.2s',
-                                            background: savingsPeriod === p.key ? 'rgba(255,255,255,0.08)' : 'transparent',
-                                            borderColor: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--border-light)',
-                                            color: savingsPeriod === p.key ? 'var(--accent-green)' : 'var(--text-secondary)',
-                                        }}
-                                    >
-                                        {p.label}
-                                    </button>
-                                ))}
-                                <button onClick={() => setActiveModal(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', marginLeft: '1rem', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
-                                    <X size={24} />
-                                </button>
+
+                            <div style={{ flex: 1, position: 'relative' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                                        <defs>
+                                            <linearGradient id="modalGradDyn" x1="0" y1="1" x2="0" y2="0">
+                                                <stop offset="0%" stopColor={modalColor} stopOpacity={0.1}/>
+                                                <stop offset="100%" stopColor={modalColor} stopOpacity={1}/>
+                                            </linearGradient>
+                                        </defs>
+                                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
+                                        <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '1.1rem' }} formatter={(v) => [`${modalPrefix}${v}`]} />
+                                        <Bar dataKey="val" fill="url(#modalGradDyn)" radius={[6, 6, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
-
-                        <div style={{ flex: 1, position: 'relative' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={activeSavingsBreakdown} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="solidGreenGrad" x1="0" y1="1" x2="0" y2="0">
-                                            <stop offset="0%" stopColor="var(--accent-green)" stopOpacity={0.1}/>
-                                            <stop offset="100%" stopColor="var(--accent-green)" stopOpacity={1}/>
-                                        </linearGradient>
-                                    </defs>
-                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
-                                    <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '1.1rem' }} formatter={(v) => [`$${v}`]} />
-                                    <Bar dataKey="val" fill="url(#solidGreenGrad)" radius={[6, 6, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
                     </div>
-                </div>
-            )}
+                );
+            })()}
 
             {/* Emissions Modal */}
             {activeModal === 'emissions' && (
