@@ -741,46 +741,7 @@ const BuildingView = () => {
 
             {/* ═══ ENERGY TAB ═══ */}
             {activeTab === 'energy' && (<>
-
-            {/* ═══ Building Savings Cards ═══ */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-                {buildingSavingsCards.map((card) => (
-                    <div
-                        key={card.label}
-                        className="glass-card"
-                        style={{
-                            padding: '1.5rem 1.75rem',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            border: '1px solid transparent',
-                            transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = 'var(--border-light)';
-                            e.currentTarget.style.boxShadow = `0 0 24px ${card.accentColor}15`;
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = 'transparent';
-                            e.currentTarget.style.boxShadow = 'none';
-                            e.currentTarget.style.transform = 'none';
-                        }}
-                    >
-                        <div style={{ position: 'absolute', top: '-30px', left: '-30px', width: '90px', height: '90px', borderRadius: '50%', background: card.accentColor, opacity: 0.06, filter: 'blur(24px)', pointerEvents: 'none' }} />
-                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>{card.label}</span>
-                        <div style={{ fontSize: '2.4rem', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, marginTop: '0.6rem' }}>{card.value}</div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{card.unit}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.6rem' }}>
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: card.trend > 0 ? 'var(--accent-green)' : 'var(--accent-green)' }}>
-                                {card.trend > 0 ? '+' : ''}{card.trend}%
-                            </span>
-                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>vs prior period</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* ═══ Section 1 — Savings Cards with Period Selector ═══ */}
+            {/* ═══ Period Selector ═══ */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-0.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                     {savingsPeriods.map((p) => (
@@ -824,6 +785,44 @@ const BuildingView = () => {
                     )}
                     </div>
                 </div>
+            </div>
+
+            {/* ═══ Building Savings Cards ═══ */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                {buildingSavingsCards.map((card) => (
+                    <div
+                        key={card.label}
+                        className="glass-card"
+                        style={{
+                            padding: '1.5rem 1.75rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            border: '1px solid transparent',
+                            transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--border-light)';
+                            e.currentTarget.style.boxShadow = `0 0 24px ${card.accentColor}15`;
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'transparent';
+                            e.currentTarget.style.boxShadow = 'none';
+                            e.currentTarget.style.transform = 'none';
+                        }}
+                    >
+                        <div style={{ position: 'absolute', top: '-30px', left: '-30px', width: '90px', height: '90px', borderRadius: '50%', background: card.accentColor, opacity: 0.06, filter: 'blur(24px)', pointerEvents: 'none' }} />
+                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>{card.label}</span>
+                        <div style={{ fontSize: '2.4rem', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, marginTop: '0.6rem' }}>{card.value}</div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{card.unit}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.6rem' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: card.trend > 0 ? 'var(--accent-green)' : 'var(--accent-green)' }}>
+                                {card.trend > 0 ? '+' : ''}{card.trend}%
+                            </span>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>vs prior period</span>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Main Charts Row */}
