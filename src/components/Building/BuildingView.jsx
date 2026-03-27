@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChart, Line, Cell, LineChart } from 'recharts';
-import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3, X, TrendingUp, Flame, Maximize2, Thermometer, Users, Sun, Wind, Shield, Droplets, AlertTriangle, CheckCircle2, Info, Activity } from 'lucide-react';
-
+import { LayoutList, Share2, Calendar, Edit2, ChevronDown, Zap, DollarSign, TrendingDown, Gauge, Leaf, BarChart3, X, TrendingUp, Flame, Maximize2, Thermometer, Users, Sun, Wind, Shield, Droplets, AlertTriangle, CheckCircle2, Info, Activity, Snowflake, Fan } from 'lucide-react';
 /* ─── Mock Data ─── */
 
 // Energy Usage Trend data keyed by period
@@ -1047,10 +1046,22 @@ const BuildingView = () => {
             {/* ═══ STATUS TAB ═══ */}
             {activeTab === 'status' && (() => {
                 const statusData = {
-                    'North Tower':  { temp: 72, occupancy: 84, lighting: 60, airQuality: 96, hvac: 'operational', lighting_sys: 'optimal', security: 'operational', water: 'warning' },
-                    'South Center': { temp: 74, occupancy: 78, lighting: 72, airQuality: 91, hvac: 'operational', lighting_sys: 'warning', security: 'operational', water: 'operational' },
-                    'West Complex': { temp: 69, occupancy: 62, lighting: 55, airQuality: 83, hvac: 'warning', lighting_sys: 'operational', security: 'warning', water: 'operational' },
-                    'East Wing':    { temp: 71, occupancy: 91, lighting: 68, airQuality: 98, hvac: 'operational', lighting_sys: 'operational', security: 'operational', water: 'operational' },
+                    'North Tower':  { 
+                        temp: 72, occupancy: 84, lighting: 60, airQuality: 96, 
+                        boilers: 'operational', chillers: 'operational', ahus: 'warning', cooling_towers: 'operational', vav_boxes: 'operational', exhaust_fans: 'operational'
+                    },
+                    'South Center': { 
+                        temp: 74, occupancy: 78, lighting: 72, airQuality: 91, 
+                        boilers: 'operational', chillers: 'warning', ahus: 'operational', cooling_towers: 'operational', vav_boxes: 'warning', exhaust_fans: 'operational'
+                    },
+                    'West Complex': { 
+                        temp: 69, occupancy: 62, lighting: 55, airQuality: 83, 
+                        boilers: 'warning', chillers: 'operational', ahus: 'warning', cooling_towers: 'warning', vav_boxes: 'operational', exhaust_fans: 'warning'
+                    },
+                    'East Wing':    { 
+                        temp: 71, occupancy: 91, lighting: 68, airQuality: 98, 
+                        boilers: 'operational', chillers: 'operational', ahus: 'operational', cooling_towers: 'operational', vav_boxes: 'operational', exhaust_fans: 'operational'
+                    },
                 };
                 const alertsData = {
                     'North Tower': [
@@ -1093,10 +1104,12 @@ const BuildingView = () => {
                     { icon: Wind, label: 'Air Quality', value: String(st.airQuality), status: statusLabel(st.airQuality, [95, 85, 70]) },
                 ];
                 const systemRows = [
-                    { icon: Flame, label: 'HVAC System', ...sysLabel(st.hvac) },
-                    { icon: Sun, label: 'Lighting Control', ...sysLabel(st.lighting_sys) },
-                    { icon: Shield, label: 'Security System', ...sysLabel(st.security) },
-                    { icon: Droplets, label: 'Water Management', ...sysLabel(st.water) },
+                    { icon: Flame, label: 'Boilers', ...sysLabel(st.boilers) },
+                    { icon: Snowflake, label: 'Chillers', ...sysLabel(st.chillers) },
+                    { icon: Wind, label: 'Air Handling Units (AHUs)', ...sysLabel(st.ahus) },
+                    { icon: Droplets, label: 'Cooling Towers', ...sysLabel(st.cooling_towers) },
+                    { icon: Activity, label: 'VAV Boxes', ...sysLabel(st.vav_boxes) },
+                    { icon: Fan, label: 'Exhaust Fans', ...sysLabel(st.exhaust_fans) },
                 ];
 
                 return (<>
