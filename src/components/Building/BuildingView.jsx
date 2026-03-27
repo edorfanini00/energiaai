@@ -574,6 +574,20 @@ const BuildingView = () => {
         { key: 'ytd', label: 'YTD' },
     ];
 
+    // Per-building savings data
+    const buildingSavingsData = {
+        'North Tower': { elec: '12,450', gas: '4,180', money: '$15,200', elecTrend: -4.2, gasTrend: -5.9, moneyTrend: 18.5 },
+        'South Center': { elec: '9,820', gas: '3,450', money: '$11,800', elecTrend: -3.1, gasTrend: -4.7, moneyTrend: 14.2 },
+        'West Complex': { elec: '7,650', gas: '2,890', money: '$9,400', elecTrend: -2.5, gasTrend: -3.2, moneyTrend: 10.8 },
+        'East Wing': { elec: '14,100', gas: '5,020', money: '$18,600', elecTrend: -5.8, gasTrend: -6.4, moneyTrend: 22.1 },
+    };
+    const bs = buildingSavingsData[selectedBuilding];
+    const buildingSavingsCards = [
+        { label: 'ELECTRICITY SAVINGS', value: bs.elec, unit: 'kWh saved', trend: bs.elecTrend, accentColor: 'var(--accent-green)' },
+        { label: 'GAS SAVINGS', value: bs.gas, unit: 'therms saved', trend: bs.gasTrend, accentColor: '#f97316' },
+        { label: 'MONETARY SAVINGS', value: bs.money, unit: 'saved', trend: bs.moneyTrend, accentColor: '#eab308' },
+    ];
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
@@ -605,6 +619,44 @@ const BuildingView = () => {
                         </div>
                     )}
                 </div>
+            </div>
+
+            {/* ═══ Building Savings Cards ═══ */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                {buildingSavingsCards.map((card) => (
+                    <div
+                        key={card.label}
+                        className="glass-card"
+                        style={{
+                            padding: '1.5rem 1.75rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            border: '1px solid transparent',
+                            transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--border-light)';
+                            e.currentTarget.style.boxShadow = `0 0 24px ${card.accentColor}15`;
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'transparent';
+                            e.currentTarget.style.boxShadow = 'none';
+                            e.currentTarget.style.transform = 'none';
+                        }}
+                    >
+                        <div style={{ position: 'absolute', top: '-30px', left: '-30px', width: '90px', height: '90px', borderRadius: '50%', background: card.accentColor, opacity: 0.06, filter: 'blur(24px)', pointerEvents: 'none' }} />
+                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>{card.label}</span>
+                        <div style={{ fontSize: '2.4rem', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, marginTop: '0.6rem' }}>{card.value}</div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{card.unit}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.6rem' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: card.trend > 0 ? 'var(--accent-green)' : 'var(--accent-green)' }}>
+                                {card.trend > 0 ? '+' : ''}{card.trend}%
+                            </span>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>vs prior period</span>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* ═══ Section 1 — Savings Cards with Period Selector ═══ */}
