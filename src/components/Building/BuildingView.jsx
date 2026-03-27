@@ -616,7 +616,7 @@ const BuildingView = () => {
     const [customStart, setCustomStart] = useState('');
     const [customEnd, setCustomEnd] = useState('');
     const [hoveredArc, setHoveredArc] = useState(null);
-    const [activeTab, setActiveTab] = useState('summary');
+    const [activeTab, setActiveTab] = useState('energy');
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
     const handleArcMouseMove = (e) => {
@@ -719,7 +719,7 @@ const BuildingView = () => {
 
             {/* ═══ Tab Navigation ═══ */}
             <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '4px', border: '1px solid var(--border-light)' }}>
-                {[{ key: 'summary', label: 'Summary', icon: BarChart3 }, { key: 'energy', label: 'Energy', icon: Zap }, { key: 'status', label: 'Status', icon: Activity }].map(tab => (
+                {[{ key: 'energy', label: 'Energy', icon: Zap }, { key: 'status', label: 'Status', icon: Activity }].map(tab => (
                     <button
                         key={tab.key}
                         onClick={() => setActiveTab(tab.key)}
@@ -739,8 +739,8 @@ const BuildingView = () => {
                 ))}
             </div>
 
-            {/* ═══ SUMMARY TAB ═══ */}
-            {activeTab === 'summary' && (<>
+            {/* ═══ ENERGY TAB ═══ */}
+            {activeTab === 'energy' && (<>
 
             {/* ═══ Building Savings Cards ═══ */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
@@ -1027,106 +1027,6 @@ const BuildingView = () => {
 
             </div>
 
-            </>)}
-
-            {/* ═══ ENERGY TAB ═══ */}
-            {activeTab === 'energy' && (<>
-                {/* Energy Savings Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-                    {buildingSavingsCards.map((card) => (
-                        <div key={card.label} className="glass-card" style={{ padding: '1.5rem 1.75rem', border: '1px solid transparent', transition: 'border-color 0.25s, transform 0.2s' }}
-                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = card.accentColor; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'none'; }}>
-                            <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>{card.label}</span>
-                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.75rem' }}>
-                                <span style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-0.03em' }}>{card.value}</span>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{card.unit}</span>
-                            </div>
-                            <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', fontWeight: 600, color: card.trend > 0 ? 'var(--accent-green)' : 'var(--accent-green)' }}>
-                                {card.trend > 0 ? '+' : ''}{card.trend}% <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>vs prior period</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Consumption Arc + Trend */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                    {/* Consumption Arc */}
-                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, alignSelf: 'flex-start', marginBottom: '1rem' }}>Consumption Breakdown</h3>
-                        <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
-                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total</span>
-                            <div style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em' }}>{totalEnergy.toLocaleString()}<span style={{ fontSize: '1rem', color: 'var(--text-muted)', marginLeft: '0.35rem' }}>kWh</span></div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-green)', margin: '0 auto 0.5rem' }} />
-                                <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{elecVal.toLocaleString()}</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ELEC kWh</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--accent-green)', fontWeight: 600, marginTop: '0.25rem' }}>{(elecPct * 100).toFixed(1)}%</div>
-                            </div>
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f97316', margin: '0 auto 0.5rem' }} />
-                                <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{gasVal.toLocaleString()}</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>GAS Therms</div>
-                                <div style={{ fontSize: '0.75rem', color: '#f97316', fontWeight: 600, marginTop: '0.25rem' }}>{((1 - elecPct) * 100).toFixed(1)}%</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Energy Trend */}
-                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Energy Usage Trend</h3>
-                        <div style={{ flex: 1, minHeight: '200px' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <ComposedChart data={activeTrendData} margin={{ top: 5, right: 5, left: -15, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="energyGradElec" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="var(--accent-green)" stopOpacity={0.3} />
-                                            <stop offset="100%" stopColor="var(--accent-green)" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
-                                    <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
-                                    <Area type="monotone" dataKey="elec" fill="url(#energyGradElec)" stroke="var(--accent-green)" strokeWidth={2} name="Electricity" />
-                                    <Bar dataKey="gas" fill="#f97316" radius={[3,3,0,0]} barSize={8} name="Gas" />
-                                </ComposedChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Emissions + Savings */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Carbon Emissions</h3>
-                        <div style={{ flex: 1, minHeight: '180px' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={activeEmissionsData.slice(0, 7)} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${v}t`} />
-                                    <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} />
-                                    <Bar dataKey="emissions" name="Emissions (t)" fill="#f97316" radius={[4,4,4,4]} barSize={12} />
-                                    <Bar dataKey="reduced" name="Reduced (t)" fill="var(--accent-green)" radius={[4,4,4,4]} barSize={12} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                    <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 400, marginBottom: '1rem' }}>Savings Breakdown</h3>
-                        <div style={{ flex: 1, minHeight: '180px' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={activeSavingsBreakdown} margin={{ top: 0, right: 0, left: -10, bottom: 0 }}>
-                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `$${v}`} />
-                                    <Tooltip contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '8px', color: '#fff' }} formatter={(v) => [`$${v}`]} />
-                                    <Bar dataKey="val" fill="var(--accent-green)" radius={[4,4,0,0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                </div>
             </>)}
 
             {/* ═══ STATUS TAB ═══ */}
