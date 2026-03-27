@@ -556,16 +556,53 @@ const buildingProfiles = {
     },
 };
 
-const scaleArr = (arr, mult) => arr.map(d => {
-    const out = { ...d };
-    if (out.elec !== undefined) out.elec = Math.round(out.elec * mult);
-    if (out.gas !== undefined) out.gas = Math.round(out.gas * mult);
-    if (out.total !== undefined) out.total = Math.round(out.total * mult);
-    if (out.val !== undefined) out.val = +(out.val * mult).toFixed(1);
-    if (out.emissions !== undefined) out.emissions = +(out.emissions * mult).toFixed(1);
-    if (out.reduced !== undefined) out.reduced = +(out.reduced * mult).toFixed(1);
-    return out;
-});
+// Per-building per-month variation factors for BuildingView
+// Each building gets unique monthly multipliers so chart shapes differ completely
+const bvVariations = {
+    'North Tower': {
+        elec: [0.85, 1.12, 0.72, 1.28, 0.94, 0.68, 1.15, 1.32, 0.78, 1.05, 0.88, 1.22],
+        gas:  [1.18, 0.76, 1.05, 0.82, 1.30, 0.91, 0.74, 1.15, 1.25, 0.70, 1.08, 0.95],
+        sav:  [0.92, 1.25, 0.70, 1.18, 0.84, 1.35, 0.78, 0.95, 1.28, 1.10, 0.72, 1.05],
+        em:   [1.10, 0.82, 1.25, 0.75, 1.15, 0.88, 1.30, 0.72, 0.95, 1.20, 0.80, 1.05],
+    },
+    'South Center': {
+        elec: [1.25, 0.78, 1.10, 0.68, 1.32, 0.85, 0.72, 1.18, 0.92, 1.28, 0.75, 1.05],
+        gas:  [0.72, 1.28, 0.88, 1.15, 0.70, 1.22, 1.05, 0.80, 1.30, 0.92, 1.12, 0.75],
+        sav:  [1.30, 0.72, 1.15, 0.88, 0.75, 1.25, 1.10, 0.68, 0.95, 1.32, 0.82, 1.20],
+        em:   [0.78, 1.22, 0.70, 1.30, 0.95, 0.82, 1.18, 1.05, 0.72, 1.10, 1.28, 0.85],
+    },
+    'West Complex': {
+        elec: [0.70, 1.30, 0.92, 1.05, 0.78, 1.22, 0.85, 0.72, 1.28, 0.88, 1.15, 0.68],
+        gas:  [1.28, 0.85, 1.20, 0.72, 1.10, 0.78, 1.30, 0.92, 0.70, 1.25, 0.82, 1.15],
+        sav:  [0.75, 1.18, 0.82, 1.30, 1.05, 0.70, 0.92, 1.25, 0.78, 0.88, 1.32, 1.10],
+        em:   [1.20, 0.75, 1.30, 0.88, 0.72, 1.15, 0.82, 1.28, 1.05, 0.70, 0.95, 1.22],
+    },
+    'East Wing': {
+        elec: [1.15, 0.70, 1.28, 0.92, 0.82, 1.05, 1.30, 0.78, 0.85, 1.22, 0.72, 1.18],
+        gas:  [0.82, 1.22, 0.70, 1.28, 0.95, 1.10, 0.75, 1.30, 0.88, 1.05, 0.72, 1.15],
+        sav:  [1.18, 0.85, 1.30, 0.72, 1.10, 0.78, 1.25, 0.70, 1.05, 0.92, 1.28, 0.82],
+        em:   [0.88, 1.15, 0.78, 1.22, 1.05, 0.72, 1.10, 0.82, 1.30, 0.75, 1.25, 0.95],
+    },
+};
+
+const scaleArr = (arr, mult, building, variationKey) => {
+    const vars = bvVariations[building];
+    if (!vars) return arr.map(d => ({ ...d })); // fallback
+    const vArr = variationKey === 'sav' ? vars.sav : variationKey === 'em' ? vars.em : null;
+    return arr.map((d, i) => {
+        const out = { ...d };
+        const vE = vars.elec[i % 12];
+        const vG = vars.gas[i % 12];
+        const vX = vArr ? vArr[i % 12] : 1;
+        if (out.elec !== undefined) out.elec = Math.round(out.elec * mult * vE);
+        if (out.gas !== undefined) out.gas = Math.round(out.gas * mult * vG);
+        if (out.total !== undefined) out.total = (out.elec || 0) + (out.gas || 0);
+        if (out.val !== undefined) out.val = +(out.val * mult * vX).toFixed(1);
+        if (out.emissions !== undefined) out.emissions = +(out.emissions * mult * vX).toFixed(1);
+        if (out.reduced !== undefined) out.reduced = +(out.reduced * mult * vX).toFixed(1);
+        return out;
+    });
+};
 
 /* ═══════════════════════════════════════════
    BuildingView Component
@@ -589,7 +626,7 @@ const BuildingView = () => {
     const bp = buildingProfiles[selectedBuilding];
     const m = bp.mult;
 
-    // Pull period-synced data (scaled per building)
+    // Pull period-synced data (with per-building variation)
     const rawArc = arcDataByPeriod[savingsPeriod];
     const elecVal = Math.round(rawArc.elec * m);
     const gasVal = Math.round(rawArc.gas * m);
@@ -601,9 +638,9 @@ const BuildingView = () => {
     const intX = 120 + 80 * Math.cos(intersectionAngle);
     const intY = 120 - 80 * Math.sin(intersectionAngle);
 
-    const activeTrendData = scaleArr(trendDataByPeriod[savingsPeriod], m);
-    const activeEmissionsData = scaleArr(emissionsDataByPeriod[savingsPeriod], m);
-    const activeSavingsBreakdown = scaleArr(savingsBreakdownByPeriod[savingsPeriod], m);
+    const activeTrendData = scaleArr(trendDataByPeriod[savingsPeriod], m, selectedBuilding, 'trend');
+    const activeEmissionsData = scaleArr(emissionsDataByPeriod[savingsPeriod], m, selectedBuilding, 'em');
+    const activeSavingsBreakdown = scaleArr(savingsBreakdownByPeriod[savingsPeriod], m, selectedBuilding, 'sav');
     const rawEff = efficiencyByPeriod[savingsPeriod];
     const effDelta = bp.effBase - 88; // offset from North Tower baseline
     const activeEfficiency = {

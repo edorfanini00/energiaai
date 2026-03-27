@@ -632,24 +632,61 @@ const PortfolioView = () => {
     const activeBuildingList = mapBuildingsByPeriod[savingsPeriod];
     const filteredBuildings = activeBuildingList.filter(b => b.name.toLowerCase().includes(mapSearch.toLowerCase()) || b.address.toLowerCase().includes(mapSearch.toLowerCase()));
 
-    // Building multipliers (All Buildings = 1.0 / aggregate)
-    const buildingMult = {
-        'All Buildings': 1.0, 'North Tower': 0.28, 'South Center': 0.23, 'West Complex': 0.19, 'East Wing': 0.30
+    // Per-building per-month variation factors (each row = 12 unique monthly multipliers)
+    // These create distinctly different chart shapes per building, not just uniform scaling
+    const buildingVariations = {
+        'All Buildings': null, // use raw data as-is
+        'North Tower': {
+            base: 0.28,
+            // monthly factors: each month varies independently (0.7 to 1.3 relative to base)
+            elec: [0.85, 1.12, 0.72, 1.28, 0.94, 0.68, 1.15, 1.32, 0.78, 1.05, 0.88, 1.22],
+            gas:  [1.18, 0.76, 1.05, 0.82, 1.30, 0.91, 0.74, 1.15, 1.25, 0.70, 1.08, 0.95],
+            sav:  [0.92, 1.25, 0.70, 1.18, 0.84, 1.35, 0.78, 0.95, 1.28, 1.10, 0.72, 1.05],
+            em:   [1.10, 0.82, 1.25, 0.75, 1.15, 0.88, 1.30, 0.72, 0.95, 1.20, 0.80, 1.05],
+        },
+        'South Center': {
+            base: 0.23,
+            elec: [1.25, 0.78, 1.10, 0.68, 1.32, 0.85, 0.72, 1.18, 0.92, 1.28, 0.75, 1.05],
+            gas:  [0.72, 1.28, 0.88, 1.15, 0.70, 1.22, 1.05, 0.80, 1.30, 0.92, 1.12, 0.75],
+            sav:  [1.30, 0.72, 1.15, 0.88, 0.75, 1.25, 1.10, 0.68, 0.95, 1.32, 0.82, 1.20],
+            em:   [0.78, 1.22, 0.70, 1.30, 0.95, 0.82, 1.18, 1.05, 0.72, 1.10, 1.28, 0.85],
+        },
+        'West Complex': {
+            base: 0.19,
+            elec: [0.70, 1.30, 0.92, 1.05, 0.78, 1.22, 0.85, 0.72, 1.28, 0.88, 1.15, 0.68],
+            gas:  [1.28, 0.85, 1.20, 0.72, 1.10, 0.78, 1.30, 0.92, 0.70, 1.25, 0.82, 1.15],
+            sav:  [0.75, 1.18, 0.82, 1.30, 1.05, 0.70, 0.92, 1.25, 0.78, 0.88, 1.32, 1.10],
+            em:   [1.20, 0.75, 1.30, 0.88, 0.72, 1.15, 0.82, 1.28, 1.05, 0.70, 0.95, 1.22],
+        },
+        'East Wing': {
+            base: 0.30,
+            elec: [1.15, 0.70, 1.28, 0.92, 0.82, 1.05, 1.30, 0.78, 0.85, 1.22, 0.72, 1.18],
+            gas:  [0.82, 1.22, 0.70, 1.28, 0.95, 1.10, 0.75, 1.30, 0.88, 1.05, 0.72, 1.15],
+            sav:  [1.18, 0.85, 1.30, 0.72, 1.10, 0.78, 1.25, 0.70, 1.05, 0.92, 1.28, 0.82],
+            em:   [0.88, 1.15, 0.78, 1.22, 1.05, 0.72, 1.10, 0.82, 1.30, 0.75, 1.25, 0.95],
+        },
     };
-    const bm = buildingMult[selectedBuilding] || 1.0;
-    const scaleVal = (v) => Math.round(v * bm);
-    const scaleArr = (arr) => arr.map(d => {
-        const out = { ...d };
-        if (out.elec !== undefined) out.elec = Math.round(out.elec * bm);
-        if (out.gas !== undefined) out.gas = Math.round(out.gas * bm);
-        if (out.total !== undefined) out.total = Math.round(out.total * bm);
-        if (out.val !== undefined) out.val = +(out.val * bm).toFixed(1);
-        if (out.emissions !== undefined) out.emissions = +(out.emissions * bm).toFixed(1);
-        if (out.reduced !== undefined) out.reduced = +(out.reduced * bm).toFixed(1);
-        return out;
-    });
 
-    // Pull period-synced data (scaled per building)
+    const bv = buildingVariations[selectedBuilding];
+    const scaleVal = (v) => bv ? Math.round(v * bv.base) : v;
+    const scaleArr = (arr, variationKey) => {
+        if (!bv) return arr; // All Buildings — raw data
+        return arr.map((d, i) => {
+            const out = { ...d };
+            const vElec = bv.elec[i % bv.elec.length];
+            const vGas = bv.gas[i % bv.gas.length];
+            const vSav = (variationKey === 'sav' ? bv.sav : bv.em)[i % 12];
+            if (out.elec !== undefined) out.elec = Math.round(out.elec * bv.base * vElec);
+            if (out.gas !== undefined) out.gas = Math.round(out.gas * bv.base * vGas);
+            if (out.total !== undefined) out.total = (out.elec || 0) + (out.gas || 0);
+            if (out.val !== undefined) out.val = +(out.val * bv.base * vSav).toFixed(1);
+            if (out.emissions !== undefined) out.emissions = +(out.emissions * bv.base * vSav).toFixed(1);
+            if (out.reduced !== undefined) out.reduced = +(out.reduced * bv.base * vSav).toFixed(1);
+            return out;
+        });
+    };
+
+    // Pull period-synced data (with per-building variation)
     const rawArc = arcDataByPeriod[savingsPeriod];
     const elecVal = scaleVal(rawArc.elec);
     const gasVal = scaleVal(rawArc.gas);
@@ -661,9 +698,9 @@ const PortfolioView = () => {
     const intX = 120 + 80 * Math.cos(intersectionAngle);
     const intY = 120 - 80 * Math.sin(intersectionAngle);
 
-    const activeTrendData = scaleArr(trendDataByPeriod[savingsPeriod]);
-    const activeEmissionsData = scaleArr(emissionsDataByPeriod[savingsPeriod]);
-    const activeSavingsBreakdown = scaleArr(savingsBreakdownByPeriod[savingsPeriod]);
+    const activeTrendData = scaleArr(trendDataByPeriod[savingsPeriod], 'trend');
+    const activeEmissionsData = scaleArr(emissionsDataByPeriod[savingsPeriod], 'em');
+    const activeSavingsBreakdown = scaleArr(savingsBreakdownByPeriod[savingsPeriod], 'sav');
     const rawEff = efficiencyByPeriod[savingsPeriod];
     const effOffsets = { 'All Buildings': 0, 'North Tower': 0, 'South Center': -3, 'West Complex': -9, 'East Wing': 4 };
     const activeEfficiency = {
@@ -671,10 +708,10 @@ const PortfolioView = () => {
         buildings: rawEff.buildings
     };
     const rawSavTotal = savingsTotalByPeriod[savingsPeriod];
-    const activeSavingsTotal = rawSavTotal === '—' ? '—' : '$' + Math.round(parseFloat(rawSavTotal.replace(/[^\d.]/g, '')) * bm).toLocaleString();
+    const activeSavingsTotal = rawSavTotal === '—' ? '—' : '$' + scaleVal(parseFloat(rawSavTotal.replace(/[^\d.]/g, ''))).toLocaleString();
 
     const emBase = { '24h': 16.4, '7d': 45.1, '1m': 182.5, 'ytd': 685.2, 'custom': 0 };
-    const activeEmissionsTotal = emBase[savingsPeriod] === 0 ? '—' : (emBase[savingsPeriod] * bm).toFixed(1);
+    const activeEmissionsTotal = emBase[savingsPeriod] === 0 ? '—' : (bv ? (emBase[savingsPeriod] * bv.base).toFixed(1) : emBase[savingsPeriod].toFixed(1));
 
     const buildingOptions = ['All Buildings', 'North Tower', 'South Center', 'West Complex', 'East Wing'];
     const savingsPeriods = [
