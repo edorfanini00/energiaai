@@ -687,9 +687,18 @@ const PortfolioView = () => {
     };
 
     // Pull period-synced data (with per-building variation)
+    // Per-building elec/gas ratio skew — changes the arc proportions
+    const arcSkew = {
+        'All Buildings': { elecFactor: 1, gasFactor: 1 },
+        'North Tower':  { elecFactor: 0.88, gasFactor: 1.14 },  // gas-heavy
+        'South Center': { elecFactor: 1.10, gasFactor: 0.85 },  // elec-heavy
+        'West Complex':  { elecFactor: 0.95, gasFactor: 1.08 },  // slightly gas-heavy
+        'East Wing':    { elecFactor: 1.22, gasFactor: 0.75 },  // very elec-heavy
+    };
+    const sk = arcSkew[selectedBuilding] || { elecFactor: 1, gasFactor: 1 };
     const rawArc = arcDataByPeriod[savingsPeriod];
-    const elecVal = scaleVal(rawArc.elec);
-    const gasVal = scaleVal(rawArc.gas);
+    const elecVal = scaleVal(Math.round(rawArc.elec * sk.elecFactor));
+    const gasVal = scaleVal(Math.round(rawArc.gas * sk.gasFactor));
     const totalEnergy = elecVal + gasVal;
     const elecPct = elecVal / totalEnergy;
     
