@@ -7,8 +7,8 @@ const mockReports = [
         title: 'Energy Consumption Summary',
         desc: 'Monthly overview of energy usage and costs',
         tag: 'Energy',
-        tagColor: '#3b82f6',
-        tagBg: 'rgba(59,130,246,0.1)',
+        tagColor: 'var(--accent-green)',
+        tagBg: 'rgba(0,255,136,0.1)',
         date: '2024-02-20'
     },
     {
@@ -16,8 +16,8 @@ const mockReports = [
         title: 'Carbon Emissions Report',
         desc: 'Detailed analysis of carbon footprint',
         tag: 'Environmental',
-        tagColor: 'var(--accent-green)',
-        tagBg: 'rgba(0,255,136,0.1)',
+        tagColor: '#38bdf8',
+        tagBg: 'rgba(56,189,248,0.1)',
         date: '2024-02-15'
     },
     {
@@ -25,8 +25,8 @@ const mockReports = [
         title: 'Financial Performance',
         desc: 'Financial metrics and ROI analysis',
         tag: 'Financial',
-        tagColor: '#a855f7',
-        tagBg: 'rgba(168,85,247,0.1)',
+        tagColor: '#eab308',
+        tagBg: 'rgba(234,179,8,0.1)',
         date: '2024-02-18'
     },
     {
@@ -34,8 +34,8 @@ const mockReports = [
         title: 'Tenant Usage Breakdown',
         desc: 'Detailed tenant-wise consumption analysis',
         tag: 'Tenant',
-        tagColor: '#ec4899',
-        tagBg: 'rgba(236,72,153,0.1)',
+        tagColor: '#f97316',
+        tagBg: 'rgba(249,115,22,0.1)',
         date: '2024-02-19'
     }
 ];
@@ -58,9 +58,9 @@ const ReportsView = () => {
                 <button style={{ 
                     display: 'flex', alignItems: 'center', gap: '0.5rem', 
                     padding: '0.6rem 1.25rem', borderRadius: '8px', border: 'none', 
-                    background: 'rgba(59,130,246,0.1)', color: '#3b82f6', 
+                    background: 'rgba(0,255,136,0.1)', color: 'var(--accent-green)', 
                     fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s'
-                }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,0.2)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(59,130,246,0.1)'}>
+                }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,255,136,0.2)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,255,136,0.1)'}>
                     <Plus size={18} /> Create New Report
                 </button>
             </div>
@@ -102,9 +102,9 @@ const ReportsView = () => {
                         onClick={() => setActiveTab(tab)}
                         style={{ 
                             padding: '0.75rem 0', background: 'transparent', border: 'none', 
-                            color: activeTab === tab ? '#3b82f6' : 'var(--text-secondary)',
+                            color: activeTab === tab ? 'var(--accent-green)' : 'var(--text-secondary)',
                             fontWeight: activeTab === tab ? 600 : 500, fontSize: '0.95rem', cursor: 'pointer',
-                            borderBottom: activeTab === tab ? '2px solid #3b82f6' : '2px solid transparent',
+                            borderBottom: activeTab === tab ? '2px solid var(--accent-green)' : '2px solid transparent',
                             marginBottom: '-1px', transition: 'all 0.2s'
                         }}
                     >
