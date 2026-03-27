@@ -852,9 +852,15 @@ const PortfolioView = () => {
                                 }}
                             >
                                 <Popup className="custom-dark-popup">
-                                    <div style={{ padding: '0.2rem' }}>
-                                        <h4 style={{ margin: 0, fontSize: '1rem', color: '#111' }}>{b.name}</h4>
-                                        <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: '#444' }}>{b.address}</p>
+                                    <div style={{ padding: '0.4rem 0.2rem', minWidth: '180px' }}>
+                                        <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: '#fff' }}>{b.name}</h4>
+                                        <p style={{ margin: '0.3rem 0 0.5rem 0', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>{b.address}</p>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
+                                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: b.alerts > 0 ? '#ef4444' : '#4ade80', boxShadow: `0 0 6px ${b.alerts > 0 ? '#ef4444' : '#4ade80'}88` }} />
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: b.alerts > 0 ? '#ef4444' : '#4ade80' }}>
+                                                Status: {b.alerts > 0 ? 'Warning' : 'Optimal'}
+                                            </span>
+                                        </div>
                                     </div>
                                 </Popup>
                             </Marker>
