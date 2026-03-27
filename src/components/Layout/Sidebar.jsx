@@ -22,9 +22,9 @@ const Sidebar = () => {
                 <NavLink to="/financial" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <DollarSign size={18} className="nav-icon" /> Financial
                 </NavLink>
-                <div className="nav-item" style={{ cursor: 'pointer', opacity: 0.6 }}>
+                <NavLink to="/reports" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <FileText size={18} className="nav-icon" /> Reports
-                </div>
+                </NavLink>
             </nav>
 
             {/* Bottom Items */}
