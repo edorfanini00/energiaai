@@ -59,7 +59,7 @@ const ReportsView = () => {
                     display: 'flex', alignItems: 'center', gap: '0.5rem', 
                     padding: '0.6rem 1.25rem', borderRadius: '8px', border: 'none', 
                     background: 'rgba(0,255,136,0.1)', color: 'var(--accent-green)', 
-                    fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s'
+                    fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s', outline: 'none'
                 }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,255,136,0.2)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,255,136,0.1)'}>
                     <Plus size={18} /> Create New Report
                 </button>
@@ -77,15 +77,19 @@ const ReportsView = () => {
                         style={{ 
                             width: '100%', padding: '0.8rem 1rem 0.8rem 2.75rem', 
                             background: 'var(--bg-input)', border: '1px solid var(--border-light)', 
-                            borderRadius: '8px', color: '#fff', fontSize: '0.95rem', boxSizing: 'border-box'
+                            borderRadius: '8px', color: '#fff', fontSize: '0.95rem', boxSizing: 'border-box', outline: 'none'
                         }} 
+                        onFocus={e => e.currentTarget.style.borderColor = 'var(--accent-green)'}
+                        onBlur={e => e.currentTarget.style.borderColor = 'var(--border-light)'}
                     />
                 </div>
                 <select style={{ 
                     padding: '0.8rem 1.25rem', background: 'var(--bg-input)', 
                     border: '1px solid var(--border-light)', borderRadius: '8px', 
-                    color: '#fff', fontSize: '0.95rem', minWidth: '150px', cursor: 'pointer'
-                }}>
+                    color: '#fff', fontSize: '0.95rem', minWidth: '150px', cursor: 'pointer', outline: 'none'
+                }}
+                onFocus={e => e.currentTarget.style.borderColor = 'var(--accent-green)'}
+                onBlur={e => e.currentTarget.style.borderColor = 'var(--border-light)'}>
                     <option value="All">All Types</option>
                     <option value="Energy">Energy</option>
                     <option value="Environmental">Environmental</option>
@@ -105,7 +109,7 @@ const ReportsView = () => {
                             color: activeTab === tab ? 'var(--accent-green)' : 'var(--text-secondary)',
                             fontWeight: activeTab === tab ? 600 : 500, fontSize: '0.95rem', cursor: 'pointer',
                             borderBottom: activeTab === tab ? '2px solid var(--accent-green)' : '2px solid transparent',
-                            marginBottom: '-1px', transition: 'all 0.2s'
+                            marginBottom: '-1px', transition: 'all 0.2s', outline: 'none'
                         }}
                     >
                         {tab}
