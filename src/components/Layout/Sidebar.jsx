@@ -29,9 +29,9 @@ const Sidebar = () => {
 
             {/* Bottom Items */}
             <div style={{ padding: '0 1rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <div className="nav-item" style={{ cursor: 'pointer', opacity: 0.6 }}>
+                <NavLink to="/support" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <HelpCircle size={18} className="nav-icon" /> Help & Support
-                </div>
+                </NavLink>
                 <div className="nav-item" style={{ cursor: 'pointer', opacity: 0.6 }}>
                     <Settings size={18} className="nav-icon" /> Settings
                 </div>
