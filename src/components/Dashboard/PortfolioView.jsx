@@ -632,10 +632,27 @@ const PortfolioView = () => {
     const activeBuildingList = mapBuildingsByPeriod[savingsPeriod];
     const filteredBuildings = activeBuildingList.filter(b => b.name.toLowerCase().includes(mapSearch.toLowerCase()) || b.address.toLowerCase().includes(mapSearch.toLowerCase()));
 
-    // Pull period-synced data
-    const arcData = arcDataByPeriod[savingsPeriod];
-    const elecVal = arcData.elec;
-    const gasVal = arcData.gas;
+    // Building multipliers (All Buildings = 1.0 / aggregate)
+    const buildingMult = {
+        'All Buildings': 1.0, 'North Tower': 0.28, 'South Center': 0.23, 'West Complex': 0.19, 'East Wing': 0.30
+    };
+    const bm = buildingMult[selectedBuilding] || 1.0;
+    const scaleVal = (v) => Math.round(v * bm);
+    const scaleArr = (arr) => arr.map(d => {
+        const out = { ...d };
+        if (out.elec !== undefined) out.elec = Math.round(out.elec * bm);
+        if (out.gas !== undefined) out.gas = Math.round(out.gas * bm);
+        if (out.total !== undefined) out.total = Math.round(out.total * bm);
+        if (out.val !== undefined) out.val = +(out.val * bm).toFixed(1);
+        if (out.emissions !== undefined) out.emissions = +(out.emissions * bm).toFixed(1);
+        if (out.reduced !== undefined) out.reduced = +(out.reduced * bm).toFixed(1);
+        return out;
+    });
+
+    // Pull period-synced data (scaled per building)
+    const rawArc = arcDataByPeriod[savingsPeriod];
+    const elecVal = scaleVal(rawArc.elec);
+    const gasVal = scaleVal(rawArc.gas);
     const totalEnergy = elecVal + gasVal;
     const elecPct = elecVal / totalEnergy;
     
@@ -644,21 +661,20 @@ const PortfolioView = () => {
     const intX = 120 + 80 * Math.cos(intersectionAngle);
     const intY = 120 - 80 * Math.sin(intersectionAngle);
 
-    const activeTrendData = trendDataByPeriod[savingsPeriod];
-    const activeEmissionsData = emissionsDataByPeriod[savingsPeriod];
-    const activeSavingsBreakdown = savingsBreakdownByPeriod[savingsPeriod];
-    const activeEfficiency = efficiencyByPeriod[savingsPeriod];
-    const activeSavingsTotal = savingsTotalByPeriod[savingsPeriod];
-
-    // Compute generic Emission string for modal header manually
-    const emissionsTotalStrByPeriod = {
-        '24h': '16.4',
-        '7d': '45.1',
-        '1m': '182.5',
-        'ytd': '685.2',
-        'custom': '—'
+    const activeTrendData = scaleArr(trendDataByPeriod[savingsPeriod]);
+    const activeEmissionsData = scaleArr(emissionsDataByPeriod[savingsPeriod]);
+    const activeSavingsBreakdown = scaleArr(savingsBreakdownByPeriod[savingsPeriod]);
+    const rawEff = efficiencyByPeriod[savingsPeriod];
+    const effOffsets = { 'All Buildings': 0, 'North Tower': 0, 'South Center': -3, 'West Complex': -9, 'East Wing': 4 };
+    const activeEfficiency = {
+        score: Math.min(100, Math.max(0, rawEff.score + (effOffsets[selectedBuilding] || 0))),
+        buildings: rawEff.buildings
     };
-    const activeEmissionsTotal = emissionsTotalStrByPeriod[savingsPeriod];
+    const rawSavTotal = savingsTotalByPeriod[savingsPeriod];
+    const activeSavingsTotal = rawSavTotal === '—' ? '—' : '$' + Math.round(parseFloat(rawSavTotal.replace(/[^\d.]/g, '')) * bm).toLocaleString();
+
+    const emBase = { '24h': 16.4, '7d': 45.1, '1m': 182.5, 'ytd': 685.2, 'custom': 0 };
+    const activeEmissionsTotal = emBase[savingsPeriod] === 0 ? '—' : (emBase[savingsPeriod] * bm).toFixed(1);
 
     const buildingOptions = ['All Buildings', 'North Tower', 'South Center', 'West Complex', 'East Wing'];
     const savingsPeriods = [
@@ -668,14 +684,21 @@ const PortfolioView = () => {
         { key: 'ytd', label: 'YTD' },
     ];
 
-    const savingsDataByPeriod = {
-        '24h': { elec: '128', gas: '42', money: '$340', elecTrend: -2.1, gasTrend: -3.4, moneyTrend: 5.8, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
-        '7d':  { elec: '890', gas: '295', money: '$2,370', elecTrend: -3.5, gasTrend: -4.1, moneyTrend: 8.2, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
-        '1m':  { elec: '3,820', gas: '1,260', money: '$5,480', elecTrend: -5.2, gasTrend: -6.8, moneyTrend: 12.4, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
-        'ytd': { elec: '12,450', gas: '4,180', money: '$15,200', elecTrend: -4.2, gasTrend: -5.9, moneyTrend: 18.5, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
-        'custom': { elec: '—', gas: '—', money: '—', elecTrend: 0, gasTrend: 0, moneyTrend: 0, elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved' },
+    const baseSavings = {
+        '24h': { elec: 128, gas: 42, money: 340, elecTrend: -2.1, gasTrend: -3.4, moneyTrend: 5.8 },
+        '7d':  { elec: 890, gas: 295, money: 2370, elecTrend: -3.5, gasTrend: -4.1, moneyTrend: 8.2 },
+        '1m':  { elec: 3820, gas: 1260, money: 5480, elecTrend: -5.2, gasTrend: -6.8, moneyTrend: 12.4 },
+        'ytd': { elec: 12450, gas: 4180, money: 15200, elecTrend: -4.2, gasTrend: -5.9, moneyTrend: 18.5 },
+        'custom': { elec: 0, gas: 0, money: 0, elecTrend: 0, gasTrend: 0, moneyTrend: 0 },
     };
-    const sd = savingsDataByPeriod[savingsPeriod];
+    const rawSd = baseSavings[savingsPeriod];
+    const sd = {
+        elec: rawSd.elec === 0 ? '—' : scaleVal(rawSd.elec).toLocaleString(),
+        gas: rawSd.gas === 0 ? '—' : scaleVal(rawSd.gas).toLocaleString(),
+        money: rawSd.money === 0 ? '—' : '$' + scaleVal(rawSd.money).toLocaleString(),
+        elecTrend: rawSd.elecTrend, gasTrend: rawSd.gasTrend, moneyTrend: rawSd.moneyTrend,
+        elecUnit: 'kWh saved', gasUnit: 'therms saved', moneyUnit: 'saved',
+    };
     const savingsCards = [
         { label: 'ELECTRICITY SAVINGS', value: sd.elec, unit: sd.elecUnit, trend: sd.elecTrend, accentColor: 'var(--accent-green)' },
         { label: 'GAS SAVINGS', value: sd.gas, unit: sd.gasUnit, trend: sd.gasTrend, accentColor: '#f97316' },
