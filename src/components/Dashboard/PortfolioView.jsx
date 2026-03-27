@@ -7,30 +7,54 @@ import L from 'leaflet';
 const createPulseIcon = (isActive, numAlerts) => {
     const isWarning = numAlerts > 0;
     const color = isWarning ? '#ef4444' : '#4ade80';
+    const size = 40;
+    const dotSize = isActive ? 12 : 10;
     return L.divIcon({
         className: 'custom-pulse-icon',
         html: `
             <div style="
                 position: relative;
-                width: 14px; height: 14px;
-                border-radius: 50%;
-                background: ${color};
-                transform: ${isActive ? 'scale(1.8)' : 'scale(1)'};
-                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-shadow: ${isActive ? '0 0 24px 8px ' + color + '66' : 'none'};
-                border: 2px solid ${isActive ? '#fff' : color};
+                width: ${size}px; height: ${size}px;
+                display: flex; align-items: center; justify-content: center;
             ">
-                <div class="pulse-ring" style="
-                    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                    width: 100%; height: 100%; border-radius: 50%;
-                    background: transparent;
-                    border: 2px solid ${color};
-                    animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+                <!-- Outer pulse ring -->
+                <div style="
+                    position: absolute; inset: 0;
+                    border-radius: 50%;
+                    border: 1.5px solid ${color};
+                    animation: marker-pulse 3s infinite ease-out;
+                    opacity: 0;
+                "></div>
+                <!-- Inner pulse ring (staggered) -->
+                <div style="
+                    position: absolute; inset: 6px;
+                    border-radius: 50%;
+                    border: 1px solid ${color};
+                    animation: marker-pulse 3s 1s infinite ease-out;
+                    opacity: 0;
+                "></div>
+                <!-- Soft glow -->
+                <div style="
+                    position: absolute;
+                    width: ${dotSize + 12}px; height: ${dotSize + 12}px;
+                    border-radius: 50%;
+                    background: radial-gradient(circle, ${color}40 0%, transparent 70%);
+                    animation: marker-breathe 3s infinite ease-in-out;
+                "></div>
+                <!-- Core dot -->
+                <div style="
+                    position: relative;
+                    width: ${dotSize}px; height: ${dotSize}px;
+                    border-radius: 50%;
+                    background: ${color};
+                    box-shadow: 0 0 ${isActive ? '16px 4px' : '8px 2px'} ${color}55;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    border: ${isActive ? '2px solid rgba(255,255,255,0.9)' : '1.5px solid ' + color + 'cc'};
                 "></div>
             </div>
         `,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2]
     });
 };
 /* ─── Mock Data ─── */
