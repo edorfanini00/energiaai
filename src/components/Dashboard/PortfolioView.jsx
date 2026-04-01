@@ -1006,15 +1006,29 @@ const PortfolioView = () => {
                     { year: '2024', electricity: 3.2, gas: 2.8, monetary: 6200, label: 'Current' },
                 ];
                 const sinceInstall = { electricity: 48.2, gas: 40.8, monetary: 71700 };
+                const momData = [
+                    { month: 'Jan', electricity: 4.1, gas: 3.8, savings: 5200 },
+                    { month: 'Feb', electricity: 3.5, gas: 2.9, savings: 4800 },
+                    { month: 'Mar', electricity: 2.8, gas: 3.2, savings: 4100 },
+                    { month: 'Apr', electricity: 1.2, gas: 1.5, savings: 2200 },
+                    { month: 'May', electricity: -0.5, gas: 0.8, savings: 900 },
+                    { month: 'Jun', electricity: 0.9, gas: 1.1, savings: 1800 },
+                    { month: 'Jul', electricity: 2.1, gas: 1.8, savings: 3200 },
+                    { month: 'Aug', electricity: 3.4, gas: 2.6, savings: 4500 },
+                    { month: 'Sep', electricity: 2.7, gas: 2.2, savings: 3800 },
+                    { month: 'Oct', electricity: 1.9, gas: 1.4, savings: 2900 },
+                    { month: 'Nov', electricity: 3.8, gas: 3.5, savings: 5100 },
+                    { month: 'Dec', electricity: 4.5, gas: 4.0, savings: 5800 },
+                ];
                 return (
                     <div className="glass-card" style={{ padding: '2rem', border: '1px solid var(--border-light)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                             <div>
-                                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>Year-over-Year Improvement</h3>
-                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0 0' }}>Compare performance improvements across years</p>
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>Performance Comparison</h3>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0 0' }}>Track improvements since installation, year-over-year, and month-over-month</p>
                             </div>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                {['Since Installation', 'Year-over-Year'].map(mode => (
+                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                {['Since Installation', 'Year-over-Year', 'Month-over-Month'].map(mode => (
                                     <button key={mode} onClick={() => setYoyMode(mode)} style={{
                                         padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
                                         border: '1px solid', cursor: 'pointer', transition: 'all 0.2s', outline: 'none',
@@ -1042,8 +1056,6 @@ const PortfolioView = () => {
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Cumulative Line Chart */}
                                 <div style={{ height: '280px' }}>
                                     <ResponsiveContainer width="100%" height="100%">
                                         <AreaChart data={yoyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
@@ -1067,9 +1079,8 @@ const PortfolioView = () => {
                                     </ResponsiveContainer>
                                 </div>
                             </>
-                        ) : (
+                        ) : yoyMode === 'Year-over-Year' ? (
                             <>
-                                {/* Year-over-Year Bar Chart */}
                                 <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
                                     {[
                                         { color: 'var(--accent-green)', label: 'Electricity %' },
@@ -1093,13 +1104,56 @@ const PortfolioView = () => {
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
-                                {/* Per-year badges */}
                                 <div style={{ display: 'grid', gridTemplateColumns: `repeat(${yoyData.length}, 1fr)`, gap: '0.75rem', marginTop: '1rem' }}>
                                     {yoyData.map((d, i) => (
                                         <div key={i} style={{ background: 'var(--bg-input)', borderRadius: '10px', padding: '0.75rem 1rem', textAlign: 'center' }}>
                                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.3rem' }}>{d.year} {d.label && `· ${d.label}`}</div>
                                             <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#eab308' }}>${d.monetary.toLocaleString()}</div>
                                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>saved</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                {/* Month-over-Month */}
+                                <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                                    {[
+                                        { color: 'var(--accent-green)', label: 'Electricity % change' },
+                                        { color: '#f97316', label: 'Gas % change' },
+                                        { color: '#eab308', label: 'Monthly savings ($)', style: 'dashed' },
+                                    ].map((leg, i) => (
+                                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <div style={{ width: 10, height: 10, borderRadius: leg.style === 'dashed' ? '2px' : '50%', background: leg.color }} />
+                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{leg.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div style={{ height: '300px' }}>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <ComposedChart data={momData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                                            <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
+                                            <YAxis yAxisId="pct" axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} />
+                                            <YAxis yAxisId="dollar" orientation="right" axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} tick={{ fontSize: 12, fill: '#eab308' }} />
+                                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '0.9rem' }} formatter={(v, n) => [n === 'savings' ? `$${v.toLocaleString()}` : `${v}%`, n === 'electricity' ? 'Electricity' : n === 'gas' ? 'Gas' : 'Savings']} />
+                                            <Bar yAxisId="pct" dataKey="electricity" fill="var(--accent-green)" radius={[6, 6, 0, 0]} barSize={20} />
+                                            <Bar yAxisId="pct" dataKey="gas" fill="#f97316" radius={[6, 6, 0, 0]} barSize={20} opacity={0.85} />
+                                            <Line yAxisId="dollar" type="monotone" dataKey="savings" stroke="#eab308" strokeWidth={2.5} strokeDasharray="6 3" dot={{ fill: '#eab308', r: 3 }} />
+                                        </ComposedChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginTop: '1rem' }}>
+                                    {[
+                                        { label: 'Best Month', value: 'December', sub: '4.5% elec · 4.0% gas', color: 'var(--accent-green)' },
+                                        { label: 'Avg Monthly', value: '2.5%', sub: 'electricity reduction', color: '#38bdf8' },
+                                        { label: 'Monthly Savings', value: '$3,692', sub: 'average per month', color: '#eab308' },
+                                        { label: 'Trend', value: 'Improving', sub: 'vs. prior quarter', color: 'var(--accent-green)' },
+                                    ].map((c, i) => (
+                                        <div key={i} style={{ background: 'var(--bg-input)', borderRadius: '10px', padding: '0.75rem 1rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.65rem', color: c.color, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, marginBottom: '0.3rem' }}>{c.label}</div>
+                                            <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>{c.value}</div>
+                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{c.sub}</div>
                                         </div>
                                     ))}
                                 </div>
