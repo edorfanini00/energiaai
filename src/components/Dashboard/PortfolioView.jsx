@@ -628,6 +628,7 @@ const PortfolioView = () => {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [activeMapBuilding, setActiveMapBuilding] = useState(null);
     const [mapSearch, setMapSearch] = useState('');
+    const [yoyMode, setYoyMode] = useState('Since Installation');
     const handleArcMouseMove = (e) => {
         setMousePos({ x: e.clientX, y: e.clientY });
     };
@@ -995,6 +996,118 @@ const PortfolioView = () => {
                     </MapContainer>
                 </div>
             </div>
+
+            {/* ═══ Year-over-Year Improvement Section ═══ */}
+            {(() => {
+                const yoyData = [
+                    { year: '2021', electricity: 32, gas: 28, monetary: 45000, label: 'Installation Year' },
+                    { year: '2022', electricity: 8, gas: 6, monetary: 12000, label: '' },
+                    { year: '2023', electricity: 5, gas: 4, monetary: 8500, label: '' },
+                    { year: '2024', electricity: 3.2, gas: 2.8, monetary: 6200, label: 'Current' },
+                ];
+                const sinceInstall = { electricity: 48.2, gas: 40.8, monetary: 71700 };
+                return (
+                    <div className="glass-card" style={{ padding: '2rem', border: '1px solid var(--border-light)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <div>
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>Year-over-Year Improvement</h3>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0 0' }}>Compare performance improvements across years</p>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                {['Since Installation', 'Year-over-Year'].map(mode => (
+                                    <button key={mode} onClick={() => setYoyMode(mode)} style={{
+                                        padding: '0.45rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500,
+                                        border: '1px solid', cursor: 'pointer', transition: 'all 0.2s', outline: 'none',
+                                        background: yoyMode === mode ? 'rgba(255,255,255,0.08)' : 'transparent',
+                                        borderColor: yoyMode === mode ? 'var(--accent-green)' : 'var(--border-light)',
+                                        color: yoyMode === mode ? 'var(--accent-green)' : 'var(--text-secondary)',
+                                    }}>{mode}</button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {yoyMode === 'Since Installation' ? (
+                            <>
+                                {/* Since Installation Summary Cards */}
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                                    {[
+                                        { label: 'ELECTRICITY REDUCTION', value: `${sinceInstall.electricity}%`, color: 'var(--accent-green)', sub: 'since 2021 installation' },
+                                        { label: 'GAS REDUCTION', value: `${sinceInstall.gas}%`, color: '#f97316', sub: 'since 2021 installation' },
+                                        { label: 'TOTAL SAVINGS', value: `$${sinceInstall.monetary.toLocaleString()}`, color: '#eab308', sub: 'cumulative to date' },
+                                    ].map((c, i) => (
+                                        <div key={i} style={{ background: 'var(--bg-input)', borderRadius: '12px', padding: '1.25rem', borderLeft: `3px solid ${c.color}` }}>
+                                            <div style={{ fontSize: '0.65rem', color: c.color, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '0.5rem' }}>{c.label}</div>
+                                            <div style={{ fontSize: '2rem', fontWeight: 600 }}>{c.value}</div>
+                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{c.sub}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Cumulative Line Chart */}
+                                <div style={{ height: '280px' }}>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={yoyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                                            <defs>
+                                                <linearGradient id="yoyCumElec" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.3} />
+                                                    <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0} />
+                                                </linearGradient>
+                                                <linearGradient id="yoyCumGas" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                                                    <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                                            <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
+                                            <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} />
+                                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '0.9rem' }} formatter={(v, n) => [`${v}%`, n === 'electricity' ? 'Electricity' : 'Gas']} />
+                                            <Area type="monotone" dataKey="electricity" stroke="var(--accent-green)" strokeWidth={2.5} fillOpacity={1} fill="url(#yoyCumElec)" />
+                                            <Area type="monotone" dataKey="gas" stroke="#f97316" strokeWidth={2.5} fillOpacity={1} fill="url(#yoyCumGas)" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                {/* Year-over-Year Bar Chart */}
+                                <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                                    {[
+                                        { color: 'var(--accent-green)', label: 'Electricity %' },
+                                        { color: '#f97316', label: 'Gas %' },
+                                    ].map((leg, i) => (
+                                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <div style={{ width: 10, height: 10, borderRadius: '50%', background: leg.color }} />
+                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{leg.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div style={{ height: '300px' }}>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={yoyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                                            <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                                            <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} dy={10} />
+                                            <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 13, fill: 'var(--text-secondary)' }} />
+                                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ background: 'var(--bg-input)', border: 'none', borderRadius: '12px', fontSize: '0.9rem' }} formatter={(v, n) => [`${v}%`, n === 'electricity' ? 'Electricity Reduction' : 'Gas Reduction']} />
+                                            <Bar dataKey="electricity" fill="var(--accent-green)" radius={[6, 6, 0, 0]} barSize={40} />
+                                            <Bar dataKey="gas" fill="#f97316" radius={[6, 6, 0, 0]} barSize={40} opacity={0.85} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                {/* Per-year badges */}
+                                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${yoyData.length}, 1fr)`, gap: '0.75rem', marginTop: '1rem' }}>
+                                    {yoyData.map((d, i) => (
+                                        <div key={i} style={{ background: 'var(--bg-input)', borderRadius: '10px', padding: '0.75rem 1rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.3rem' }}>{d.year} {d.label && `· ${d.label}`}</div>
+                                            <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#eab308' }}>${d.monetary.toLocaleString()}</div>
+                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>saved</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                );
+            })()}
 
 
             {/* Savings Modal */}
